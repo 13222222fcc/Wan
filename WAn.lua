@@ -11,19 +11,24 @@ local Window = Rayfield:CreateWindow({
 })
 
 -- 创建标签页
-local Tab1 = Window:CreateTab("信息")
-local Tab2 = Window:CreateTab("功能")
-local Tab3 = Window:CreateTab("其他脚本")
+local Tab1 = Window:CreateTab("标签页1")
+local Tab2 = Window:CreateTab("标签页2")
+local Tab3 = Window:CreateTab("标签页3")
 
-local LabelExample = Tab3:CreateLabel({
-    Name = "标签示例",
-    Content = "不知道啊",
+-- 1. 切换开关(Toggle)示例
+local ToggleExample = Tab1:CreateToggle({
+    Name = "切换开关示例",
+    CurrentValue = false,
+    Flag = "ToggleExample",
+    Callback = function(Value)
+        print("切换开关状态:", Value)
+    end
 })
 
 -- 2. 下拉菜单(Dropdown)示例
-local DropdownExample = Tab3:CreateDropdown({
-    Name = "服务器↓",
-    Options = {"被遗弃", "NOL", "XA"},
+local DropdownExample = Tab1:CreateDropdown({
+    Name = "下拉菜单示例",
+    Options = {"选项1", "选项2", "选项3"},
     CurrentOption = "选项1",
     MultipleOptions = false,
     Flag = "DropdownExample",
