@@ -1,64 +1,141 @@
-local success, library = pcall(function()
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/13222222fcc/Wanscript/refs/heads/main/UI.lua"))()
-end)
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
-if not success then
-print("殺脚本")  
-    return
-end
+-- 创建主窗口
+local Window = Rayfield:CreateWindow({
+    Name = "UI 示例窗口",
+    LoadingTitle = "加载中...",
+    LoadingSubtitle = "UI 元素示例",
+    ConfigurationSaving = {
+        Enabled = false,
+    },
+})
 
-local window = library:new("挽脚本")
+-- 创建标签页
+local Tab1 = Window:CreateTab("信息")
+local Tab2 = Window:CreateTab("功能")
+local Tab3 = Window:CreateTab("其他脚本")
 
-local FengYu = window:Tab("关于",'84830962019412')
+local LabelExample = Tab3:CreateLabel({
+    Name = "标签示例",
+    Content = "不知道啊",
+})
 
-local Feng =FengYu:section("通用",true)
+-- 2. 下拉菜单(Dropdown)示例
+local DropdownExample = Tab3:CreateDropdown({
+    Name = "服务器↓",
+    Options = {"被遗弃", "NOL", "XA"},
+    CurrentOption = "选项1",
+    MultipleOptions = false,
+    Flag = "DropdownExample",
+    Callback = function(Option)
+        print("选择的选项:", Option)
+    end,
+})
 
-Feng:Button("my Fck", function()
-    
-end)
+-- 3. 多选下拉菜单示例
+local MultiDropdownExample = Tab1:CreateDropdown({
+    Name = "多选下拉菜单示例",
+    Options = {"苹果", "香蕉", "橙子", "葡萄"},
+    CurrentOption = {"苹果", "香蕉"},
+    MultipleOptions = true,
+    Flag = "MultiDropdownExample",
+    Callback = function(Options)
+        print("选择的多个选项:", table.concat(Options, ", "))
+    end,
+})
 
-Feng:Toggle("开关", "FengYu", false, function(a)
-    
-end)
+-- 4. 滑块(Slider)示例
+local SliderExample = Tab1:CreateSlider({
+    Name = "滑块示例",
+    Range = {0, 100},
+    Increment = 1,
+    CurrentValue = 50,
+    Flag = "SliderExample",
+    Callback = function(Value)
+        print("滑块值:", Value)
+    end,
+})
 
-Feng:Slider('滑块', 'FengYu', 0, 0, 9999,false, function(b)
-    
-end)
+-- 5. 颜色选择器(ColorPicker)示例
+local ColorPickerExample = Tab2:CreateColorPicker({
+    Name = "颜色选择器示例",
+    Color = Color3.fromRGB(255, 0, 0),
+    Callback = function(Color)
+        print("选择的颜色:", Color)
+    end
+})
 
-Feng:Textbox("输入", "FengYu", "输入", function(c)
-  
-end)
+-- 6. 按钮(Button)示例
+local ButtonExample = Tab2:CreateButton({
+    Name = "按钮示例",
+    Callback = function()
+        print("按钮被点击了!")
+    end,
+})
 
-Feng:Dropdown("下拉式", "FengYu", {
-    "额"
-}, function(d)
-    
-end)
+-- 7. 输入框(TextBox)示例
+local TextBoxExample = Tab2:CreateInput({
+    Name = "输入框示例",
+    PlaceholderText = "输入一些文字...",
+    RemoveTextAfterFocusLost = false,
+    Callback = function(Text)
+        print("输入的文本:", Text)
+    end,
+})
 
-local FengYu = window:Tab("甬用",'84830962019412')
+-- 8. 键位绑定(Keybind)示例
+local KeybindExample = Tab3:CreateKeybind({
+    Name = "键位绑定示例",
+    CurrentKeybind = "Q",
+    HoldToInteract = false,
+    Flag = "KeybindExample", 
+    Callback = function(Keybind)
+        print("按下的键:", Keybind)
+    end,
+})
 
-local Feng =FengYu:section("通用",true)
+-- 9. 标签(Label)示例
+local LabelExample = Tab3:CreateLabel({
+    Name = "标签示例",
+    Content = "这是一个静态文本标签",
+})
 
-Feng:Toggle("彩虹UI", "", false, function(state)
-        if state then
-            game:GetService("CoreGui")["frosty is cute"].Main.Style = "DropShadow"
-        else
-            game:GetService("CoreGui")["frosty is cute"].Main.Style = "Custom"
-        end
-    end)
-    Feng:Button("穿墙",function()
-    loadstring(game:HttpGet("https://github.com/DXuwu/OK/raw/main/clip"))()
-end)
-credits:Button("飞行",function()
-    loadstring(game:HttpGet("https://shz.al/~hhhh"))()
-end)
+-- 10. 段落(Paragraph)示例
+local ParagraphExample = Tab3:CreateParagraph({
+    Title = "段落标题",
+    Content = "这是一个多行文本段落，可以显示更长的说明性文本。\n这是第二行内容。"
+})
 
-credits:Button("防20分钟踢",function()
-loadstring(game:HttpGet(('https://pastefy.app/6QUXuVkW/raw'),true))()
-end)
+-- 11. 通知(Notify)示例
+local NotifyButton = Tab3:CreateButton({
+    Name = "显示通知示例",
+    Callback = function()
+        Rayfield:Notify({
+            Title = "通知示例",
+            Content = "这是一个通知消息!",
+            Duration = 5,
+            Image = 4483362458,
+            Actions = {
+                Ignore = {
+                    Name = "忽略",
+                    Callback = function()
+                        print("用户点击了忽略")
+                    end
+                },
+            },
+        })
+    end,
+})
 
-credits:Button("龙脚本",function()
-    getgenv().long = "龙脚本，加载时间长请耐心"loadstring("\108\111\97\100\115\116\114\105\110\103\40\103\97\109\101\58\72\116\116\112\71\101\116\40\34\104\116\116\112\115\58\47\47\114\97\119\46\103\105\116\104\117\98\117\115\101\114\99\111\110\116\101\110\116\46\99\111\109\47\108\121\121\97\105\110\105\47\108\111\110\47\109\97\105\110\47\108\105\115\119\109\34\41\41\40\41")()
-end)
+-- 12. 部分(Section)示例
+local SectionExample = Tab3:CreateSection("部分标题示例")
 
-
+-- 在部分中添加元素
+local SectionToggle = Tab3:CreateToggle({
+    Name = "部分中的切换开关",
+    CurrentValue = true,
+    Flag = "SectionToggle",
+    Callback = function(Value)
+        print("部分中的开关:", Value)
+    end
+})
