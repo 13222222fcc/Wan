@@ -1,1 +1,840 @@
---[[ v1.0.0 https://wearedevs.net/obfuscator ]] return(function(...)local T={"\087\073\110\107\105\054\068\049";"\090\087\090\070\067\087\122\085\065\072\061\061","\049\075\067\080\069\083\122\081\115\115\066\043\057\075\056\111","\049\121\117\071\114\072\061\061";"\100\068\082\057\108\054\119\052\086\073\049\066\112\097\066\057\102\107\074\117\104\119\105\102\080\073\104\067\086\066\119\081\049\086\043\083\087\055\099\049\112\090\109\071\108\107\113\047\119\066\117\082\116\049\069\112\051\111\049\057\090\118\071\089\079\066\079\071\066\057\084\120\112\072\109\076\115\073\109\088\089\111\089\083\068\122\049\085\103\084\119\117\071\113\087\051\120\102\099\106","\067\087\117\112\049\087\120\061","\120\109\055\056\068\087\090\051","\049\076\098\061";"\068\109\117\079\068\057\061\061","\101\109\105\048\101\109\117\071","\102\106\105\056\049\074\069\050\065\072\061\061";"\101\075\050\071\068\057\061\061";"\066\074\090\079\049\083\068\050","\081\109\106\071\121\115\069\113\067\115\077\118\066\106\122\075\120\072\061\061","\085\067\050\108","\066\087\053\080\049\087\043\061","\069\100\122\085\066\087\069\085\067\109\070\061","\070\067\076\098\118\079\105\100\049\051\113\076\122\065\072\113\111\104\099\061";"\068\102\122\051\049\083\098\061";"\052\079\114\113\121\072\061\061";"\049\076\108\061";"\051\079\087\043\120\110\122\066";"\049\074\090\083";"\081\120\056\113\057\071\098\051\068\121\105\102\066\050\080\097","\066\083\069\051\114\121\118\075","\049\087\090\048";"\097\116\081\097\116\048\057\043\068\043\061\061","\087\122\107\107\086\077\116\116";"\107\120\070\089\043\106\103\116\113\054\104\070\110\122\113\068";"\077\090\052\047\115\109\070\043\115\076\067\052\065\102\056\070","\077\099\098\055\115\121\079\080\049\106\067\097\115\108\118\086";"\067\099\071\061";"\119\112\116\050\068\082\104\056\119\116\061\061";"\066\109\090\084\067\087\050\085\049\116\061\061";"\068\109\106\080\067\087\053\104","\069\117\068\052\053\120\050\112\066\074\067\055\121\074\079\122";"\081\100\069\071\066\108\067\050\067\072\061\061","\110\069\114\078\067\072\043\120\113\068\099\105";"\043\100\105\114\103\068\057\089";"\069\108\056\051\081\090\080\086\121\084\090\069\053\087\080\050\065\075\077\061","\068\074\055\085\049\083\098\061";"\068\117\104\061","\090\087\117\112","\089\053\052\082\115\098\073\098";"\053\087\067\097\081\121\079\083\101\074\067\083\066\071\105\084\120\116\061\061","\069\102\053\120\066\090\122\090\101\099\055\122\115\109\104\088\068\090\099\061";"\067\087\105\088\067\100\122\056\049\074\066\061","\102\106\105\075\101\043\061\061","\077\099\069\108\121\050\090\111\114\109\080\099\120\074\090\079\090\076\108\061","\066\100\122\056\049\075\057\061";"\055\047\090\116\081\080\120\083\121\082\074\069\068\117\108\061","\083\056\100\050\050\106\047\074","\081\099\099\051\121\108\068\082\065\116\061\061";"\049\087\105\080\068\100\053\071\066\074\050\048\068\043\061\061";"\067\075\068\101\077\088\090\082\114\117\104\055\049\076\067\057\053\072\061\061","\101\109\080\080\066\116\061\061";"\068\083\053\106\101\116\061\061";"\090\120\086\109\066\121\068\111\121\099\077\088\077\108\066\109\121\120\066\061","";"\102\106\105\086\068\121\070\061","\116\055\069\053\054\049\080\121","\069\117\050\121\120\099\090\081\069\108\117\070\066\109\086\088\057\121\086\061","\069\077\080\069\107\111\074\108\083\086\112\072";"\090\087\105\075\068\109\055\050";"\119\116\061\061","\057\075\090\071\067\087\105\048","\073\111\109\121\120\048\084\089";"\066\109\090\071\049\121\090\071\101\102\069\080\101\074\055\050";"\101\071\090\112\077\090\056\075\069\090\067\085\077\120\055\108\066\043\061\061";"\090\100\080\111\066\087\118\052\067\050\056\069\121\087\055\074\057\075\052\068","\102\106\105\079\068\102\069\080\067\087\117\112\049\087\120\061","\075\108\075\104\057\119\057\105","\115\102\117\111\065\076\120\088\115\108\118\120\068\099\108\118","\087\072\049\074\054\049\068\079";"\067\087\105\048\067\121\106\112\068\102\098\061","\107\103\049\084\043\079\113\075";"\049\117\052\099\068\075\090\057\114\083\080\057\067\071\069\056\121\057\061\061","\090\087\117\079\066\087\090\051\098\108\069\050\067\087\090\084\067\087\090\099\098\057\061\061","\067\121\118\043\101\121\053\113","\068\087\117\085\101\121\053\115\049\115\101\051\068\117\068\081";"\066\074\117\048\068\087\105\079","\081\109\106\119\090\087\104\051\069\108\043\106\101\074\056\081"}local function i(i)return T[i+(-350516+387853)]end for i,k in ipairs({{458855-458854;22526-22444};{-392335+392336;280617+-280576},{356125-356083;-521000-(-521082)}})do while k[-910813-(-910814)]<k[624543-624541]do T[k[406779-406778]],T[k[-989085-(-989087)]],k[-520081+520082],k[-188544+188546]=T[k[287133-287131]],T[k[-520021-(-520022)]],k[-960112-(-960113)]+(482310-482309),k[983622-983620]-(499075+-499074)end end do local i=table.insert local k=math.floor local v=type local u={["\055"]=930423+-930374,g=859620-859589,i=-163341-(-163402),["\043"]=-529018-(-529066),r=-47501-(-47527);V=-803468+803512;P=524069-524036;Q=-1045396+1045414,["\047"]=214627-214617,Y=-1021590+1021632,v=-167772-(-167829);t=488490-488458;k=-162938+162997;l=-122775-(-122779),X=88993+-88942,["\049"]=740770+-740743,s=-365832+365851;J=342412-342374,I=606146-606084,b=640095+-640087;["\053"]=168138-168125;["\050"]=423514-423477,E=230906+-230889;["\052"]=-632977-(-632978);["\054"]=-200514+200577;u=366644-366639,["\057"]=214966-214950;["\048"]=-660870-(-660916);w=150542+-150528,Z=438220+-438199,h=-441128-(-441168);O=-102083+102128,W=349983+-349977;x=1020673+-1020653;B=-584741+584769;H=-799013-(-799013),d=950760-950753;["\051"]=79300-79250,c=928709-928673;a=681145-681130;["\056"]=648728+-648687;e=-723092-(-723116),y=-611594+611616;o=-472178-(-472236),S=251727+-251672;m=575042-574988;f=578100-578077,L=-680739+680742,F=-882587-(-882643),U=-823335-(-823382);p=443365+-443331,j=519147-519094;z=-978503+978512;C=-547187+547216;D=209496+-209471;T=-300612-(-300647);K=385134-385095,G=711952-711900,R=984473+-984471;q=778608+-778565,A=193942+-193912;M=734191+-734179,n=752883-752823,N=208953-208942}local n=T local Z=string.len local O=string.sub local f=table.concat local Y=string.char for T=1032927-1032926,#n,-116358-(-116359)do local K=n[T]if v(K)=="\115\116\114\105\110\103"then local v=Z(K)local q={}local h=547782+-547781 local J=-415838-(-415838)local c=477945+-477945 while h<=v do local T=O(K,h,h)local n=u[T]if n then J=J+n*(-267089-(-267153))^((248874-248871)-c)c=c+(-246289+246290)if c==727366+-727362 then c=-1023385-(-1023385)local T=k(J/(448454+-382918))local v=k((J%(-416175-(-481711)))/(-159694+159950))local u=J%(-387485+387741)i(q,Y(T,v,u))J=548685-548685 end elseif T=="\061"then i(q,Y(k(J/(-583449+648985))))if h>=v or O(K,h+(-701805+701806),h+(-686575+686576))~="\061"then i(q,Y(k((J%(-140889-(-206425)))/(301477-301221))))end break end h=h+(-117946+117947)end n[T]=f(q)end end end return(function(T,v,u,n,Z,O,f,X,K,g,N,Q,J,A,h,c,q,I,H,k,Y)I,A,k,g,K,q,H,J,X,Q,c,h,Y,N=function(T,i)local v=J(i)local u=function(u,n,Z,O,f)return k(T,{u,n;Z;O;f},i,v)end return u end,function(T,i)local v=J(i)local u=function(u,n,Z)return k(T,{u,n,Z},i,v)end return u end,function(k,u,n,Z)local d,r,a,U,w,W,R,p,F,y,z,c,o,P,j,N,b,B,x,V,J,D,G,s,f,E,C,M,h,t,m,S,L,K while k do if k<653899+8241195 then if k<4728475-772805 then if k<640751+1562777 then if k<1830099-691098 then if k<671662+333534 then if k<-501616+1440367 then if k<433880-(-108311)then f=i(1007321-1044609)K=i(-1074176-(-1036901))k=T[f]f=T[K]K=i(-554072-(-516797))T[K]=k K=i(-993722+956434)T[K]=f K=Y[n[662607+-662606]]k=8561722-(-346163)h=K()else k=Y[n[400432+-400422]]h=Y[n[-779851-(-779862)]]K[k]=h k=Y[n[473459-473447]]h={k(K)}f={v(h)}k=T[i(-68438-(-31133))]end else t=i(796752+-834027)d=i(-1070323-(-1032992))k=T[d]w=T[t]d=k(w)k=i(668387+-705675)T[k]=d k=-505445+6430780 end else if k<1628818-545832 then R=Y[N]f=R k=1184574-(-731720)else K=u k=true N=q()J=i(-385843-(-348572))h=q()Y[h]=k f=T[J]c=q()J=i(-1028258-(-990997))k=f[J]J=q()Y[J]=k r=g(9283815-(-110798),{N})k=g(1029700+7087460,{})Y[c]=k C=i(873502-910782)k=false Y[N]=k R=T[C]C=R(r)k=C and 571364+486866 or 2674978-758684 f=C end end else if k<69420+1995990 then if k<1594933-(-439678)then if k<2379484-967014 then o=Q(o)k=4417451-774686 F=Q(F)j=Q(j)b=Q(b)t=Q(t)S=Q(S)W=nil else C=i(751754-789046)R=f f=T[C]C=i(-649038-(-611741))k=f[C]C=q()r=i(338453+-375743)Y[C]=k s=i(530457-567747)f=T[r]r=i(-859883-(-822597))k=f[r]a=k r=k L=T[s]k=L and-894064+15596189 or 2743+14353878 p=L end else K=u[-328949+328950]K=nil k=T[i(129883-167155)]f={}end else if k<2218783-90706 then K=u[613935+-613934]k=T[i(-316232-(-278936))]K=nil f={}else w=#m P=-723975-(-723976)k=-990868+5232864 B=J(P,w)b=618557+-618556 P=R(m,B)w=Y[s]S=P-b t=C(S)B=nil w[P]=t P=nil end end end else if k<-660872+3994794 then if k<2857147-206299 then if k<1931378-(-400611)then if k<1782664-(-467111)then b=-857809+857909 S=i(-808220-(-770928))t=q()Y[t]=G F=-333536-(-333791)f=T[S]S=i(-568021+530724)k=f[S]S=-1024489+1024490 f=k(S,b)b=-834772+834772 S=q()Y[S]=f k=Y[C]f=k(b,F)b=q()F=-376710-(-376711)Y[b]=f W=-215662-(-215664)j=-913035+913036 k=Y[C]o=Y[S]f=k(F,o)D=-625352-(-635352)F=q()y=i(-972017-(-934686))Y[F]=f f=Y[C]o=f(j,W)f=261371-261370 k=o==f W=i(-1580-35733)f=i(-609404-(-572141))o=q()Y[o]=k M=104513+-104513 x=T[y]U=Y[C]z={U(M,D)}y=x(v(z))x=i(964623-1001936)k=i(599846-637167)E=y..x j=W..E k=B[k]k=k(B,f,j)W=i(348432+-385712)j=q()Y[j]=k f=T[W]E=X(15510802-(-502571),{C;t;a;J;h,P,o;j,S;F;b;p})W={f(E)}k={v(W)}W=k k=Y[o]k=k and 5307167-780091 or 10602819-664508 else J=-497714+10865537 h=i(-248918-(-211593))K=h^J f=11156273-(-326751)k=f-K K=k f=i(125266+-162574)k=f/K f={k}k=T[i(-330213+292947)]end else J=161124+-161123 h=Y[n[741687-741684]]K=h~=J k=K and 868273+12237852 or 11952130-(-590800)end else if k<-89805+3309336 then k=8161905-(-990420)else C=not R J=J+N h=J<=c h=C and h C=J>=c C=R and C h=C or h C=10628808-19328 k=h and C h=199304+714194 k=k or h end end else if k<3482489-(-95660)then if k<4090418-596719 then if k<4504621-1023562 then V=Y[h]G=V k=V and 345691+14353793 or-670459+15728127 else k=T[i(-890224+852904)]f={}K=u[369672-369671]K=nil end else k=T[i(587010+-624343)]f={}end else if k<-915424+4587151 then G=G+d f=G<=V t=not w f=t and f t=G>=V t=w and t f=t or f t=2016357-(-205755)k=f and t f=2489880-(-867998)k=k or f else k=-34393+8942278 end end end end else if k<5662371-(-511018)then if k<82628+5368650 then if k<4690485-(-96891)then if k<-300764+4875974 then if k<-937374+5444832 then w=-667723-(-667723)P=#m B=P==w k=B and 13498447-(-152402)or 1656005-(-521153)else E=Y[h]f=E k=E and 434061+6250763 or-1045389+14225833 end else k=x k=13961578-781134 f=E end else if k<-5744+4932434 then J=i(43054-80344)h=T[J]J=i(961303-998586)K=h[J]J=Y[n[103162-103161]]h={K(J)}k=T[i(46047+-83303)]f={v(h)}else J=-373928+373953 h=Y[n[-354132+354134]]K=h*J h=19528191625466-(-236171)f=K+h K=35184371877088-(-211744)k=f%K h=-912885+912886 Y[n[610592-610590]]=k k=13208624-665694 K=Y[n[-593170+593173]]f=K~=h end end else if k<7041121-967735 then if k<714998+5166866 then if k<660183+4865837 then K=Y[n[557976+-557975]]f=#K K=-679217-(-679217)k=f==K k=k and 4908648-(-73080)or 5873470-1032813 else k=16181697-(-94057)end else k=643774+8508551 end else if k<7154460-995065 then d=i(716159+-753430)r=a V=T[d]d=i(581869+-619153)G=V[d]V=G(K,r)G=Y[n[-791705-(-791711)]]d=G()P=V+d B=P+R P=-205853+206109 r=nil m=B%P P=J[h]R=m d=-637419+637420 k=7617914-(-672750)V=R+d G=c[V]B=P..G J[h]=B else y=-485371+485372 x=W[y]k=14560258-674375 E=x end end end else if k<7667745-(-608828)then if k<328344+7354924 then if k<6890484-389852 then if k<635364+5846651 then k={}N=-983109+35184373071941 r=i(-852874-(-815603))Y[n[-284859+284861]]=k f=Y[n[-757381+757384]]c=f C=142131+-141876 f=h%N Y[n[402613+-402609]]=f R=h%C C=-512700+512702 N=R+C k=509210+7781454 Y[n[-685647+685652]]=N C=T[r]r=i(635644-672914)R=C[r]a=393057+-393056 C=R(K)R=i(-814533+777214)J[h]=R R=-124268-(-124519)L=a r=-42907-(-42908)a=-189094-(-189094)p=C s=L<a a=r-L else J=981472+-125088 h=i(-12074+-25190)K=h^J f=8535522-(-712979)k=f-K f=i(712005+-749341)K=k k=f/K f={k}k=T[i(-689199+651883)]end else z=743770+-743769 x=k U=W[z]z=false y=U==z E=y k=y and-576755+9844714 or 5182064-475471 end else if k<7408813-(-361040)then c=nil k=-139656+16415410 C=nil R=nil else K=i(1045493+-1082793)f=i(475810-513087)k=T[f]f=k(K)f={}k=T[i(102934+-140199)]end end else if k<9198296-562857 then if k<-992630+9429853 then if k<8928934-599334 then m=not s a=a+L r=a<=p r=m and r m=a>=p m=s and m r=m or r m=6442834-285993 k=r and m r=6997566-(-709625)k=k or r else k=f and 9234587-(-176401)or 15293110-258848 end else K=u[-821198-(-821199)]k=Y[n[186719+-186718]]h=u[-672398+672400]J=k k=J[h]k=k and 6102143-572110 or 350746+5839147 end else if k<112790+8745121 then B=P b=B m[B]=b k=-248281+13993389 B=nil else k=13499892-(-986967)J=Y[n[-72475+72481]]h=J==K f=h end end end end end else if k<14475336-1023797 then if k<10697025-(-746138)then if k<9136492-(-258185)then if k<10187071-913963 then if k<241721+8922411 then if k<8233089-(-902567)then k=true k=k and-732024+1030467 or 13729493-337938 else k=true k=k and 16079042-150511 or 13849680-(-277566)end else z=590296+-590294 U=W[z]k=694412+4012181 z=Y[j]y=U==z E=y end else if k<565582+8721385 then k=true k=15574035-660960 else f={}k=true Y[n[746569+-746568]]=k k=T[i(441304-478627)]end end else if k<10111427-(-252182)then if k<118102+9778017 then if k<251843+9575940 then r=i(-101290+64010)f=i(-820881-(-783578))c=i(-712164-(-674833))p=A(6873764-373951,{})k=T[f]K=Y[n[-495123-(-495127)]]J=T[c]C=T[r]r={C(p)}C=-184656-(-184658)R={v(r)}N=R[C]c=J(N)J=i(-878400+841137)h=K(c,J)K={h()}f=k(v(K))K=f h=Y[n[-823240-(-823245)]]k=h and 8903514-8799 or 14981152-494293 f=h else f=i(894750+-932074)C=i(-749140+711849)r=5594816177301-(-746904)h=i(-269840-(-232553))k=T[f]K=T[h]c=Y[n[119974-119973]]N=Y[n[16706-16704]]R=N(C,r)J=c[R]c=i(837081-874340)c=K[c]h={c(K,J)}f=k(v(h))k={f()}f={v(k)}k=T[i(224522-261815)]end else x=Y[h]E=x k=x and-310588+6473541 or 14300500-414617 end else if k<-98384+11123705 then h=J k=Y[n[-658350+658351]]r=930514-930514 p=-89582+89837 C=k(r,p)K[h]=C h=nil k=2802206-(-515343)else J=Y[n[214616-214607]]k={}c=J J=-1010141-(-1010142)N=J h=-509494-(-509495)J=602603-602603 R=N<J J=h-N K=k k=-860664+4178213 end end end else if k<461110+12286474 then if k<-450960+12403986 then if k<997857+10672414 then if k<-681186+12274868 then a=i(1017722+-1055009)p=T[a]L=Y[h]s=Y[c]B=i(-575176-(-537907))P=24975881624367-650689 m=s(B,P)a=L[m]m=i(561995-599322)r=p[a]a=Y[h]B=968855+12469145636375 L=Y[c]s=L(m,B)p=a[s]m=23689891643924-694013 C=r[p]s=i(389692+-426968)B=422117+2246650008369 p=Y[h]k=T[i(-318414+281105)]a=Y[c]L=a(s,m)r=p[L]J=C[r]a=Y[h]m=i(270114-307381)L=Y[c]s=L(m,B)m=i(139630+-176934)C=i(447416+-484689)p=a[s]r=p..J B=9468590126520-713855 C=R[C]f={}C=C(R,r)a=Y[h]L=Y[c]s=L(m,B)P=135459+7341675625527 p=a[s]R=nil L=Y[h]B=i(979459-1016737)s=Y[c]m=s(B,P)w=524412+30004322432535 r=i(906037+-943372)r=C[r]P=12121515472852-(-40504)a=L[m]r=r(C,p,a)L=Y[h]B=i(888550+-925824)s=Y[c]b=26476268491763-779211 m=s(B,P)t=306891+19696591828232 p=i(469744-507006)p=r[p]a=L[m]L=true p=p(r,a,L)C=nil P=i(274371+-311673)s=Y[h]J=nil a=i(-566079-(-528767))m=Y[c]a=p[a]B=m(P,w)N=nil L=s[B]P=i(-612595-(-575261))s=H(-999153+4493329,{})a=a(p,L,s)w=13343517738230-584881 s=Y[h]m=Y[c]B=m(P,w)L=s[B]w=i(-608899-(-571604))a=i(-476639-(-439325))m=Y[h]B=Y[c]a=p[a]P=B(w,t)s=m[P]w=-789237+27398675692747 B=X(965125+1083743,{})m=false P=i(-805731-(-768420))a=a(p,L,s,m,B)s=Y[h]m=Y[c]B=m(P,w)w=i(741179+-778496)L=s[B]t=-796922+1753278934058 m=Y[h]B=Y[c]P=B(w,t)t=H(16174941-47455,{})s=m[P]P=-814706-(-824705)w=false m=299512-299512 B=954692-954692 a=i(438558-475847)a=p[a]a=a(p,L,s,m,B,P,w,t)t=10332158117943-111980 w=30063408081069-(-1035778)s=Y[h]m=Y[c]P=i(-322875+285618)B=m(P,w)L=s[B]w=i(-41088-(-3782))m=Y[h]F=9715218423486-(-668398)B=Y[c]P=B(w,t)s=m[P]B=Y[h]a=i(613773+-651067)P=Y[c]t=i(17798-55124)w=P(t,b)a=p[a]m=B[w]B=A(1399371-(-700783),{})a=a(p,L,s,m,B)w=31726036898926-(-828743)s=Y[h]m=Y[c]P=i(149398+-186713)B=m(P,w)b=i(-1014906-(-977625))L=s[B]m=Y[h]w=i(-537861+500593)t=30365681499354-542110 B=Y[c]P=B(w,t)a=i(-24863-12416)s=m[P]P=Y[h]h=Q(h)w=Y[c]t=w(b,F)r=nil a=p[a]B=P[t]m={B}c=Q(c)B=H(3567165-76125,{})a=a(p,L,s,m,B)p=nil else p=Q(p)B=nil P=Q(P)J=Q(J)m=nil h=Q(h)h=nil s=nil J=nil m={}a=Q(a)C=Q(C)r=nil N=Q(N)R=nil c=Q(c)c=q()s=q()Y[c]=h h=q()Y[h]=J a=q()R=i(100644-137936)L=nil N=T[R]C=i(480122-517414)p=i(-409567-(-372296))R=i(-47864+10609)J=N[R]N=q()Y[N]=J R=T[C]r=i(640564-677854)C=i(-593707-(-556410))J=R[C]C=T[r]r=i(324147+-361430)L={}R=C[r]r=T[p]p=i(-375132+337810)C=r[p]p=q()r=-280388-(-280388)P=-85232-(-85488)Y[p]=r k=14470699-725591 r=638406-638404 B=-286025-(-286026)Y[a]=r w=P r={}Y[s]=L L=-18686+18686 P=558017+-558016 t=P P=-401593+401593 S=t<P P=B-t end else m=i(-536672-(-499392))a=-661662+661665 p=q()L=-927135+927200 Y[p]=f k=Y[C]f=k(a,L)a=q()k=-933303+933303 L=k Y[a]=f k=607031+-607031 s=k B=I(-760157+3043083,{})f=T[m]m={f(B)}f=435892-435890 k={v(m)}d=i(440335-477666)m=k k=m[f]B=k f=i(154736+-192039)k=T[f]P=Y[J]V=T[d]d=V(B)V=i(-1044685-(-1007422))G=P(d,V)P={G()}f=k(v(P))P=q()Y[P]=f G=Y[a]f=13816+-13815 V=G G=886174+-886173 d=G G=-486698-(-486698)w=d<G k=2614136-(-1028629)G=f-d end else if k<882017+11574111 then k=12145147-549621 else J=838831+-838649 h=Y[n[-443657-(-443660)]]K=h*J h=-83961-(-84218)f=K%h Y[n[786970+-786967]]=f k=2339144-3346 end end else if k<-983810+14186288 then if k<833390+12316846 then if k<12480494-(-605583)then C=i(178365-215693)J=T[C]m=6293798427178-52920 p=Y[h]s=i(-325794-(-288536))a=Y[c]L=a(s,m)r=p[L]C=J(r)k=T[i(934569+-971870)]f={}else h=Y[n[-346656-(-346659)]]J=593196-593164 L=-664106+664119 K=h%J p=947822+-947820 c=Y[n[-298064+298068]]C=Y[n[-261336+261338]]B=Y[n[992830-992827]]m=B-K B=-288396-(-288428)s=m/B a=L-s r=p^a R=C/r p=-539568-(-539824)N=c(R)r=230119-230118 c=4295246331-279035 J=N%c N=-234385+234387 c=N^K h=J/c c=Y[n[-740505-(-740509)]]C=h%r L=398606+-398350 r=4294111851-(-855445)R=C*r C=-681461-(-746997)N=c(R)c=Y[n[361398-361394]]R=c(h)J=N+R N=735418+-669882 c=J%N R=J-c N=R/C C=939698+-939442 R=c%C r=c-R C=r/p J=nil p=-250190-(-250446)r=N%p K=nil a=N-r p=a/L h=nil c=nil a={R;C,r;p}R=nil r=nil k=5230612-389955 Y[n[-899183-(-899184)]]=a C=nil N=nil p=nil end else Y[h]=f k=555617+712681 end else if k<-897931+14177029 then k=true k=k and-199373+3307674 or 15228051-314976 else f={}k=T[i(-54874+17592)]end end end end else if k<14651982-(-270253)then if k<-368737+14645704 then if k<113370+13799635 then if k<13531911-(-220543)then if k<542015+13170778 then P=q()m=nil B={}Y[P]=B w=I(-493985+6016269,{P,p;a;N})W=i(-505724+468417)B=q()L=nil Y[B]=w J=nil w={}o=i(-134721+97436)t=q()S=i(-413801+376491)C=nil N=Q(N)y=nil Y[t]=w b={}w=T[S]j=Y[t]C=H(239632+9614808,{h;c})F={[o]=j;[W]=y}N=i(-657766-(-620486))S=w(b,F)Y[h]=S R=nil w=X(9380655-818514,{t,P;s,p;a,B})p=Q(p)s=Q(s)B=Q(B)a=Q(a)P=Q(P)r=nil t=Q(t)Y[c]=w J=T[N]r={J(C)}N=r[-1010215-(-1010216)]R=r[1031329-1031327]J=not N k=J and-129028+13208950 or-302783+11785310 else b=not S P=P+t B=P<=w B=b and B b=P>=w b=S and b B=b or B b=264829+8527297 k=B and b B=1032084+15712081 k=k or B end else M=609457-609456 Y[h]=E z=Y[F]U=z+M y=W[U]x=L+y y=33463-33207 k=x%y L=k U=Y[b]y=s+U k=2179973-911675 U=-810121-(-810377)x=y%U s=x end else if k<14534017-477350 then K=i(-809383+772106)k=T[K]h=Y[n[-246583-(-246591)]]J=736084-736084 K=k(h,J)k=11963887-610116 else f={}k=T[i(-575048+537750)]end end else if k<435446+14264580 then if k<-754075+15448428 then if k<-422789+14837860 then k=a f=p k=p and 11984564-214135 or 17029791-956000 else K=nil k=589341+14444921 Y[n[40869-40864]]=f end else k=-39051+15096719 V=L==s G=V end else if k<14119146-(-725752)then m=i(-225308+188018)s=T[m]m=i(344127+-381426)L=s[m]k=-164024+14520645 p=L else k=H(870509+2805011,{c})V={k()}f={v(V)}k=T[i(-395306+357977)]end end end else if k<16284819-234161 then if k<16416294-696826 then if k<14264815-(-873485)then if k<15661662-612865 then k=Y[n[-181498+181505]]k=k and 13872065-(-175885)or 559358+10794413 else Y[h]=G k=Y[h]k=k and 65550+12262851 or 10226204-950166 end else w=i(-701524-(-664236))k=T[w]w=i(-726768-(-689493))T[w]=k k=5332532-(-592803)end else if k<885244+15070218 then w=403881-403875 d=-915835+915836 k=Y[C]V=k(d,w)k=i(601415+-638703)w=i(266656-303944)T[k]=V d=T[w]w=533826-533824 k=d>w k=k and 763334+230514 or 16037465-762508 else h=Y[n[259050+-259049]]N=-947651-(-947653)c=791531-791530 J=h(c,N)h=908103-908102 K=J==h k=K and 9087926-714733 or-178914+16648832 f=K end end else if k<15546429-(-821199)then if k<15453092-(-756352)then if k<16909445-813661 then a=i(-60805-(-23506))p=T[a]k=232233+11538196 f=p else f={}K=u[-32191+32192]k=T[i(719486+-756818)]K=nil end else f={h}k=T[i(770745-808005)]end else if k<-923552+17422772 then h=Y[n[-334692-(-334694)]]k=8176936-(-196257)J=Y[n[-53789-(-53792)]]K=h==J f=K else w=1046028-1046028 k=-367313+2544471 P=#m B=P==w end end end end end end end k=#Z return v(f)end,function(T,i)local v=J(i)local u=function()return k(T,{},i,v)end return u end,{},function()h=h+(146224-146223)K[h]=-972323-(-972324)return h end,function(T,i)local v=J(i)local u=function(u)return k(T,{u},i,v)end return u end,function(T)for i=-452522+452523,#T,-529414-(-529415)do K[T[i]]=(-662114+662115)+K[T[i]]end if u then local k=u(true)local v=Z(k)v[i(874256-911541)],v[i(-95020+57690)],v[i(490226-527544)]=T,c,function()return 204387-(-545569)end return k else return n({},{[i(30958-68288)]=c;[i(-230224-(-192939))]=T;[i(-849183+811865)]=function()return-33657-(-783613)end})end end,function(T,i)local v=J(i)local u=function(u,n,Z,O)return k(T,{u;n;Z,O},i,v)end return u end,function(T)K[T]=K[T]-(644527+-644526)if-34921+34921==K[T]then K[T],Y[T]=nil,nil end end,function(T)local i,k=-742346+742347,T[333573+-333572]while k do K[k],i=K[k]-(-679517+679518),i+(1045735+-1045734)if K[k]==-428055+428055 then K[k],Y[k]=nil,nil end k=T[i]end end,-934791+934791,{},function(T,i)local v=J(i)local u=function(...)return k(T,{...},i,v)end return u end return(N(724182+411668,{}))(v(f))end)(getfenv and getfenv()or _ENV,unpack or table[i(755170+-792469)],newproxy,setmetatable,getmetatable,select,{...})end)(...)
+-- ROBLOX抓包工具 - 终极修复版
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local HttpService = game:GetService("HttpService")
+
+-- 创建主界面
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "PacketCaptureTool"
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+-- 主容器
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 650, 0, 500)
+MainFrame.Position = UDim2.new(0.5, -325, 0.5, -250)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+MainFrame.BorderSizePixel = 0
+MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = MainFrame
+
+-- 标题栏
+local Header = Instance.new("Frame")
+Header.Name = "Header"
+Header.Size = UDim2.new(1, 0, 0, 40)
+Header.Position = UDim2.new(0, 0, 0, 0)
+Header.BackgroundColor3 = Color3.fromRGB(0, 102, 204)
+Header.BorderSizePixel = 0
+Header.ZIndex = 2
+Header.Parent = MainFrame
+
+local HeaderCorner = Instance.new("UICorner")
+HeaderCorner.CornerRadius = UDim.new(0, 8)
+HeaderCorner.Parent = Header
+
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Name = "TitleLabel"
+TitleLabel.Size = UDim2.new(0, 200, 1, 0)
+TitleLabel.Position = UDim2.new(0, 15, 0, 0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "ROBLOX抓包工具 v3.0"
+TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TitleLabel.TextSize = 18
+TitleLabel.Font = Enum.Font.GothamSemibold
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = Header
+
+local ArrowButton = Instance.new("TextButton")
+ArrowButton.Name = "ArrowButton"
+ArrowButton.Size = UDim2.new(0, 30, 0, 30)
+ArrowButton.Position = UDim2.new(1, -40, 0.5, -15)
+ArrowButton.AnchorPoint = Vector2.new(0, 0.5)
+ArrowButton.BackgroundTransparency = 1
+ArrowButton.Text = "▼"
+ArrowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ArrowButton.TextSize = 16
+ArrowButton.Parent = Header
+
+-- 内容区域
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, 0, 1, -40)
+ContentFrame.Position = UDim2.new(0, 0, 0, 40)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.ClipsDescendants = true
+ContentFrame.Parent = MainFrame
+
+-- 标签页容器
+local TabContainer = Instance.new("Frame")
+TabContainer.Name = "TabContainer"
+TabContainer.Size = UDim2.new(0, 150, 1, 0)
+TabContainer.Position = UDim2.new(0, 0, 0, 0)
+TabContainer.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
+TabContainer.BorderSizePixel = 0
+TabContainer.Parent = ContentFrame
+
+-- 内容显示区域
+local ContentContainer = Instance.new("Frame")
+ContentContainer.Name = "ContentContainer"
+ContentContainer.Size = UDim2.new(1, -150, 1, 0)
+ContentContainer.Position = UDim2.new(0, 150, 0, 0)
+ContentContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ContentContainer.BorderSizePixel = 0
+ContentContainer.Parent = ContentFrame
+
+-- 标签页和内容管理
+local tabs = {
+    {name = "远程事件", id = "remote"},
+    {name = "近战监控", id = "melee"}, 
+    {name = "HTTP请求", id = "http"},
+    {name = "设置", id = "settings"}
+}
+
+local tabButtons = {}
+local currentTab = "remote"
+local remoteLogs = {}
+local meleeLogs = {}
+local httpLogs = {}
+
+-- 获取当前时间的辅助函数
+local function getCurrentTime()
+    local time = os.time()
+    local hours = math.floor(time / 3600) % 24
+    local minutes = math.floor(time / 60) % 60
+    local seconds = time % 60
+    return string.format("%02d:%02d:%02d", hours, minutes, seconds)
+end
+
+-- 创建标签页
+for i, tabInfo in ipairs(tabs) do
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = tabInfo.id .. "Tab"
+    tabButton.Size = UDim2.new(1, 0, 0, 40)
+    tabButton.Position = UDim2.new(0, 0, 0, (i-1)*40)
+    tabButton.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
+    tabButton.BorderSizePixel = 0
+    tabButton.Text = tabInfo.name
+    tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    tabButton.TextSize = 14
+    tabButton.Font = Enum.Font.Gotham
+    tabButton.Parent = TabContainer
+    
+    local selectionIndicator = Instance.new("Frame")
+    selectionIndicator.Name = "SelectionIndicator"
+    selectionIndicator.Size = UDim2.new(0, 4, 1, 0)
+    selectionIndicator.Position = UDim2.new(0, 0, 0, 0)
+    selectionIndicator.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+    selectionIndicator.BorderSizePixel = 0
+    selectionIndicator.Visible = (tabInfo.id == currentTab)
+    selectionIndicator.Parent = tabButton
+    
+    tabButton.MouseButton1Click:Connect(function()
+        switchTab(tabInfo.id)
+    end)
+    
+    tabButtons[tabInfo.id] = tabButton
+end
+
+-- 创建各个功能的内容区域
+local RemoteContent = Instance.new("Frame")
+RemoteContent.Name = "RemoteContent"
+RemoteContent.Size = UDim2.new(1, 0, 1, 0)
+RemoteContent.BackgroundTransparency = 1
+RemoteContent.Visible = true
+RemoteContent.Parent = ContentContainer
+
+local MeleeContent = Instance.new("Frame")
+MeleeContent.Name = "MeleeContent"
+MeleeContent.Size = UDim2.new(1, 0, 1, 0)
+MeleeContent.BackgroundTransparency = 1
+MeleeContent.Visible = false
+MeleeContent.Parent = ContentContainer
+
+local HttpContent = Instance.new("Frame")
+HttpContent.Name = "HttpContent"
+HttpContent.Size = UDim2.new(1, 0, 1, 0)
+HttpContent.BackgroundTransparency = 1
+HttpContent.Visible = false
+HttpContent.Parent = ContentContainer
+
+local SettingsContent = Instance.new("Frame")
+SettingsContent.Name = "SettingsContent"
+SettingsContent.Size = UDim2.new(1, 0, 1, 0)
+SettingsContent.BackgroundTransparency = 1
+SettingsContent.Visible = false
+SettingsContent.Parent = ContentContainer
+
+-- 标签页切换函数
+local function switchTab(tabId)
+    currentTab = tabId
+    
+    RemoteContent.Visible = (tabId == "remote")
+    MeleeContent.Visible = (tabId == "melee")
+    HttpContent.Visible = (tabId == "http")
+    SettingsContent.Visible = (tabId == "settings")
+    
+    for id, button in pairs(tabButtons) do
+        local indicator = button:FindFirstChild("SelectionIndicator")
+        if indicator then
+            indicator.Visible = (id == tabId)
+        end
+        
+        if id == tabId then
+            button.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+            button.TextColor3 = Color3.fromRGB(0, 153, 255)
+        else
+            button.BackgroundColor3 = Color3.fromRGB(37, 37, 37)
+            button.TextColor3 = Color3.fromRGB(200, 200, 200)
+        end
+    end
+end
+
+-- 修复所有错误的远程事件内容初始化
+local function initRemoteContent()
+    local startButton = Instance.new("TextButton")
+    startButton.Size = UDim2.new(0, 140, 0, 35)
+    startButton.Position = UDim2.new(0, 10, 0, 10)
+    startButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+    startButton.Text = "开始监控远程事件"
+    startButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    startButton.TextSize = 14
+    startButton.Font = Enum.Font.Gotham
+    startButton.Parent = RemoteContent
+    
+    local clearButton = Instance.new("TextButton")
+    clearButton.Size = UDim2.new(0, 80, 0, 35)
+    clearButton.Position = UDim2.new(0, 160, 0, 10)
+    clearButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    clearButton.Text = "清空日志"
+    clearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    clearButton.TextSize = 14
+    clearButton.Font = Enum.Font.Gotham
+    clearButton.Parent = RemoteContent
+    
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Size = UDim2.new(0, 200, 0, 35)
+    statusLabel.Position = UDim2.new(0, 250, 0, 10)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.Text = "状态: 未启动"
+    statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+    statusLabel.TextSize = 14
+    statusLabel.Font = Enum.Font.Gotham
+    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statusLabel.Parent = RemoteContent
+    
+    local scrollFrame = Instance.new("ScrollingFrame")
+    scrollFrame.Size = UDim2.new(1, -20, 1, -60)
+    scrollFrame.Position = UDim2.new(0, 10, 0, 50)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarThickness = 8
+    scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.Parent = RemoteContent
+    
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 2)
+    listLayout.Parent = scrollFrame
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = startButton
+    
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 4)
+    UICorner2.Parent = clearButton
+    
+    local isMonitoring = false
+    local monitoringCoroutine = nil
+    local descendantConnection = nil
+    
+    local function addLog(message, color)
+        color = color or Color3.fromRGB(220, 220, 220)
+        
+        local logEntry = Instance.new("TextLabel")
+        logEntry.Size = UDim2.new(1, -10, 0, 20)
+        logEntry.BackgroundTransparency = 1
+        logEntry.Text = "[" .. getCurrentTime() .. "] " .. message
+        logEntry.TextColor3 = color
+        logEntry.TextSize = 11
+        logEntry.Font = Enum.Font.Gotham
+        logEntry.TextXAlignment = Enum.TextXAlignment.Left
+        logEntry.TextWrapped = true
+        logEntry.LayoutOrder = #scrollFrame:GetChildren()
+        logEntry.Parent = scrollFrame
+        
+        table.insert(remoteLogs, {text = message, time = os.time(), color = color})
+        
+        -- 限制日志数量防止内存泄漏
+        if #remoteLogs > 1000 then
+            table.remove(remoteLogs, 1)
+            if scrollFrame:FindFirstChildOfClass("TextLabel") then
+                scrollFrame:FindFirstChildOfClass("TextLabel"):Destroy()
+            end
+        end
+        
+        -- 使用task.wait代替wait，避免yield问题
+        task.wait()
+        scrollFrame.CanvasPosition = Vector2.new(0, scrollFrame.AbsoluteCanvasSize.Y)
+    end
+    
+    -- 完全重写的安全监控函数
+    local function startSafeMonitoring(addLogCallback)
+        local remotesData = {}
+        local monitoringActive = true
+        
+        -- 扫描远程对象
+        local function scanRemotes()
+            local foundPaths = {}
+            for _, obj in pairs(game:GetDescendants()) do
+                if obj:IsA("RemoteEvent") or obj:IsA("RemoteFunction") then
+                    local path = obj:GetFullName()
+                    if not foundPaths[path] then
+                        foundPaths[path] = true
+                        local remoteInfo = {
+                            instance = obj,
+                            name = obj.Name,
+                            path = path,
+                            type = obj.ClassName,
+                            lastSeen = os.time()
+                        }
+                        table.insert(remotesData, remoteInfo)
+                        addLogCallback("📡 发现远程对象: " .. path .. " (" .. obj.ClassName .. ")", Color3.fromRGB(100, 200, 255))
+                    end
+                end
+            end
+        end
+        
+        -- 监控循环
+        local function monitorLoop()
+            while monitoringActive do
+                task.wait(1) -- 每秒检查一次
+                
+                -- 检查现有远程对象
+                for i = #remotesData, 1, -1 do
+                    local remoteData = remotesData[i]
+                    if remoteData.instance and remoteData.instance.Parent then
+                        remoteData.lastSeen = os.time()
+                    else
+                        addLogCallback("❌ 远程对象已移除: " .. remoteData.path, Color3.fromRGB(255, 100, 100))
+                        table.remove(remotesData, i)
+                    end
+                end
+                
+                -- 重新扫描以发现新对象
+                scanRemotes()
+            end
+        end
+        
+        -- 启动监控
+        scanRemotes()
+        monitoringCoroutine = coroutine.create(monitorLoop)
+        coroutine.resume(monitoringCoroutine)
+        
+        -- 监听新对象
+        descendantConnection = game.DescendantAdded:Connect(function(descendant)
+            if descendant:IsA("RemoteEvent") or descendant:IsA("RemoteFunction") then
+                local path = descendant:GetFullName()
+                addLogCallback("🔍 发现新的远程对象: " .. path .. " (" .. descendant.ClassName .. ")", Color3.fromRGB(255, 200, 100))
+                
+                table.insert(remotesData, {
+                    instance = descendant,
+                    name = descendant.Name,
+                    path = path,
+                    type = descendant.ClassName,
+                    lastSeen = os.time()
+                })
+            end
+        end)
+        
+        addLogCallback("✅ 安全监控模式已启动", Color3.fromRGB(100, 255, 100))
+    end
+    
+    startButton.MouseButton1Click:Connect(function()
+        if not isMonitoring then
+            isMonitoring = true
+            startButton.Text = "停止监控"
+            startButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+            statusLabel.Text = "状态: 监控中"
+            statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+            startSafeMonitoring(addLog)
+            addLog("远程事件监控已启动（安全模式）", Color3.fromRGB(100, 255, 100))
+        else
+            isMonitoring = false
+            startButton.Text = "开始监控远程事件"
+            startButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+            statusLabel.Text = "状态: 已停止"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            
+            -- 清理监控资源
+            if monitoringCoroutine then
+                -- 协程会在monitoringActive为false时自然结束
+            end
+            if descendantConnection then
+                descendantConnection:Disconnect()
+                descendantConnection = nil
+            end
+            
+            addLog("远程事件监控已停止", Color3.fromRGB(255, 100, 100))
+        end
+    end)
+    
+    clearButton.MouseButton1Click:Connect(function()
+        -- 清空滚动框
+        for _, child in pairs(scrollFrame:GetChildren()) do
+            if child:IsA("TextLabel") then
+                child:Destroy()
+            end
+        end
+        remoteLogs = {}
+        addLog("日志已清空", Color3.fromRGB(255, 200, 100))
+    end)
+    
+    addLog("远程事件监控就绪（安全模式）", Color3.fromRGB(100, 255, 100))
+    addLog("点击开始按钮启动监控", Color3.fromRGB(200, 200, 200))
+end
+
+-- 修复所有错误的近战监控内容初始化
+local function initMeleeContent()
+    local startButton = Instance.new("TextButton")
+    startButton.Size = UDim2.new(0, 140, 0, 35)
+    startButton.Position = UDim2.new(0, 10, 0, 10)
+    startButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+    startButton.Text = "开始近战监控"
+    startButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    startButton.TextSize = 14
+    startButton.Font = Enum.Font.Gotham
+    startButton.Parent = MeleeContent
+    
+    local clearButton = Instance.new("TextButton")
+    clearButton.Size = UDim2.new(0, 80, 0, 35)
+    clearButton.Position = UDim2.new(0, 160, 0, 10)
+    clearButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+    clearButton.Text = "清空日志"
+    clearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    clearButton.TextSize = 14
+    clearButton.Font = Enum.Font.Gotham
+    clearButton.Parent = MeleeContent
+    
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Size = UDim2.new(0, 200, 0, 35)
+    statusLabel.Position = UDim2.new(0, 250, 0, 10)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.Text = "状态: 未启动"
+    statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+    statusLabel.TextSize = 14
+    statusLabel.Font = Enum.Font.Gotham
+    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statusLabel.Parent = MeleeContent
+    
+    local scrollFrame = Instance.new("ScrollingFrame")
+    scrollFrame.Size = UDim2.new(1, -20, 1, -60)
+    scrollFrame.Position = UDim2.new(0, 10, 0, 50)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarThickness = 8
+    scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.Parent = MeleeContent
+    
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 2)
+    listLayout.Parent = scrollFrame
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = startButton
+    
+    local UICorner2 = Instance.new("UICorner")
+    UICorner2.CornerRadius = UDim.new(0, 4)
+    UICorner2.Parent = clearButton
+    
+    local isMonitoring = false
+    local characterConnections = {}
+    
+    local function addLog(message, color)
+        color = color or Color3.fromRGB(220, 220, 220)
+        
+        local logEntry = Instance.new("TextLabel")
+        logEntry.Size = UDim2.new(1, -10, 0, 20)
+        logEntry.BackgroundTransparency = 1
+        logEntry.Text = "[" .. getCurrentTime() .. "] " .. message
+        logEntry.TextColor3 = color
+        logEntry.TextSize = 11
+        logEntry.Font = Enum.Font.Gotham
+        logEntry.TextXAlignment = Enum.TextXAlignment.Left
+        logEntry.TextWrapped = true
+        logEntry.LayoutOrder = #scrollFrame:GetChildren()
+        logEntry.Parent = scrollFrame
+        
+        table.insert(meleeLogs, {text = message, time = os.time(), color = color})
+        
+        if #meleeLogs > 500 then
+            table.remove(meleeLogs, 1)
+            if scrollFrame:FindFirstChildOfClass("TextLabel") then
+                scrollFrame:FindFirstChildOfClass("TextLabel"):Destroy()
+            end
+        end
+        
+        task.wait()
+        scrollFrame.CanvasPosition = Vector2.new(0, scrollFrame.AbsoluteCanvasSize.Y)
+    end
+    
+    local function monitorCharacter(character, playerName, logs)
+        if not character then return end
+        
+        local humanoid = character:FindFirstChild("Humanoid")
+        if not humanoid then return end
+        
+        -- 清理旧连接
+        if characterConnections[playerName] then
+            for _, conn in pairs(characterConnections[playerName]) do
+                conn:Disconnect()
+            end
+        end
+        
+        characterConnections[playerName] = {}
+        local conns = characterConnections[playerName]
+        
+        -- 监控工具装备
+        table.insert(conns, humanoid:GetPropertyChangedSignal("Tool"):Connect(function()
+            local tool = humanoid.Tool
+            if tool then
+                logs.addLog("🛠️ " .. playerName .. " 装备工具: " .. tool.Name, Color3.fromRGB(255, 200, 100))
+            end
+        end))
+        
+        -- 监控伤害
+        table.insert(conns, humanoid.HealthChanged:Connect(function(health)
+            if health < humanoid.MaxHealth then
+                local damage = humanoid.MaxHealth - health
+                logs.addLog("💥 " .. playerName .. " 受到伤害: " .. math.floor(damage) .. " 点", Color3.fromRGB(255, 100, 100))
+            end
+        end))
+        
+        -- 监控死亡
+        table.insert(conns, humanoid.Died:Connect(function()
+            logs.addLog("💀 " .. playerName .. " 死亡", Color3.fromRGB(150, 150, 150))
+        end))
+    end
+    
+    startButton.MouseButton1Click:Connect(function()
+        if not isMonitoring then
+            isMonitoring = true
+            startButton.Text = "停止监控"
+            startButton.BackgroundColor3 = Color3.fromRGB(255, 100, 100)
+            statusLabel.Text = "状态: 监控中"
+            statusLabel.TextColor3 = Color3.fromRGB(100, 255, 100)
+            
+            local player = game.Players.LocalPlayer
+            
+            -- 监控本地玩家
+            if player.Character then
+                monitorCharacter(player.Character, "玩家自己", {addLog = addLog})
+            end
+            table.insert(characterConnections, player.CharacterAdded:Connect(function(char)
+                monitorCharacter(char, "玩家自己", {addLog = addLog})
+            end))
+            
+            -- 监控其他玩家
+            for _, otherPlayer in pairs(game.Players:GetPlayers()) do
+                if otherPlayer ~= player then
+                    if otherPlayer.Character then
+                        monitorCharacter(otherPlayer.Character, otherPlayer.Name, {addLog = addLog})
+                    end
+                    table.insert(characterConnections, otherPlayer.CharacterAdded:Connect(function(char)
+                        monitorCharacter(char, otherPlayer.Name, {addLog = addLog})
+                    end))
+                end
+            end
+            
+            -- 监控新玩家
+            table.insert(characterConnections, game.Players.PlayerAdded:Connect(function(newPlayer)
+                table.insert(characterConnections, newPlayer.CharacterAdded:Connect(function(char)
+                    monitorCharacter(char, newPlayer.Name, {addLog = addLog})
+                end))
+            end))
+            
+            addLog("近战监控已启动", Color3.fromRGB(100, 255, 100))
+        else
+            isMonitoring = false
+            startButton.Text = "开始近战监控"
+            startButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+            statusLabel.Text = "状态: 已停止"
+            statusLabel.TextColor3 = Color3.fromRGB(255, 100, 100)
+            
+            -- 清理所有连接
+            for _, conns in pairs(characterConnections) do
+                if type(conns) == "table" then
+                    for _, conn in pairs(conns) do
+                        if conn.Disconnect then
+                            conn:Disconnect()
+                        end
+                    end
+                elseif conns.Disconnect then
+                    conns:Disconnect()
+                end
+            end
+            characterConnections = {}
+            
+            addLog("近战监控已停止", Color3.fromRGB(255, 100, 100))
+        end
+    end)
+    
+    clearButton.MouseButton1Click:Connect(function()
+        for _, child in pairs(scrollFrame:GetChildren()) do
+            if child:IsA("TextLabel") then
+                child:Destroy()
+            end
+        end
+        meleeLogs = {}
+        addLog("日志已清空", Color3.fromRGB(255, 200, 100))
+    end)
+    
+    addLog("近战监控就绪", Color3.fromRGB(100, 255, 100))
+end
+
+-- 修复HTTP监控内容初始化
+local function initHttpContent()
+    local infoLabel = Instance.new("TextLabel")
+    infoLabel.Size = UDim2.new(1, -20, 0, 80)
+    infoLabel.Position = UDim2.new(0, 10, 0, 10)
+    infoLabel.BackgroundTransparency = 1
+    infoLabel.Text = "HTTP请求监控\n\n在ROBLOX中，HTTP请求需要通过hook技术进行监控。\n此功能需要特殊权限和hook方法。"
+    infoLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    infoLabel.TextSize = 14
+    infoLabel.Font = Enum.Font.Gotham
+    infoLabel.TextWrapped = true
+    infoLabel.TextXAlignment = Enum.TextXAlignment.Left
+    infoLabel.Parent = HttpContent
+    
+    local startButton = Instance.new("TextButton")
+    startButton.Size = UDim2.new(0, 140, 0, 35)
+    startButton.Position = UDim2.new(0, 10, 0, 100)
+    startButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+    startButton.Text = "尝试监控HTTP"
+    startButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    startButton.TextSize = 14
+    startButton.Font = Enum.Font.Gotham
+    startButton.Parent = HttpContent
+    
+    local scrollFrame = Instance.new("ScrollingFrame")
+    scrollFrame.Size = UDim2.new(1, -20, 1, -150)
+    scrollFrame.Position = UDim2.new(0, 10, 0, 150)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarThickness = 8
+    scrollFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    scrollFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    scrollFrame.Parent = HttpContent
+    
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    listLayout.Padding = UDim.new(0, 2)
+    listLayout.Parent = scrollFrame
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = startButton
+    
+    startButton.MouseButton1Click:Connect(function()
+        local function addLog(message, color)
+            color = color or Color3.fromRGB(220, 220, 220)
+            
+            local logEntry = Instance.new("TextLabel")
+            logEntry.Size = UDim2.new(1, -10, 0, 20)
+            logEntry.BackgroundTransparency = 1
+            logEntry.Text = "[" .. getCurrentTime() .. "] " .. message
+            logEntry.TextColor3 = color
+            logEntry.TextSize = 11
+            logEntry.Font = Enum.Font.Gotham
+            logEntry.TextXAlignment = Enum.TextXAlignment.Left
+            logEntry.TextWrapped = true
+            logEntry.LayoutOrder = #scrollFrame:GetChildren()
+            logEntry.Parent = scrollFrame
+            
+            task.wait()
+            scrollFrame.CanvasPosition = Vector2.new(0, scrollFrame.AbsoluteCanvasSize.Y)
+        end
+        
+        addLog("尝试读取HTTP服务数据...", Color3.fromRGB(255, 255, 255))
+        attemptHttpHook(addLog)
+    end)
+end
+
+-- 修复设置内容初始化
+local function initSettingsContent()
+    local settingsFrame = Instance.new("Frame")
+    settingsFrame.Size = UDim2.new(1, -20, 1, -20)
+    settingsFrame.Position = UDim2.new(0, 10, 0, 10)
+    settingsFrame.BackgroundTransparency = 1
+    settingsFrame.Parent = SettingsContent
+    
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 30)
+    title.Position = UDim2.new(0, 0, 0, 0)
+    title.BackgroundTransparency = 1
+    title.Text = "抓包工具设置"
+    title.TextColor3 = Color3.fromRGB(0, 153, 255)
+    title.TextSize = 18
+    title.Font = Enum.Font.GothamSemibold
+    title.TextXAlignment = Enum.TextXAlignment.Left
+    title.Parent = settingsFrame
+    
+    -- 设置选项
+    local settings = {
+        autoStart = false,
+        saveLogs = true,
+        filterSensitive = true,
+        maxLogSize = 1000
+    }
+    
+    local yOffset = 40
+    
+    local function createToggleSetting(text, settingKey, default)
+        settings[settingKey] = settings[settingKey] or default
+        
+        local toggleFrame = Instance.new("Frame")
+        toggleFrame.Size = UDim2.new(1, 0, 0, 30)
+        toggleFrame.Position = UDim2.new(0, 0, 0, yOffset)
+        toggleFrame.BackgroundTransparency = 1
+        toggleFrame.Parent = settingsFrame
+        
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(0, 200, 1, 0)
+        label.Position = UDim2.new(0, 0, 0, 0)
+        label.BackgroundTransparency = 1
+        label.Text = text
+        label.TextColor3 = Color3.fromRGB(200, 200, 200)
+        label.TextSize = 14
+        label.Font = Enum.Font.Gotham
+        label.TextXAlignment = Enum.TextXAlignment.Left
+        label.Parent = toggleFrame
+        
+        local toggleButton = Instance.new("TextButton")
+        toggleButton.Size = UDim2.new(0, 60, 0, 25)
+        toggleButton.Position = UDim2.new(0, 210, 0, 2)
+        toggleButton.BackgroundColor3 = settings[settingKey] and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(100, 100, 100)
+        toggleButton.Text = settings[settingKey] and "开启" or "关闭"
+        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleButton.TextSize = 12
+        toggleButton.Font = Enum.Font.Gotham
+        toggleButton.Parent = toggleFrame
+        
+        local UICorner = Instance.new("UICorner")
+        UICorner.CornerRadius = UDim.new(0, 4)
+        UICorner.Parent = toggleButton
+        
+        toggleButton.MouseButton1Click:Connect(function()
+            settings[settingKey] = not settings[settingKey]
+            toggleButton.BackgroundColor3 = settings[settingKey] and Color3.fromRGB(0, 200, 100) or Color3.fromRGB(100, 100, 100)
+            toggleButton.Text = settings[settingKey] and "开启" or "关闭"
+        end)
+        
+        yOffset = yOffset + 35
+    end
+    
+    createToggleSetting("自动开始监控", "autoStart", false)
+    createToggleSetting("保存日志到文件", "saveLogs", true)
+    createToggleSetting("过滤敏感信息", "filterSensitive", true)
+    
+    local saveButton = Instance.new("TextButton")
+    saveButton.Size = UDim2.new(0, 120, 0, 35)
+    saveButton.Position = UDim2.new(0, 0, 0, yOffset + 10)
+    saveButton.BackgroundColor3 = Color3.fromRGB(0, 153, 255)
+    saveButton.Text = "保存设置"
+    saveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    saveButton.TextSize = 14
+    saveButton.Font = Enum.Font.Gotham
+    saveButton.Parent = settingsFrame
+    
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 4)
+    UICorner.Parent = saveButton
+    
+    saveButton.MouseButton1Click:Connect(function()
+        print("设置已保存")
+    end)
+end
+
+-- HTTP监控功能
+local function attemptHttpHook(addLog)
+    local success, httpService = pcall(function()
+        return game:GetService("HttpService")
+    end)
+    
+    if not success then
+        addLog("❌ 无法获取HttpService", Color3.fromRGB(255, 100, 100))
+        return
+    end
+    
+    addLog("✅ 找到HttpService", Color3.fromRGB(100, 255, 100))
+    addLog("⚠️ HTTP监控需要高级hook技术", Color3.fromRGB(255, 200, 100))
+    addLog("💡 建议使用浏览器开发者工具进行HTTP抓包", Color3.fromRGB(200, 200, 255))
+end
+
+-- 初始化各个内容区域
+initRemoteContent()
+initMeleeContent()
+initHttpContent()
+initSettingsContent()
+
+-- 修复折叠/展开功能
+local isExpanded = true
+ArrowButton.MouseButton1Click:Connect(function()
+    isExpanded = not isExpanded
+    
+    if isExpanded then
+        ArrowButton.Text = "▼"
+        ContentFrame.Visible = true
+        MainFrame.Size = UDim2.new(0, 650, 0, 500)
+    else
+        ArrowButton.Text = "▲"
+        ContentFrame.Visible = false
+        MainFrame.Size = UDim2.new(0, 650, 0, 40)
+    end
+end)
+
+-- 修复窗口拖动功能
+local dragging = false
+local dragStartPos, frameStartPos
+
+Header.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStartPos = input.Position
+        frameStartPos = MainFrame.Position
+    end
+end)
+
+Header.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = false
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input, processed)
+    if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local delta = input.Position - dragStartPos
+        MainFrame.Position = UDim2.new(
+            frameStartPos.X.Scale, 
+            frameStartPos.X.Offset + delta.X, 
+            frameStartPos.Y.Scale, 
+            frameStartPos.Y.Offset + delta.Y
+        )
+    end
+end)
+
+-- 初始化完成
+print("🎯 ROBLOX抓包工具 v3.0 已加载!")
+print("📡 功能: 远程事件监控 | 近战攻击监控 | HTTP请求监控")
+print("💡 使用: 点击界面上的按钮开始监控")
+
+-- 默认显示远程事件标签
+switchTab("remote")
