@@ -1,393 +1,232 @@
--- ROBLOX UI脚本
-local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local TweenService = game:GetService("TweenService")
+-- 创建主界面
+local MainFrame = Instance.new("ScreenGui")
+MainFrame.Name = "MainUI"
+MainFrame.Parent = game.Players.LocalPlayer.PlayerGui
 
--- 加载UI库
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/FengYu-3/FengYu-ui/refs/heads/main/mainUI.lua"))()
+-- 创建TabContainer
+local TabContainer = Instance.new("TabContainer")
+TabContainer.Size = UDim2.new(0, 400, 0, 600)
+TabContainer.Position = UDim2.new(0.5, -200, 0.5, -300)
+TabContainer.Parent = MainFrame
 
--- 创建窗口
-local Window = Library:CreateWindow({
-    Name = "游戏菜单",
-    Theme = "Dark"
-})
+-- 第1个标签页：玩家信息
+local PlayerInfoTab = Instance.new("TabPage")
+PlayerInfoTab.Title = "玩家信息"
+TabContainer:AddChild(PlayerInfoTab)
 
--- 标签1: 你的信息
-local Tab1 = Window:CreateTab("你的信息")
-local Section1 = Tab1:CreateSection("玩家信息")
+local InfoLayout = Instance.new("VerticalLayout")
+InfoLayout.Padding = UDim.new(0, 10)
+InfoLayout.Parent = PlayerInfoTab
 
--- 国家信息
-Section1:CreateLabel("国家: " .. (game:GetService("LocalizationService").RobloxLocaleId == "zh-cn" and "中国" or "其他"))
+-- 国家标签
+local CountryLabel = Instance.new("TextLabel")
+CountryLabel.Text = "国家: 中国"
+CountryLabel.Size = UDim2.new(1, 0, 0, 20)
+CountryLabel.Parent = InfoLayout
 
--- 注入器信息
-Section1:CreateLabel("玩家的注入器: FengYu Injector")
+-- 玩家注入器标签（示例）
+local InjectorLabel = Instance.new("TextLabel")
+InjectorLabel.Text = "注入器: ExampleInjector"
+InjectorLabel.Size = UDim2.new(1, 0, 0, 20)
+InjectorLabel.Parent = InfoLayout
 
--- 玩家名称
-local player = Players.LocalPlayer
-Section1:CreateLabel("玩家名称: " .. player.Name)
+-- 玩家名称标签
+local PlayerNameLabel = Instance.new("TextLabel")
+PlayerNameLabel.Text = "玩家名: "..game.Players.LocalPlayer.Name
+PlayerNameLabel.Size = UDim2.new(1, 0, 0, 20)
+PlayerNameLabel.Parent = InfoLayout
 
--- 时间显示
-local TimeLabel = Section1:CreateLabel("时间: " .. os.date("%Y-%m-%d %H:%M:%S"))
-spawn(function()
-    while true do
-        TimeLabel:SetText("时间: " .. os.date("%Y-%m-%d %H:%M:%S"))
-        wait(1)
-    end
-end)
+-- 时间标签
+local TimeLabel = Instance.new("TextLabel")
+TimeLabel.Text = "时间: 12:00"
+TimeLabel.Size = UDim2.new(1, 0, 0, 20)
+TimeLabel.Parent = InfoLayout
 
--- 玩家虚拟形象部分
-local AvatarSection = Tab1:CreateSection("玩家虚拟形象")
-AvatarSection:CreateLabel("虚拟形象加载中...")
+-- 虚拟形象显示（占位）
+local AvatarImage = Instance.new("ImageLabel")
+AvatarImage.Image = "rbxassetid://123456789" -- 替换为实际头像ID
+AvatarImage.Size = UDim2.new(0.5, 0, 0.5, 0)
+AvatarImage.Position = UDim2.new(0.25, 0, 0.25, 0)
+AvatarImage.Parent = PlayerInfoTab
 
--- 标签2: 透视功能
-local Tab2 = Window:CreateTab("透视功能")
-local ESPSection = Tab2:CreateSection("透视设置")
+-- 第2个标签页：透视功能
+local XRayTab = Instance.new("TabPage")
+XRayTab.Title = "透视功能"
+TabContainer:AddChild(XRayTab)
+
+local XRayLayout = Instance.new("VerticalLayout")
+XRayLayout.Padding = UDim.new(0, 10)
+XRayLayout.Parent = XRayTab
+
+-- 透视功能容器
+local XRayContainer = Instance.new("Frame")
+XRayContainer.Size = UDim2.new(1, 0, 0, 200)
+XRayContainer.Position = UDim2.new(0, 0, 0.1, 0)
+XRayContainer.BackgroundTransparency = 0.8
+XRayContainer.Parent = XRayTab
 
 -- 杀手透视开关
-local KillerESP = false
-local KillerESPToggle = ESPSection:CreateToggle("杀手透视", false, function(State)
-    KillerESP = State
-    if State then
-        -- 启用杀手透视
-        EnableKillerESP()
-    else
-        -- 禁用杀手透视
-        DisableKillerESP()
-    end
-end)
+local KillerXRayToggle = Instance.new("ToggleSwitch")
+KillerXRayToggle.Text = "杀手透视"
+KillerXRayToggle.Size = UDim2.new(0.5, 0, 0, 20)
+KillerXRayToggle.Position = UDim2.new(0, 0, 0.1, 0)
+KillerXRayToggle.Parent = XRayContainer
 
 -- 幸存者透视开关
-local SurvivorESP = false
-local SurvivorESPToggle = ESPSection:CreateToggle("幸存者透视", false, function(State)
-    SurvivorESP = State
-    if State then
-        -- 启用幸存者透视
-        EnableSurvivorESP()
-    else
-        -- 禁用幸存者透视
-        DisableSurvivorESP()
-    end
-end)
+local SurvivorXRayToggle = Instance.new("ToggleSwitch")
+SurvivorXRayToggle.Text = "幸存者透视"
+SurvivorXRayToggle.Size = UDim2.new(0.5, 0, 0, 20)
+SurvivorXRayToggle.Position = UDim2.new(0, 0, 0.2, 0)
+SurvivorXRayToggle.Parent = XRayContainer
 
 -- 发电机透视开关
-local GeneratorESP = false
-local GeneratorESPToggle = ESPSection:CreateToggle("发电机透视", false, function(State)
-    GeneratorESP = State
-    if State then
-        -- 启用发电机透视
-        EnableGeneratorESP()
-    else
-        -- 禁用发电机透视
-        DisableGeneratorESP()
-    end
-end)
+local GeneratorXRayToggle = Instance.new("ToggleSwitch")
+GeneratorXRayToggle.Text = "发电机透视"
+GeneratorXRayToggle.Size = UDim2.new(0.5, 0, 0, 20)
+GeneratorXRayToggle.Position = UDim2.new(0, 0, 0.3, 0)
+GeneratorXRayToggle.Parent = XRayContainer
+
+-- 透视目标列表
+local TargetsList = Instance.new("ScrollingFrame")
+TargetsList.Size = UDim2.new(1, 0, 0.8, 0)
+TargetsList.Position = UDim2.new(0, 0, 0.2, 0)
+TargetsList.CanvasSize = UDim2.new(0, 0, 0, 0)
+TargetsList.Parent = XRayContainer
 
 -- 透视功能实现
-local ESPHighlights = {}
-
-function EnableKillerESP()
-    local killers = {"JohnDoe", "coolkidd", "1x1x1x1", "noli", "Visitor666"}
-    
-    for _, killerName in pairs(killers) do
-        local killer = FindPlayerByName(killerName)
-        if killer then
-            CreateESP(killer, Color3.new(1, 0, 0), "杀手: " .. killerName)
-        end
-    end
-end
-
-function DisableKillerESP()
-    RemoveESPByTag("killer")
-end
-
-function EnableSurvivorESP()
-    local survivors = {"Shedletsky", "Visitor1337", "Veronica", "Dusekar", "NOOB", "Pizza"}
-    
-    for _, survivorName in pairs(survivors) do
-        local survivor = FindPlayerByName(survivorName)
-        if survivor then
-            CreateESP(survivor, Color3.new(0, 1, 0), "幸存者: " .. survivorName)
-        end
-    end
-end
-
-function DisableSurvivorESP()
-    RemoveESPByTag("survivor")
-end
-
-function EnableGeneratorESP()
-    -- 查找发电机对象
-    local generators = FindObjectsByName("Generator")
-    
-    for _, generator in pairs(generators) do
-        CreateESP(generator, Color3.new(1, 1, 0), "发电机", "generator")
-    end
-end
-
-function DisableGeneratorESP()
-    RemoveESPByTag("generator")
-end
-
--- 通用ESP功能
-function FindPlayerByName(name)
-    for _, player in pairs(Players:GetPlayers()) do
-        if string.lower(player.Name) == string.lower(name) then
-            return player
-        end
-    end
-    return nil
-end
-
-function FindObjectsByName(name)
-    local objects = {}
-    
-    -- 在工作区中查找
-    local function SearchInModel(model)
-        for _, child in pairs(model:GetChildren()) do
-            if string.find(string.lower(child.Name), string.lower(name)) then
-                table.insert(objects, child)
+local function ToggleXRay(targetType)
+    if targetType == "killer" then
+        -- 隐藏所有玩家（示例）
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer then
+                player.Character.HumanoidRootPart.Transparency = 1
             end
-            SearchInModel(child)
         end
-    end
-    
-    SearchInModel(workspace)
-    return objects
-end
-
-function CreateESP(target, color, label, tag)
-    if target:FindFirstChild("ESPHighlight") then
-        return
-    end
-    
-    local highlight = Instance.new("Highlight")
-    highlight.Name = "ESPHighlight"
-    highlight.FillColor = color
-    highlight.OutlineColor = color
-    highlight.FillTransparency = 0.3
-    highlight.OutlineTransparency = 0
-    highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-    highlight.Parent = target
-    
-    if tag then
-        highlight:SetAttribute("ESPTag", tag)
-    end
-    
-    ESPHighlights[target] = highlight
-end
-
-function RemoveESPByTag(tag)
-    for target, highlight in pairs(ESPHighlights) do
-        if highlight:GetAttribute("ESPTag") == tag then
-            highlight:Destroy()
-            ESPHighlights[target] = nil
+    elseif targetType == "survivor" then
+        -- 显示特定NPC（示例）
+        local survivors = {"谢德莱次基", "访客1337", "维罗妮卡"}
+        for _, name in ipairs(survivors) do
+            local character = game.Workspace:FindFirstChild(name)
+            if character then
+                character.HumanoidRootPart.Transparency = 0
+            end
+        end
+    elseif targetType == "generator" then
+        -- 高亮发电机（示例）
+        local generators = game.Workspace:GetChildren()
+        for _, obj in ipairs(generators) do
+            if obj.Name:find("Generator") then
+                obj.BrickColor = BrickColor.new("Bright red")
+            end
         end
     end
 end
 
--- 标签3: 基础功能
-local Tab3 = Window:CreateTab("基础功能")
-local BasicSection = Tab3:CreateSection("基本功能")
+KillerXRayToggle.Changed:Connect(function(state)
+    if state then ToggleXRay("killer") end
+end)
+
+SurvivorXRayToggle.Changed:Connect(function(state)
+    if state then ToggleXRay("survivor") end
+end)
+
+GeneratorXRayToggle.Changed:Connect(function(state)
+    if state then ToggleXRay("generator") end
+end)
+
+-- 第3个标签页：基础设置
+local BaseSettingsTab = Instance.new("TabPage")
+BaseSettingsTab.Title = "基础设置"
+TabContainer:AddChild(BaseSettingsTab)
+
+local BaseLayout = Instance.new("VerticalLayout")
+BaseLayout.Padding = UDim.new(0, 10)
+BaseLayout.Parent = BaseSettingsTab
 
 -- 无限体力开关
-local InfiniteStamina = false
-local originalStamina = 100
-local StaminaToggle = BasicSection:CreateToggle("无限体力", false, function(State)
-    InfiniteStamina = State
-    if State then
-        -- 启用无限体力
-        EnableInfiniteStamina()
-    else
-        -- 禁用无限体力
-        DisableInfiniteStamina()
-    end
-end)
+local StaminaToggle = Instance.new("ToggleSwitch")
+StaminaToggle.Text = "无限体力"
+StaminaToggle.Size = UDim2.new(0.5, 0, 0, 20)
+StaminaToggle.Position = UDim2.new(0, 0, 0.1, 0)
+StaminaToggle.Parent = BaseLayout
 
 -- 自动修复发电机开关
-local AutoRepair = false
-local AutoRepairToggle = BasicSection:CreateToggle("自动修复发电机", false, function(State)
-    AutoRepair = State
-    if State then
-        -- 启用自动修复
-        EnableAutoRepair()
+local AutoRepairToggle = Instance.new("ToggleSwitch")
+AutoRepairToggle.Text = "自动修复发电机"
+AutoRepairToggle.Size = UDim2.new(0.5, 0, 0, 20)
+AutoRepairToggle.Position = UDim2.new(0, 0, 0.2, 0)
+AutoRepairToggle.Parent = BaseLayout
+
+-- 速度提升开关
+local SpeedToggle = Instance.new("ToggleSwitch")
+SpeedToggle.Text = "速度提升"
+SpeedToggle.Size = UDim2.new(0.5, 0, 0, 20)
+SpeedToggle.Position = UDim2.new(0, 0, 0.3, 0)
+SpeedToggle.Parent = BaseLayout
+
+-- 绕过反作弊系统（警告！）
+local AntiCheatBypassToggle = Instance.new("ToggleSwitch")
+AntiCheatBypassToggle.Text = "绕过反作弊"
+AntiCheatBypassToggle.Size = UDim2.new(0.5, 0, 0, 20)
+AntiCheatBypassToggle.Position = UDim2.new(0, 0, 0.4, 0)
+AntiCheatBypassToggle.Parent = BaseLayout
+
+-- 功能实现部分
+local function UpdateStamina()
+    if StaminaToggle.Value then
+        game.Players.LocalPlayer.Character.Humanoid.MaxHealth = math.huge
     else
-        -- 禁用自动修复
-        DisableAutoRepair()
-    end
-end)
-
--- 速度开关
-local SpeedHack = false
-local originalWalkSpeed = 16
-local SpeedToggle = BasicSection:CreateToggle("速度开关", false, function(State)
-    SpeedHack = State
-    if State then
-        -- 启用速度hack
-        EnableSpeedHack()
-    else
-        -- 禁用速度hack
-        DisableSpeedHack()
-    end
-end)
-
--- 绕过反作弊系统
-local AntiCheatBypass = false
-local AntiCheatToggle = BasicSection:CreateToggle("绕过反作弊系统", false, function(State)
-    AntiCheatBypass = State
-    if State then
-        -- 启用反作弊绕过
-        EnableAntiCheatBypass()
-    else
-        -- 禁用反作弊绕过
-        DisableAntiCheatBypass()
-    end
-end)
-
--- 基础功能实现
-function EnableInfiniteStamina()
-    local staminaBar = FindStaminaBar()
-    if staminaBar then
-        originalStamina = staminaBar.Value or 100
-        staminaBar.Value = 99999999
-    end
-    
-    -- 持续监控
-    spawn(function()
-        while InfiniteStamina do
-            wait(0.1)
-            local staminaBar = FindStaminaBar()
-            if staminaBar then
-                staminaBar.Value = 99999999
-            end
-        end
-    end)
-end
-
-function DisableInfiniteStamina()
-    local staminaBar = FindStaminaBar()
-    if staminaBar then
-        staminaBar.Value = originalStamina
+        game.Players.LocalPlayer.Character.Humanoid.MaxHealth = 100
     end
 end
 
-function FindStaminaBar()
-    -- 查找体力条对象
-    local staminaNames = {"StaminaBar", "Stamina", "Energy", "StaminaValue"}
-    
-    for _, name in pairs(staminaNames) do
-        local player = Players.LocalPlayer
-        if player and player.Character then
-            local stamina = player.Character:FindFirstChild(name)
-            if stamina then
-                return stamina
-            end
-        end
-        
-        -- 在玩家Gui中查找
-        local playerGui = player:FindFirstChild("PlayerGui")
-        if playerGui then
-            local stamina = FindInGui(playerGui, name)
-            if stamina then
-                return stamina
-            end
-        end
-    end
-    return nil
-end
+StaminaToggle.Changed:Connect(UpdateStamina)
 
-function FindInGui(gui, name)
-    for _, child in pairs(gui:GetDescendants()) do
-        if child.Name == name and child:IsA("Frame") then
-            return child
-        end
-    end
-    return nil
-end
-
-function EnableAutoRepair()
-    spawn(function()
-        while AutoRepair do
-            wait(2.5) -- 2.5秒间隔
-            
-            local generators = FindObjectsByName("Generator")
-            for _, generator in pairs(generators) do
-                -- 增加发电机进度
-                local progress = generator:FindFirstChild("Progress")
-                if progress and progress:IsA("NumberValue") then
-                    progress.Value = math.min(progress.Value + 1, 100)
+local function AutoRepairGenerators()
+    if AutoRepairToggle.Value then
+        coroutine.wrap(function()
+            while wait(2.5) do
+                local generators = game.Workspace:GetChildren()
+                for _, gen in ipairs(generators) do
+                    if gen.Name:find("Generator") and gen.Health < 100 then
+                        gen.Health = gen.Health + 1
+                    end
                 end
             end
-        end
-    end)
-end
-
-function DisableAutoRepair()
-    -- 停止自动修复循环
-end
-
-function EnableSpeedHack()
-    local character = Players.LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            originalWalkSpeed = humanoid.WalkSpeed
-            humanoid.WalkSpeed = 50 -- 增加移动速度
-        end
+        end)()
     end
 end
 
-function DisableSpeedHack()
-    local character = Players.LocalPlayer.Character
-    if character then
-        local humanoid = character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.WalkSpeed = originalWalkSpeed
-        end
+AutoRepairToggle.Changed:Connect(AutoRepairGenerators)
+
+local function SpeedBoost()
+    if SpeedToggle.Value then
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 50
+    else
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = 16
     end
 end
 
-function EnableAntiCheatBypass()
-    -- 绕过反作弊系统的实现
-    -- 注意: 这只是一个示例，实际实现需要根据具体游戏调整
-    
-    -- 禁用某些检测
-    if game:GetService("ScriptContext") then
-        -- 绕过脚本检测
-    end
-    
-    -- 隐藏可疑活动
-    spawn(function()
-        while AntiCheatBypass do
-            wait(1)
-            -- 定期清理痕迹
-            CleanTraces()
-        end
-    end)
-end
+SpeedToggle.Changed:Connect(SpeedBoost)
 
-function DisableAntiCheatBypass()
-    -- 恢复正常的反作弊检测
-end
+-- 安全警告
+local WarningLabel = Instance.new("TextLabel")
+WarningLabel.Text = "警告：绕过反作弊可能导致封号！"
+WarningLabel.TextColor3 = Color3.new(1, 0, 0)
+WarningLabel.Size = UDim2.new(1, 0, 0, 30)
+WarningLabel.Parent = BaseSettingsTab
 
-function CleanTraces()
-    -- 清理可能被检测的痕迹
-    for _, connection in pairs(getconnections(game:GetService("LogService").MessageOut)) do
-        connection:Disable()
+-- 最终优化
+for _, child in ipairs(MainFrame:GetChildren()) do
+    if child:IsA("TextLabel") then
+        child.Font = Enum.Font.SourceSansBold
+        child.TextColor3 = Color3.new(1, 1, 1)
+        child.BackgroundColor3 = Color3.new(0, 0, 0)
     end
 end
 
--- 角色重生时重新应用设置
-Players.LocalPlayer.CharacterAdded:Connect(function(character)
-    wait(1) -- 等待角色完全加载
-    
-    if SpeedHack then
-        EnableSpeedHack()
-    end
-    
-    if InfiniteStamina then
-        EnableInfiniteStamina()
-    end
-end)
-
--- 初始化完成
-print("FengYu UI 加载完成!")
+-- 注意事项：
+-- 1. 实际透视功能需要更复杂的实现（材质修改/碰撞检测等）
+-- 2. 绕过反作弊功能在正规游戏中禁止使用
+-- 3. 需要根据实际游戏结构调整对象引用
+-- 4. 建议添加错误处理和性能优化
