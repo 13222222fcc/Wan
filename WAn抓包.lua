@@ -1,29 +1,37 @@
-local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/13222222fcc/Wan/refs/heads/main/UI.lua"))(); --这里是放你UI的地方也就是你的界面
-
-local window = library:new("脚本") --这里是你的脚本名
-
-local Wans = window:Tab("通用",'图片ID') --这是选项卡必须加不然脚本用不了
-
-local Wan =Wans:section("通用",true) --这个也是
-
-Wan:Button("按钮", function()
-    --当然了这里是放脚本的地方比如放皮脚本之类的东西
+local success, library = pcall(function()
+    return loadstring(game:HttpGet("https://github.com/Yomkav2/Sugar-UI"))()
 end)
 
-Wan:Toggle("开关", "Wan", false, function(a)
-    --这里的开关是配合定义你们自己看吧其他的也是
-end)
+if not success then
+print("殺脚本")  
+    return
+end
 
-Wan:Slider('滑块', 'Wan', 0, 0, 9999,false, function(b)
+local window = library:new("挽脚本")
+
+local FengYu = window:Tab("关于",'84830962019412')
+
+local Feng =FengYu:section("通用",true)
+
+Feng:Button("文本", function()
     
 end)
 
-Wan:Textbox("输入", "Wan", "输入", function(c)
+Feng:Toggle("开关", "FengYu", false, function(a)
+    
+end)
+
+Feng:Slider('滑块', 'FengYu', 0, 0, 9999,false, function(b)
+    
+end)
+
+Feng:Textbox("输入", "FengYu", "输入", function(c)
   
 end)
 
-Wan:Dropdown("下拉式", "Wan", {
+Feng:Dropdown("下拉式", "FengYu", {
     "额"
 }, function(d)
     
 end)
+
