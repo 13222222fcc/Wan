@@ -1,4 +1,3 @@
--- Wan脚本源码
 local Blacklist = {
     Users = {
         "ajja_2244",
