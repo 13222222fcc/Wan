@@ -1,32 +1,4 @@
-local Blacklist = {
-    Users = {
-        "ajja_2244",
-        "hxbbd769",
-        "linluwqw",
-        "woshidasabi91666"
-        "DREAD849"
-        "FengY3"
-    }
-}
-
-local localPlayer = game.Players.LocalPlayer
-local playerName = localPlayer.Name
-
-local isBanned = false
-
-for _, bannedName in pairs(Blacklist.Users) do
-    if string.lower(playerName) == string.lower(bannedName) then
-        isBanned = true
-        break
-    end
-end
-
-if isBanned then
-    
-    wait(5)
-    game.Players.LocalPlayer:Kick("用户： " .. playerName .. " ┃FenYu还想玩我的脚板😂 \n\n（错误代码: 死斗♢）")
-    return
-end
+local library = loadstring(game:HttpGet("https://github.com/Yomkav2/Sugar-UI"))();
 
 local LBLG = Instance.new("ScreenGui")
 local LBL = Instance.new("TextLabel")
@@ -117,19 +89,19 @@ end
 end
 coroutine.wrap(RainbowColor)()
  
-local UITab1 = win:Tab("『公告』",'118425765654416')
-local UITab2 = win:Tab("『通用』",'118425765654416')
-local UITab3 = win:Tab("『范围+自瞄』",'118425765654416')
-local UITab4 = win:Tab("『传送+甩飞』",'118425765654416')
-local UITab5 = win:Tab("『FE[自己能看见]』",'118425765654416')
-local UITab6 = win:Tab("『ESP』",'118425765654416')
-local UITab7 = win:Tab("『旋转』",'118425765654416')
-local UITab8 = win:Tab("『自然灾害』",'118425765654416')
-local UITab9 = win:Tab("『力量传奇』",'118425765654416')
-local UITab10 = win:Tab("『极速传奇』",'118425765654416')
-local UITab11 = win:Tab("『忍者传奇』",'118425765654416')
-local UITab12 = win:Tab("『战争大亨』",'118425765654416')
-local UITab13 = win:Tab("『刀球刃』",'118425765654416')
+local UITab1 = win:Tab("『公告』",'114514')
+local UITab2 = win:Tab("『通用』",'114514')
+local UITab3 = win:Tab("『范围+自瞄』",'114514')
+local UITab4 = win:Tab("『传送+甩飞』",'114514')
+local UITab5 = win:Tab("『FE』",'114514')
+local UITab6 = win:Tab("『ESP』",'114514')
+local UITab7 = win:Tab("『旋转』",'114514')
+local UITab8 = win:Tab("『自然灾害』",'114514')
+local UITab9 = win:Tab("『力量传奇』",'114514')
+local UITab10 = win:Tab("『极速传奇』",'114514')
+local UITab11 = win:Tab("『忍者传奇』",'114514')
+local UITab12 = win:Tab("『战争大亨』",'114514')
+local UITab13 = win:Tab("『刀球刃』",'114514')
  
 local about = UITab1:section("『公告』",true)
 local function RainbowFont(label)
@@ -144,7 +116,7 @@ end)
 end
 end)
 end
-local versionLabel = about:Label("挽脚本通用源码")
+local versionLabel = about:Label("挽脚本通用源码v1.0.2")
 RainbowFont(versionLabel)
 local lbl1 = about:Label("一个刚学三年lua的女孩子")
 RainbowFont(lbl1)
