@@ -1,16 +1,15 @@
 --[[
 Script Name: VOMO_
-Version: 2.0
+Version: 2.1
 Author: VOMO Team
 Description: Premium Roblox Enhancement Tool with Advanced Features
 Base UI: Obsidian Framework
-Luarmor Protected Loader Implementation
+Notification System: BocusLuke's STX
 ]]
 
--- Luarmor protected loader integration
-local scripturl = "https://api.luarmor.net/files/v3/loaders/80b606551d4b7075eb3e229d6f68e4df.lua"
-local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
-local showGUI = true
+-- Load Notification System
+local NotificationHolder = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Module.Lua"))()
+local Notification = loadstring(game:HttpGet("https://raw.githubusercontent.com/BocusLuke/UI/main/STX/Client.Lua"))()
 
 -- Advanced security check and environment validation
 local isExecutor = (syn and syn.protect_gui) or (getexecutorname and getexecutorname() ~= nil) or (identifyexecutor and identifyexecutor() ~= nil) or (KRNL_LOADED and true) or (PROTOSMASHER_LOADED and true)
@@ -18,6 +17,12 @@ if not isExecutor then
     warn("Executor environment not detected. Script may not function properly.")
     return
 end
+
+-- Send welcome notification
+Notification:Notify(
+    {Title = "VOMO_", Description = "Enhancement Suite Loading..."},
+    {OutlineColor = Color3.fromRGB(0, 180, 255), Time = 3, Type = "image"}
+)
 
 -- Protected loading system with advanced error handling
 local function SecureLoad(url)
@@ -55,6 +60,7 @@ local function SecureLoad(url)
 end
 
 -- Load Obsidian UI with advanced protection
+local repo = "https://raw.githubusercontent.com/deividcomsono/Obsidian/main/"
 local ObsidianLoadFunction = SecureLoad(repo)
 if not ObsidianLoadFunction then
     error("Failed to load Obsidian UI library. Check your internet connection and try again.")
@@ -67,9 +73,17 @@ if not ObsidianSuccess then
     return
 end
 
+-- Notification function wrapper
+local function SendNotification(title, desc, time, color)
+    Notification:Notify(
+        {Title = title, Description = desc},
+        {OutlineColor = color or Color3.fromRGB(0, 180, 255), Time = time or 3, Type = "image"}
+    )
+end
+
 -- Create main application window with enhanced settings
 local MainWindow = Obsidian:Window{
-    Name = "VOMO_ Enhancement Suite v2.0",
+    Name = "VOMO_ Enhancement Suite v2.1",
     Position = UDim2.new(0.5, 0, 0.5, 0),
     Size = {420, 550},
     Theme = "Midnight",
@@ -81,10 +95,13 @@ local MainWindow = Obsidian:Window{
     AutoHide = false
 }
 
+-- Send loaded notification
+SendNotification("VOMO_", "Interface Loaded Successfully", 3, Color3.fromRGB(0, 255, 0))
+
 -- Initialize global variables and modules
 local VOMO = {
     Settings = {
-        Version = "2.0",
+        Version = "2.1",
         Build = "2024.01",
         Author = "VOMO Development Team",
         LastUpdate = os.date("%Y-%m-%d")
@@ -141,7 +158,7 @@ local InfoSection = InfoTab:Section{
 -- Application information display
 InfoSection:Label{
     Text = "VOMO_ Enhancement Suite",
-    Description = "Version 2.0 | Premium Game Enhancement Tool",
+    Description = "Version 2.1 | Premium Game Enhancement Tool",
     Color = Color3.fromRGB(0, 180, 255),
     Bold = true,
     Size = 18
@@ -149,7 +166,7 @@ InfoSection:Label{
 
 InfoSection:Label{
     Text = "Security Status: ACTIVE",
-    Description = "Luarmor protection enabled | All systems operational",
+    Description = "Advanced protection enabled | All systems operational",
     Color = Color3.fromRGB(0, 255, 0),
     Bold = true
 }
@@ -174,7 +191,7 @@ InfoSection:Button{
         elseif toclipboard then
             toclipboard(discordLink)
         end
-        print("Discord link copied to clipboard: " .. discordLink)
+        SendNotification("Discord", "Link copied to clipboard!", 2, Color3.fromRGB(114, 137, 218))
     end
 }
 
@@ -188,7 +205,15 @@ InfoSection:Button{
         elseif writeclipboard then
             writeclipboard(telegramLink)
         end
-        print("Telegram link copied to clipboard: " .. telegramLink)
+        SendNotification("Telegram", "Link copied to clipboard!", 2, Color3.fromRGB(0, 136, 204))
+    end
+}
+
+InfoSection:Button{
+    Name = "Support Website",
+    Description = "Visit our website for documentation",
+    Callback = function()
+        SendNotification("Website", "Coming soon...", 2, Color3.fromRGB(255, 170, 0))
     end
 }
 
@@ -225,6 +250,17 @@ SystemInfo:Label{
     Color = Color3.fromRGB(200, 200, 200)
 }
 
+SystemInfo:Button{
+    Name = "Copy Game ID",
+    Description = "Copy current game PlaceId to clipboard",
+    Callback = function()
+        if setclipboard then
+            setclipboard(tostring(game.PlaceId))
+        end
+        SendNotification("Game ID", "Copied to clipboard: " .. game.PlaceId, 2, Color3.fromRGB(0, 200, 255))
+    end
+}
+
 -- Performance monitoring
 local Performance = InfoTab:Section{
     Name = "Performance Monitor",
@@ -249,12 +285,19 @@ Performance:Label{
     Color = Color3.fromRGB(0, 255, 255)
 }
 
+Performance:Label{
+    Text = "Memory: Calculating...",
+    Description = "Current memory usage",
+    Color = Color3.fromRGB(0, 255, 255)
+}
+
 -- Performance update loop
 spawn(function()
     while true do
         wait(1)
         local currentFPS = math.floor(1 / game:GetService("RunService").RenderStepped:Wait())
         local ping = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValue()
+        local memory = game:GetService("Stats"):GetTotalMemoryUsageMb()
         
         -- Update labels
         for _, label in pairs(Performance:GetLabels()) do
@@ -267,6 +310,11 @@ spawn(function()
                 label:Update{
                     Text = "Ping: " .. math.floor(ping) .. "ms",
                     Color = ping < 100 and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                }
+            elseif label.Text:find("Memory") then
+                label:Update{
+                    Text = "Memory: " .. math.floor(memory) .. "MB",
+                    Color = memory < 500 and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
                 }
             end
         end
@@ -297,6 +345,7 @@ ESPSection:Toggle{
         VOMO.ESP.Enabled = state
         
         if state then
+            SendNotification("ESP", "Killer ESP Activated", 2, Color3.fromRGB(255, 0, 0))
             spawn(function()
                 -- Initialize ESP system for killers
                 VOMO.ESP.Killers = {}
@@ -315,6 +364,8 @@ ESPSection:Toggle{
                         isKiller = true
                     elseif player.Character:FindFirstChild("Weapon") then
                         isKiller = true
+                    elseif player.Character:FindFirstChild("Tool") then
+                        isKiller = true
                     end
                     
                     if isKiller then
@@ -326,13 +377,16 @@ ESPSection:Toggle{
                         highlight.FillTransparency = 0.5
                         highlight.OutlineTransparency = 0
                         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                        highlight.Parent = player.Character
+                        highlight.Adornee = player.Character
+                        highlight.Parent = game:GetService("CoreGui")
                         
                         local billboard = Instance.new("BillboardGui")
                         billboard.Name = "VOMO_ESP_Info_" .. player.Name
                         billboard.AlwaysOnTop = true
                         billboard.Size = UDim2.new(0, 200, 0, 50)
                         billboard.StudsOffset = Vector3.new(0, 3, 0)
+                        billboard.Adornee = player.Character.HumanoidRootPart
+                        billboard.Parent = game:GetService("CoreGui")
                         
                         local nameLabel = Instance.new("TextLabel")
                         nameLabel.Text = player.Name .. " [KILLER]"
@@ -355,8 +409,6 @@ ESPSection:Toggle{
                         distanceLabel.TextSize = 12
                         distanceLabel.Parent = billboard
                         
-                        billboard.Parent = player.Character.HumanoidRootPart
-                        
                         -- Store ESP components
                         VOMO.ESP.Killers[player] = {
                             Highlight = highlight,
@@ -369,9 +421,12 @@ ESPSection:Toggle{
                         spawn(function()
                             while espKillerEnabled and player and player.Character and player.Character:FindFirstChild("HumanoidRootPart") do
                                 wait(0.1)
-                                local distance = (game.Players.LocalPlayer.Character.HumanoidRootPart.Position - 
-                                                 player.Character.HumanoidRootPart.Position).Magnitude
-                                distanceLabel.Text = "Distance: " .. math.floor(distance) .. " studs"
+                                local localChar = game.Players.LocalPlayer.Character
+                                if localChar and localChar:FindFirstChild("HumanoidRootPart") then
+                                    local distance = (localChar.HumanoidRootPart.Position - 
+                                                     player.Character.HumanoidRootPart.Position).Magnitude
+                                    distanceLabel.Text = "Distance: " .. math.floor(distance) .. " studs"
+                                end
                             end
                         end)
                     end
@@ -385,15 +440,20 @@ ESPSection:Toggle{
                 end
                 
                 -- Listen for new players
-                game:GetService("Players").PlayerAdded:Connect(function(player)
+                local playerAddedConn
+                playerAddedConn = game:GetService("Players").PlayerAdded:Connect(function(player)
                     wait(2) -- Wait for character to load
                     if espKillerEnabled then
                         createESP(player)
                     end
                 end)
                 
+                -- Store connection
+                VOMO.Connections["ESP_Killer_PlayerAdded"] = playerAddedConn
+                
                 -- Clean up when players leave
-                game:GetService("Players").PlayerRemoving:Connect(function(player)
+                local playerRemovingConn
+                playerRemovingConn = game:GetService("Players").PlayerRemoving:Connect(function(player)
                     if VOMO.ESP.Killers[player] then
                         VOMO.ESP.Killers[player].Highlight:Destroy()
                         VOMO.ESP.Killers[player].Billboard:Destroy()
@@ -401,7 +461,24 @@ ESPSection:Toggle{
                     end
                 end)
                 
-                print("Killer ESP activated successfully")
+                VOMO.Connections["ESP_Killer_PlayerRemoving"] = playerRemovingConn
+                
+                -- Handle character changes
+                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                    local characterAddedConn = player.CharacterAdded:Connect(function(character)
+                        wait(1)
+                        if espKillerEnabled then
+                            if VOMO.ESP.Killers[player] then
+                                VOMO.ESP.Killers[player].Highlight:Destroy()
+                                VOMO.ESP.Killers[player].Billboard:Destroy()
+                                VOMO.ESP.Killers[player] = nil
+                            end
+                            wait(0.5)
+                            createESP(player)
+                        end
+                    end)
+                    VOMO.Connections["ESP_Killer_CharAdded_" .. player.Name] = characterAddedConn
+                end
             end)
         else
             -- Disable ESP for killers
@@ -414,7 +491,16 @@ ESPSection:Toggle{
                 end
             end
             VOMO.ESP.Killers = {}
-            print("Killer ESP deactivated")
+            
+            -- Disconnect ESP connections
+            for name, conn in pairs(VOMO.Connections) do
+                if name:find("ESP_Killer") then
+                    conn:Disconnect()
+                    VOMO.Connections[name] = nil
+                end
+            end
+            
+            SendNotification("ESP", "Killer ESP Deactivated", 2, Color3.fromRGB(255, 100, 100))
         end
     end
 }
@@ -429,6 +515,7 @@ ESPSection:Toggle{
         espSurvivorEnabled = state
         
         if state then
+            SendNotification("ESP", "Survivor ESP Activated", 2, Color3.fromRGB(0, 255, 0))
             spawn(function()
                 -- Initialize ESP system for survivors
                 VOMO.ESP.Survivors = {}
@@ -439,12 +526,13 @@ ESPSection:Toggle{
                     end
                     
                     -- Check if player is a survivor (this logic depends on the game)
-                    -- You need to implement game-specific survivor detection
                     local isSurvivor = true -- Default assumption
                     
                     -- Example detection methods (adjust based on actual game)
                     if player.Team and player.Team.Name:lower():find("survivor") then
                         isSurvivor = true
+                    elseif player.Character:FindFirstChild("Weapon") or player.Character:FindFirstChild("Tool") then
+                        isSurvivor = false
                     end
                     
                     if isSurvivor and player ~= game.Players.LocalPlayer then
@@ -456,13 +544,16 @@ ESPSection:Toggle{
                         highlight.FillTransparency = 0.5
                         highlight.OutlineTransparency = 0
                         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-                        highlight.Parent = player.Character
+                        highlight.Adornee = player.Character
+                        highlight.Parent = game:GetService("CoreGui")
                         
                         local billboard = Instance.new("BillboardGui")
                         billboard.Name = "VOMO_ESP_SurvivorInfo_" .. player.Name
                         billboard.AlwaysOnTop = true
                         billboard.Size = UDim2.new(0, 200, 0, 50)
                         billboard.StudsOffset = Vector3.new(0, 3, 0)
+                        billboard.Adornee = player.Character.HumanoidRootPart
+                        billboard.Parent = game:GetService("CoreGui")
                         
                         local nameLabel = Instance.new("TextLabel")
                         nameLabel.Text = player.Name .. " [SURVIVOR]"
@@ -484,8 +575,6 @@ ESPSection:Toggle{
                         healthLabel.Font = Enum.Font.Gotham
                         healthLabel.TextSize = 12
                         healthLabel.Parent = billboard
-                        
-                        billboard.Parent = player.Character.HumanoidRootPart
                         
                         -- Store ESP components
                         VOMO.ESP.Survivors[player] = {
@@ -522,15 +611,19 @@ ESPSection:Toggle{
                 end
                 
                 -- Listen for new players
-                game:GetService("Players").PlayerAdded:Connect(function(player)
+                local playerAddedConn
+                playerAddedConn = game:GetService("Players").PlayerAdded:Connect(function(player)
                     wait(2)
                     if espSurvivorEnabled then
                         createSurvivorESP(player)
                     end
                 end)
                 
+                VOMO.Connections["ESP_Survivor_PlayerAdded"] = playerAddedConn
+                
                 -- Clean up when players leave
-                game:GetService("Players").PlayerRemoving:Connect(function(player)
+                local playerRemovingConn
+                playerRemovingConn = game:GetService("Players").PlayerRemoving:Connect(function(player)
                     if VOMO.ESP.Survivors[player] then
                         VOMO.ESP.Survivors[player].Highlight:Destroy()
                         VOMO.ESP.Survivors[player].Billboard:Destroy()
@@ -538,17 +631,24 @@ ESPSection:Toggle{
                     end
                 end)
                 
+                VOMO.Connections["ESP_Survivor_PlayerRemoving"] = playerRemovingConn
+                
                 -- Handle character changes
-                game:GetService("Players").PlayerAdded:Connect(function(player)
-                    player.CharacterAdded:Connect(function(character)
+                for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+                    local characterAddedConn = player.CharacterAdded:Connect(function(character)
                         wait(1)
                         if espSurvivorEnabled then
+                            if VOMO.ESP.Survivors[player] then
+                                VOMO.ESP.Survivors[player].Highlight:Destroy()
+                                VOMO.ESP.Survivors[player].Billboard:Destroy()
+                                VOMO.ESP.Survivors[player] = nil
+                            end
+                            wait(0.5)
                             createSurvivorESP(player)
                         end
                     end)
-                end)
-                
-                print("Survivor ESP activated successfully")
+                    VOMO.Connections["ESP_Survivor_CharAdded_" .. player.Name] = characterAddedConn
+                end
             end)
         else
             -- Disable ESP for survivors
@@ -561,7 +661,16 @@ ESPSection:Toggle{
                 end
             end
             VOMO.ESP.Survivors = {}
-            print("Survivor ESP deactivated")
+            
+            -- Disconnect ESP connections
+            for name, conn in pairs(VOMO.Connections) do
+                if name:find("ESP_Survivor") then
+                    conn:Disconnect()
+                    VOMO.Connections[name] = nil
+                end
+            end
+            
+            SendNotification("ESP", "Survivor ESP Deactivated", 2, Color3.fromRGB(100, 255, 100))
         end
     end
 }
@@ -590,6 +699,7 @@ ESPCustomization:ColorPicker{
                 espData.NameLabel.TextColor3 = color
             end
         end
+        SendNotification("ESP", "Killer color updated", 1, color)
     end
 }
 
@@ -605,6 +715,7 @@ ESPCustomization:ColorPicker{
                 espData.NameLabel.TextColor3 = color
             end
         end
+        SendNotification("ESP", "Survivor color updated", 1, color)
     end
 }
 
@@ -627,6 +738,28 @@ ESPCustomization:Slider{
                 espData.Highlight.FillTransparency = espTransparency
             end
         end
+        SendNotification("ESP", "Transparency: " .. value .. "%", 1, Color3.fromRGB(200, 200, 200))
+    end
+}
+
+ESPCustomization:Button{
+    Name = "Refresh ESP",
+    Description = "Refresh all ESP elements",
+    Callback = function()
+        -- Toggle off and on to refresh
+        if espKillerEnabled then
+            local toggle = ESPSection:GetToggle("ESP_Killer_Toggle")
+            toggle:Set(false)
+            wait(0.1)
+            toggle:Set(true)
+        end
+        if espSurvivorEnabled then
+            local toggle = ESPSection:GetToggle("ESP_Survivor_Toggle")
+            toggle:Set(false)
+            wait(0.1)
+            toggle:Set(true)
+        end
+        SendNotification("ESP", "ESP Refreshed", 2, Color3.fromRGB(0, 180, 255))
     end
 }
 
@@ -660,6 +793,8 @@ SpeedSection:Toggle{
                 VOMO.Movement.Speed.OriginalJumpPower = character.Humanoid.JumpPower
             end
             
+            SendNotification("Speed", "Speed Enabled: " .. VOMO.Movement.Speed.Value, 2, Color3.fromRGB(0, 255, 0))
+            
             -- Advanced anti-cheat bypass speed method
             spawn(function()
                 while VOMO.Movement.Speed.Enabled do
@@ -669,12 +804,12 @@ SpeedSection:Toggle{
                     if character and character:FindFirstChild("Humanoid") then
                         local humanoid = character.Humanoid
                         
-                        -- Method 1: Direct modification (may be detected)
+                        -- Method 1: Direct modification
                         pcall(function()
                             humanoid.WalkSpeed = VOMO.Movement.Speed.Value
                         end)
                         
-                        -- Method 2: Network simulation (advanced bypass)
+                        -- Method 2: Network simulation
                         if not humanoid:GetAttribute("VOMO_SpeedModified") then
                             humanoid:SetAttribute("VOMO_SpeedModified", true)
                         end
@@ -684,11 +819,6 @@ SpeedSection:Toggle{
                             local rootPart = character.HumanoidRootPart
                             
                             -- Calculate movement direction
-                            local camera = workspace.CurrentCamera
-                            local lookVector = camera.CFrame.LookVector
-                            local rightVector = camera.CFrame.RightVector
-                            
-                            local direction = Vector3.new(0, 0, 0)
                             local moveDirection = humanoid.MoveDirection
                             
                             if moveDirection.Magnitude > 0 then
@@ -710,16 +840,6 @@ SpeedSection:Toggle{
                                 character.VOMO_SpeedVelocity:Destroy()
                             end
                         end
-                        
-                        -- Method 4: Animation speed modification
-                        if humanoid:FindFirstChildOfClass("Animator") then
-                            local animator = humanoid:FindFirstChildOfClass("Animator")
-                            for _, track in pairs(animator:GetPlayingAnimationTracks()) do
-                                if track.Animation then
-                                    track:AdjustSpeed(VOMO.Movement.Speed.Value / 16) -- Normalize to default speed
-                                end
-                            end
-                        end
                     end
                 end
                 
@@ -735,8 +855,6 @@ SpeedSection:Toggle{
                     end
                 end
             end)
-            
-            print("Speed enhancement activated: " .. VOMO.Movement.Speed.Value)
         else
             -- Restore original values
             local character = game.Players.LocalPlayer.Character
@@ -749,7 +867,7 @@ SpeedSection:Toggle{
                     character.Humanoid:SetAttribute("VOMO_SpeedModified", nil)
                 end
             end
-            print("Speed enhancement deactivated")
+            SendNotification("Speed", "Speed Disabled", 2, Color3.fromRGB(255, 100, 100))
         end
     end
 }
@@ -778,9 +896,21 @@ SpeedSection:Slider{
                     end
                 end
             end
+            SendNotification("Speed", "Speed: " .. value, 1, Color3.fromRGB(0, 200, 255))
         end
-        
-        print("Speed adjusted to: " .. value)
+    end
+}
+
+SpeedSection:Button{
+    Name = "Reset Speed",
+    Description = "Reset to default walking speed",
+    Callback = function()
+        VOMO.Movement.Speed.Value = 16
+        local slider = SpeedSection:GetSlider("Speed_Value")
+        if slider then
+            slider:Set(16)
+        end
+        SendNotification("Speed", "Speed reset to 16", 2, Color3.fromRGB(200, 200, 200))
     end
 }
 
@@ -800,6 +930,8 @@ FlySection:Toggle{
         VOMO.Movement.Fly.Enabled = state
         
         if state then
+            SendNotification("Flight", "Flight Enabled", 2, Color3.fromRGB(0, 255, 255))
+            
             -- Initialize flight system
             local function StartFlight()
                 local character = game.Players.LocalPlayer.Character
@@ -817,7 +949,7 @@ FlySection:Toggle{
                     character.VOMO_FlyBodyGyro:Destroy()
                 end
                 
-                -- Create flight components with fake names
+                -- Create flight components
                 local bodyVelocity = Instance.new("BodyVelocity")
                 bodyVelocity.Name = "VOMO_FlyBodyVelocity"
                 bodyVelocity.MaxForce = Vector3.new(10000, 10000, 10000)
@@ -852,7 +984,6 @@ FlySection:Toggle{
                             break
                         end
                         
-                        local rootPart = character.HumanoidRootPart
                         local camera = workspace.CurrentCamera
                         
                         if not VOMO.Movement.Fly.BodyVelocity or not VOMO.Movement.Fly.BodyGyro then
@@ -869,7 +1000,7 @@ FlySection:Toggle{
                         -- Calculate flight direction
                         local direction = Vector3.new(0, 0, 0)
                         
-                        -- WASD controls with advanced input detection
+                        -- WASD controls
                         local UserInputService = game:GetService("UserInputService")
                         
                         if UserInputService:IsKeyDown(Enum.KeyCode.W) then
@@ -890,14 +1021,6 @@ FlySection:Toggle{
                         if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) then
                             direction = direction - upVector
                         end
-                        if UserInputService:IsKeyDown(Enum.KeyCode.E) then
-                            -- Ascend faster
-                            direction = direction + (upVector * 2)
-                        end
-                        if UserInputService:IsKeyDown(Enum.KeyCode.Q) then
-                            -- Descend faster
-                            direction = direction - (upVector * 2)
-                        end
                         
                         -- Normalize and apply speed
                         if direction.Magnitude > 0 then
@@ -909,21 +1032,15 @@ FlySection:Toggle{
                             VOMO.Movement.Fly.BodyVelocity.Velocity = direction
                         end
                         
-                        -- Update rotation to face movement direction
+                        -- Update rotation
                         if VOMO.Movement.Fly.BodyGyro then
-                            if direction.Magnitude > 0 then
-                                VOMO.Movement.Fly.BodyGyro.CFrame = CFrame.new(Vector3.new(), direction) * CFrame.Angles(0, camera.CFrame.Y, 0)
-                            else
-                                VOMO.Movement.Fly.BodyGyro.CFrame = camera.CFrame
-                            end
+                            VOMO.Movement.Fly.BodyGyro.CFrame = camera.CFrame
                         end
                     end
                     
                     -- Cleanup
                     VOMO.Movement.Fly.Flying = false
                 end)
-                
-                print("Flight system activated with speed: " .. VOMO.Movement.Fly.Speed)
             end
         else
             -- Stop flight system
@@ -942,7 +1059,7 @@ FlySection:Toggle{
             VOMO.Movement.Fly.BodyVelocity = nil
             VOMO.Movement.Fly.BodyGyro = nil
             
-            print("Flight system deactivated")
+            SendNotification("Flight", "Flight Disabled", 2, Color3.fromRGB(255, 100, 100))
         end
     end
 }
@@ -964,17 +1081,29 @@ FlySection:Slider{
                 VOMO.Movement.Fly.BodyVelocity.Velocity = currentVelocity.Unit * value
             end
         end
-        
-        print("Flight speed adjusted to: " .. value)
+        SendNotification("Flight", "Flight Speed: " .. value, 1, Color3.fromRGB(0, 200, 255))
     end
 }
 
 -- Flight controls information
 FlySection:Label{
     Text = "Flight Controls:",
-    Description = "WASD - Movement | Space - Ascend | Shift - Descend | E/Q - Fast Ascend/Descend",
+    Description = "WASD - Movement | Space - Ascend | Shift - Descend",
     Color = Color3.fromRGB(0, 200, 255),
     Bold = true
+}
+
+FlySection:Button{
+    Name = "Reset Flight",
+    Description = "Reset flight to default settings",
+    Callback = function()
+        VOMO.Movement.Fly.Speed = 30
+        local slider = FlySection:GetSlider("Flight_Speed")
+        if slider then
+            slider:Set(30)
+        end
+        SendNotification("Flight", "Flight reset to default", 2, Color3.fromRGB(200, 200, 200))
+    end
 }
 
 -- Advanced bypass techniques section
@@ -1007,33 +1136,18 @@ AdvancedBypass:Toggle{
                     local args = {...}
                     
                     if method == "Kick" or method == "kick" then
-                        warn("[VOMO] Kick attempt blocked")
-                        return nil
-                    end
-                    
-                    if method == "Destroy" and tostring(self):find("VOMO") then
-                        warn("[VOMO] Protected object destruction attempt blocked")
+                        SendNotification("Security", "Kick attempt blocked", 2, Color3.fromRGB(255, 0, 0))
                         return nil
                     end
                     
                     return oldNamecall(self, unpack(args))
                 end)
                 
-                -- Protect against teleports to bad places
-                mt.__index = newcclosure(function(self, key)
-                    if key == "Teleport" or key == "teleport" then
-                        warn("[VOMO] Teleport access blocked")
-                        return function() end
-                    end
-                    
-                    return oldIndex(self, key)
-                end)
-                
                 setreadonly(mt, true)
-                print("Anti-kick protection activated")
+                SendNotification("Security", "Anti-Kick Protection Enabled", 2, Color3.fromRGB(0, 255, 0))
             end
         else
-            print("Anti-kick protection deactivated")
+            SendNotification("Security", "Anti-Kick Protection Disabled", 2, Color3.fromRGB(255, 100, 100))
         end
     end
 }
@@ -1049,9 +1163,6 @@ AdvancedBypass:Toggle{
             -- Clear output
             if rconsoleclear then
                 rconsoleclear()
-            end
-            if clr then
-                clr()
             end
             
             -- Hook print function
@@ -1071,10 +1182,78 @@ AdvancedBypass:Toggle{
                     oldPrint(...)
                 end
             end
-            print("Anti-log detection activated")
+            SendNotification("Security", "Anti-Log Enabled", 2, Color3.fromRGB(0, 255, 0))
         else
-            print("Anti-log detection deactivated")
+            SendNotification("Security", "Anti-Log Disabled", 2, Color3.fromRGB(255, 100, 100))
         end
+    end
+}
+
+AdvancedBypass:Button{
+    Name = "Safe Cleanup",
+    Description = "Safely remove all script modifications",
+    Callback = function()
+        SendNotification("Cleanup", "Starting safe cleanup...", 2, Color3.fromRGB(255, 170, 0))
+        
+        -- Disable all features
+        VOMO.Movement.Speed.Enabled = false
+        VOMO.Movement.Fly.Enabled = false
+        VOMO.Movement.Fly.Flying = false
+        espKillerEnabled = false
+        espSurvivorEnabled = false
+        
+        -- Clean up ESP
+        for player, espData in pairs(VOMO.ESP.Killers) do
+            if espData.Highlight then
+                espData.Highlight:Destroy()
+            end
+            if espData.Billboard then
+                espData.Billboard:Destroy()
+            end
+        end
+        VOMO.ESP.Killers = {}
+        
+        for player, espData in pairs(VOMO.ESP.Survivors) do
+            if espData.Highlight then
+                espData.Highlight:Destroy()
+            end
+            if espData.Billboard then
+                espData.Billboard:Destroy()
+            end
+        end
+        VOMO.ESP.Survivors = {}
+        
+        -- Clean up movement
+        local character = game.Players.LocalPlayer.Character
+        if character then
+            if character:FindFirstChild("VOMO_SpeedVelocity") then
+                character.VOMO_SpeedVelocity:Destroy()
+            end
+            if character:FindFirstChild("VOMO_FlyBodyVelocity") then
+                character.VOMO_FlyBodyVelocity:Destroy()
+            end
+            if character:FindFirstChild("VOMO_FlyBodyGyro") then
+                character.VOMO_FlyBodyGyro:Destroy()
+            end
+            if character:FindFirstChild("Humanoid") then
+                character.Humanoid.WalkSpeed = 16
+            end
+        end
+        
+        -- Reset UI toggles
+        local speedToggle = SpeedSection:GetToggle("Speed_Enable_Toggle")
+        if speedToggle then speedToggle:Set(false) end
+        
+        local flyToggle = FlySection:GetToggle("Fly_Enable_Toggle")
+        if flyToggle then flyToggle:Set(false) end
+        
+        local killerToggle = ESPSection:GetToggle("ESP_Killer_Toggle")
+        if killerToggle then killerToggle:Set(false) end
+        
+        local survivorToggle = ESPSection:GetToggle("ESP_Survivor_Toggle")
+        if survivorToggle then survivorToggle:Set(false) end
+        
+        SendNotification("Cleanup", "Cleanup completed successfully", 3, Color3.fromRGB(0, 255, 0))
     end
 }
 
@@ -1087,6 +1266,7 @@ game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(character
         if character:FindFirstChild("Humanoid") then
             character.Humanoid.WalkSpeed = VOMO.Movement.Speed.Value
         end
+        SendNotification("System", "Speed reapplied to new character", 2, Color3.fromRGB(0, 200, 255))
     end
     
     -- Reapply flight if enabled
@@ -1100,10 +1280,12 @@ game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(character
         if flyToggle then
             flyToggle:Set(true)
         end
+        SendNotification("System", "Flight reapplied to new character", 2, Color3.fromRGB(0, 200, 255))
     end
     
     -- Reapply ESP if enabled
     if espKillerEnabled then
+        wait(0.5)
         local killerToggle = ESPSection:GetToggle("ESP_Killer_Toggle")
         if killerToggle then
             killerToggle:Set(true)
@@ -1111,6 +1293,7 @@ game:GetService("Players").LocalPlayer.CharacterAdded:Connect(function(character
     end
     
     if espSurvivorEnabled then
+        wait(0.5)
         local survivorToggle = ESPSection:GetToggle("ESP_Survivor_Toggle")
         if survivorToggle then
             survivorToggle:Set(true)
@@ -1120,7 +1303,7 @@ end)
 
 -- Global cleanup on script termination
 local function Cleanup()
-    print("[VOMO] Performing cleanup...")
+    SendNotification("System", "Performing cleanup...", 2, Color3.fromRGB(255, 170, 0))
     
     -- Clean up ESP
     for player, espData in pairs(VOMO.ESP.Killers) do
@@ -1168,7 +1351,7 @@ local function Cleanup()
     end
     VOMO.Connections = {}
     
-    print("[VOMO] Cleanup completed")
+    SendNotification("System", "Cleanup completed", 2, Color3.fromRGB(0, 255, 0))
 end
 
 -- Register cleanup function
@@ -1189,6 +1372,7 @@ UserInputService.InputBegan:Connect(function(input, processed)
         -- Toggle GUI with F9
         if input.KeyCode == Enum.KeyCode.F9 then
             MainWindow:Toggle()
+            SendNotification("Interface", "GUI " .. (MainWindow.Enabled and "shown" or "hidden"), 1, Color3.fromRGB(0, 180, 255))
         end
         
         -- Toggle speed with F2
@@ -1222,12 +1406,20 @@ UserInputService.InputBegan:Connect(function(input, processed)
                 survivorToggle:Set(not espSurvivorEnabled)
             end
         end
+        
+        -- Safe cleanup with F6
+        if input.KeyCode == Enum.KeyCode.F6 then
+            local cleanupBtn = AdvancedBypass:GetButton("Safe Cleanup")
+            if cleanupBtn then
+                cleanupBtn:Callback()
+            end
+        end
     end
 end)
 
 -- Final initialization message
 print("==========================================")
-print("VOMO_ Enhancement Suite v2.0")
+print("VOMO_ Enhancement Suite v2.1")
 print("Successfully loaded and initialized")
 print("==========================================")
 print("Shortcuts:")
@@ -1236,7 +1428,10 @@ print("F2 - Toggle Speed")
 print("F3 - Toggle Flight")
 print("F4 - Toggle Killer ESP")
 print("F5 - Toggle Survivor ESP")
+print("F6 - Safe Cleanup")
 print("==========================================")
+
+SendNotification("VOMO_", "Enhancement Suite Ready!", 3, Color3.fromRGB(0, 255, 0))
 
 -- Return module for external access
 return VOMO
