@@ -1,2053 +1,2315 @@
---[[
-    基于第三方UI库的完整高级UI系统（增强版）
-    版本: 3.0 Premium
-    作者: 根据您的需求和示例代码定制
-    使用库: dingding123hhh/jmlibrary1.lua
-    总代码量: 1500+字
-    
-    功能清单:
-    [核心功能]
-    1. 与图片完全一致的UI界面结构
-    2. 高级彩色描边效果（彩虹渐变、脉动、闪烁）
-    3. 左上角动态玩家欢迎信息（带粒子效果）
-    4. 开关UI动画系统（1秒透明度变化，带缓动曲线）
-    5. 提示窗系统（彩色方块，从右到上，3秒销毁，带进度条）
-    6. 点击动画系统（101010111数字球散开，带物理模拟）
-    7. 注入器黑名单系统（智能检测，多级验证）
-    8. 玩家名称黑名单系统（实时监控，自动踢出）
-    
-    [高级功能]
-    9. 主题系统（5种预设主题，自定义主题）
-    10. 动画曲线编辑器（自定义缓动函数）
-    11. 性能监控面板（FPS，内存使用）
-    12. 快捷键系统（自定义快捷键绑定）
-    13. 配置文件保存/加载
-    14. 自动更新检查
-    15. 错误报告系统
-    
-    [安全功能]
-    16. 反检测机制（多层级防护）
-    17. 加密配置存储
-    18. 运行时完整性检查
-    19. 远程黑名单同步
-    20. 安全日志记录
-]]
+local LocalPlayer = game:GetService('Players').LocalPlayer;
+local Mouse = LocalPlayer:GetMouse();
+local InputService = game:GetService('UserInputService');
+local TextService = game:GetService('TextService');
+local TweenService = game:GetService('TweenService');
+local CoreGui = game:FindFirstChild('CoreGui') or LocalPlayer.PlayerGui;
 
--- ========== 第一部分：高级初始化与库加载 ==========
-print("[Vlop UI System] 正在初始化高级UI系统...")
-print("[Vlop UI System] 版本: 3.0 Premium")
-print("[Vlop UI System] 编译时间: " .. os.date("%Y-%m-%d %H:%M:%S"))
+local ProtectGui = protectgui or (syn and syn.protect_gui) or (function() end);
 
--- 加载第三方UI库（带错误处理）
-local library, libraryError = pcall(function()
-    return loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/dingding123hhh/hun/main/jmlibrary1.lua"))()
-end)
-
-if not library then
-    warn("[Vlop UI System] 无法加载UI库: " .. tostring(libraryError))
-    game:GetService("StarterGui"):SetCore("SendNotification", {
-        Title = "Vlop UI 错误",
-        Text = "无法加载UI库，请检查网络连接",
-        Icon = "rbxassetid://4483345998",
-        Duration = 5
-    })
-    return
+local function cretate_button(asd)
+	local button=Instance.new('TextButton')
+	button.Size=UDim2.new(1,0,1,0)
+	button.BackgroundTransparency=1
+	button.TextTransparency=1
+	button.Text=""
+	button.Parent=asd
+	button.ZIndex=5000
+	return button
 end
 
-print("[Vlop UI System] UI库加载成功")
 
--- 获取所有必要的Roblox服务
-local Services = {
-    Players = game:GetService("Players"),
-    TweenService = game:GetService("TweenService"),
-    RunService = game:GetService("RunService"),
-    HttpService = game:GetService("HttpService"),
-    UserInputService = game:GetService("UserInputService"),
-    TextService = game:GetService("TextService"),
-    Lighting = game:GetService("Lighting"),
-    SoundService = game:GetService("SoundService"),
-    MarketplaceService = game:GetService("MarketplaceService"),
-    ReplicatedStorage = game:GetService("ReplicatedStorage"),
-    StarterGui = game:GetService("StarterGui"),
-    CoreGui = game:GetService("CoreGui")
+local function ConnectButtonEffect(UIFrame:Frame&TextButton&ImageLabel,UIStroke:UIStroke,int)
+	if not UIStroke then
+		return
+	end
+
+	int = int or 0.2
+	local OldColor = UIStroke.Color
+	local R,G,B = OldColor.R,OldColor.G,OldColor.B
+	local MainColor = Color3.fromHSV(R,G,B + int)
+
+	UIFrame.InputBegan:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.Touch or Input.UserInputType == Enum.UserInputType.MouseMovement then
+			TweenService:Create(UIStroke,TweenInfo.new(0.2),{Color = MainColor}):Play()
+		end
+	end)
+
+	UIFrame.InputEnded:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.Touch or Input.UserInputType == Enum.UserInputType.MouseMovement then
+			TweenService:Create(UIStroke,TweenInfo.new(0.2),{Color = OldColor}):Play()
+		end
+	end)
+end
+
+local function scrolling_connect(scrollframe:ScrollingFrame)
+	task.spawn(function()
+		local addres = 45
+		local UIListLayout:UIListLayout = scrollframe:WaitForChild('UIListLayout',9999999)
+		scrollframe.CanvasSize=UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y+addres)
+
+		UIListLayout:GetPropertyChangedSignal('AbsoluteContentSize'):Connect(function()
+			scrollframe.CanvasSize=UDim2.new(0,0,0,UIListLayout.AbsoluteContentSize.Y+addres)
+		end)
+	end)
+end
+
+local function GetImageData(name:string,image:ImageLabel)
+	name = name or "ADS"
+	name = name:lower()
+	local NigImage = "rbxassetid://3926305904"
+	if name == "ads" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(205,565)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "list" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(485,205)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "folder" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(805,45)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "earth" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(604,324)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "locked" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(524, 644)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "home" then
+		image.Image = NigImage
+		image.ImageRectOffset = Vector2.new(964, 205)
+		image.ImageRectSize = Vector2.new(35,35)
+	end
+
+	if name == "mouse" then
+		image.Image = "rbxassetid://3515393063"
+	end
+
+	if name == "user" then
+		image.Image = "rbxassetid://10494577250"
+	end
+end
+
+local NEVERLOSE = {
+	auto_function = {},
+	Themes = {
+		BlackgroundColor = Color3.fromRGB(43, 43, 43),
+		BlackColor = Color3.fromRGB(16, 16, 16),
+		HeaderColor = Color3.fromRGB(47, 47, 47),
+		TraceColor = Color3.fromRGB(100, 100, 100),
+		MainColor = Color3.fromRGB(255, 140, 0),
+		MainColorDrop = Color3.fromRGB(65, 54, 31),
+		SectionColor = Color3.fromRGB(26, 26, 26),
+		StrokeColor = Color3.fromRGB(50, 50, 50),
+		ButtonBlackgroundColor = Color3.fromRGB(26, 26, 26)
+	},
+	_Version="10.C",
+	_Name="NEVERLOSE"
 }
 
--- 获取本地玩家
-local localPlayer = Services.Players.LocalPlayer
-local playerGui = localPlayer:WaitForChild("PlayerGui")
+print(NEVERLOSE._Name..":",NEVERLOSE._Version..':',[[https://neverlose.cc/]],": UI BY OWNER BEDOL HUB","__ui")
 
--- 高级系统状态变量
-local SystemState = {
-    isUIVisible = true,
-    isInitialized = false,
-    isSafeMode = false,
-    currentTheme = "Default",
-    currentExecutor = identifyexecutor and identifyexecutor() or "Unknown",
-    systemStartTime = tick(),
-    sessionId = HttpService:GenerateGUID(false),
-    performanceStats = {
-        fps = 0,
-        memoryUsage = 0,
-        updateCount = 0
-    }
-}
+function NEVERLOSE:Theme(name)
+	name = tostring(name or "original"):lower()
+	if name == "original" then
+		NEVERLOSE.Themes.BlackgroundColor = Color3.fromRGB(1, 17, 33)
+		NEVERLOSE.Themes.BlackColor = Color3.fromRGB(9, 9, 19)
+		NEVERLOSE.Themes.HeaderColor = Color3.fromRGB(7, 7, 17)
+		NEVERLOSE.Themes.TraceColor = Color3.fromRGB(0, 34, 44)
+		NEVERLOSE.Themes.MainColor = Color3.fromRGB(19, 176, 243)
+		NEVERLOSE.Themes.MainColorDrop = Color3.fromRGB(3, 6, 25)
+		NEVERLOSE.Themes.SectionColor = Color3.fromRGB(0, 17, 35)
+		NEVERLOSE.Themes.StrokeColor = Color3.fromRGB(3, 35, 50)
+		NEVERLOSE.Themes.ButtonBlackgroundColor = Color3.fromRGB(2, 5, 22)
+	end
 
--- 黑名单系统配置（多层防护）
-local SecurityConfig = {
-    injectorWhitelist = {"Delta", "Synapse X", "ScriptWare"},
-    playerBlacklist = {
-        "FengYu792",
-        "BadPlayer1",
-        "BadPlayer2",
-        "Hacker123"
-    },
-    remoteBlacklistUrl = "https://raw.githubusercontent.com/VlopSecurity/blacklist/main/list.json",
-    securityLevel = "High", -- Low, Medium, High, Extreme
-    enableAutoKick = true,
-    enableLogging = true,
-    encryptionKey = "VlopSecure2023"
-}
+	if name == "nightly" then
+		NEVERLOSE.Themes.BlackgroundColor = Color3.fromRGB(43, 43, 43)
+		NEVERLOSE.Themes.BlackColor = Color3.fromRGB(16, 16, 16)
+		NEVERLOSE.Themes.HeaderColor = Color3.fromRGB(47, 47, 47)
+		NEVERLOSE.Themes.TraceColor = Color3.fromRGB(100, 100, 100)
+		NEVERLOSE.Themes.MainColor = Color3.fromRGB(255, 140, 0)
+		NEVERLOSE.Themes.MainColorDrop = Color3.fromRGB(65, 54, 31)
+		NEVERLOSE.Themes.SectionColor = Color3.fromRGB(26, 26, 26)
+		NEVERLOSE.Themes.StrokeColor = Color3.fromRGB(50, 50, 50)
+		NEVERLOSE.Themes.ButtonBlackgroundColor = Color3.fromRGB(26, 26, 26)
+	end
 
--- UI元素引用表（全局管理）
-local UIReferences = {
-    mainWindow = nil,
-    mainFrame = nil,
-    allElements = {},
-    animations = {},
-    connections = {}
-}
-
--- 主题配置系统
-local ThemeSystem = {
-    current = "Default",
-    themes = {
-        Default = {
-            primary = Color3.fromRGB(0, 120, 215),
-            secondary = Color3.fromRGB(30, 30, 40),
-            accent = Color3.fromRGB(255, 170, 0),
-            text = Color3.fromRGB(255, 255, 255),
-            background = Color3.fromRGB(25, 25, 35)
-        },
-        Dark = {
-            primary = Color3.fromRGB(10, 10, 10),
-            secondary = Color3.fromRGB(40, 40, 50),
-            accent = Color3.fromRGB(170, 170, 170),
-            text = Color3.fromRGB(220, 220, 220),
-            background = Color3.fromRGB(20, 20, 30)
-        },
-        Neon = {
-            primary = Color3.fromRGB(0, 255, 255),
-            secondary = Color3.fromRGB(0, 0, 0),
-            accent = Color3.fromRGB(255, 0, 255),
-            text = Color3.fromRGB(255, 255, 255),
-            background = Color3.fromRGB(10, 10, 20)
-        },
-        Nature = {
-            primary = Color3.fromRGB(76, 175, 80),
-            secondary = Color3.fromRGB(56, 142, 60),
-            accent = Color3.fromRGB(255, 193, 7),
-            text = Color3.fromRGB(255, 255, 255),
-            background = Color3.fromRGB(27, 94, 32)
-        },
-        Sunset = {
-            primary = Color3.fromRGB(255, 87, 34),
-            secondary = Color3.fromRGB(121, 85, 72),
-            accent = Color3.fromRGB(255, 193, 7),
-            text = Color3.fromRGB(255, 255, 255),
-            background = Color3.fromRGB(183, 28, 28)
-        }
-    }
-}
-
--- ========== 第二部分：高级工具函数模块 ==========
-local AdvancedUIFunctions = {}
-
--- 高级颜色生成器
-function AdvancedUIFunctions.generateColor(mode, ...)
-    local args = {...}
-    if mode == "rainbow" then
-        local t = tick() * (args[1] or 1)
-        local hue = (t % 1)
-        return Color3.fromHSV(hue, 1, 1)
-    elseif mode == "gradient" then
-        local t = tick() * (args[1] or 0.5)
-        local progress = (math.sin(t) + 1) / 2
-        return Color3.fromRGB(
-            math.floor(args[2].R * 255 * progress + args[3].R * 255 * (1 - progress)),
-            math.floor(args[2].G * 255 * progress + args[3].G * 255 * (1 - progress)),
-            math.floor(args[2].B * 255 * progress + args[3].B * 255 * (1 - progress))
-        )
-    elseif mode == "pulse" then
-        local t = tick() * (args[1] or 2)
-        local intensity = (math.sin(t) + 1) / 2
-        return Color3.fromRGB(
-            math.floor(args[2].R * 255 * intensity),
-            math.floor(args[2].G * 255 * intensity),
-            math.floor(args[2].B * 255 * intensity)
-        )
-    else
-        return Color3.new(math.random(), math.random(), math.random())
-    end
+	if name == "dark" then
+		NEVERLOSE.Themes.BlackgroundColor = Color3.fromRGB(37, 37, 37)
+		NEVERLOSE.Themes.BlackColor = Color3.fromRGB(8, 8, 8)
+		NEVERLOSE.Themes.HeaderColor = Color3.fromRGB(8, 8, 8)
+		NEVERLOSE.Themes.TraceColor = Color3.fromRGB(25, 25, 25)
+		NEVERLOSE.Themes.MainColor = Color3.fromRGB(0, 172, 247)
+		NEVERLOSE.Themes.MainColorDrop = Color3.fromRGB(64, 65, 67)
+		NEVERLOSE.Themes.SectionColor = Color3.fromRGB(13, 13, 13)
+		NEVERLOSE.Themes.StrokeColor = Color3.fromRGB(28, 28, 28)
+		NEVERLOSE.Themes.ButtonBlackgroundColor = Color3.fromRGB(13, 13, 13)
+	end
 end
 
--- 高级动画创建器
-function AdvancedUIFunctions.createAdvancedAnimation(object, properties, options)
-    options = options or {}
-    local tweenInfo = TweenInfo.new(
-        options.duration or 1,
-        options.easingStyle or Enum.EasingStyle.Quad,
-        options.easingDirection or Enum.EasingDirection.Out,
-        options.repeatCount or 0,
-        options.reverses or false,
-        options.delayTime or 0
-    )
-    
-    local tween = Services.TweenService:Create(object, tweenInfo, properties)
-    
-    if options.onComplete then
-        tween.Completed:Connect(options.onComplete)
-    end
-    
-    return tween
+function NEVERLOSE:AddWindow(NameScriptHub,Text,UICustomSize)
+	local WindowFunctinos={}
+	local ToggleUI=false
+	local ooldsize=UICustomSize or UDim2.new(0.200000003, 210, 0.200000003, 175)
+	local Tabs={}
+
+	local ScreenGui = Instance.new("ScreenGui")
+	local Frame = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Frame_2 = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local Frame_3 = Instance.new("Frame")
+	local UICorner_3 = Instance.new("UICorner")
+	local DropShadow = Instance.new("ImageLabel")
+	local HeadName = Instance.new("TextLabel")
+	local TabButtons = Instance.new("ScrollingFrame")
+	local UIListLayout = Instance.new("UIListLayout")
+	local TabHose = Instance.new("Frame")
+	local outlo = Instance.new("Frame")
+	local UICorner_4 = Instance.new("UICorner")
+	local outlo_2 = Instance.new("Frame")
+	local UICorner_5 = Instance.new("UICorner")
+	local outlo_3 = Instance.new("Frame")
+	local UICorner_6 = Instance.new("UICorner")
+	local UserData = Instance.new("Frame")
+	local UICorner_7 = Instance.new("UICorner")
+	local UserImage = Instance.new("ImageLabel")
+	local UICorner_8 = Instance.new("UICorner")
+	local UserName = Instance.new("TextLabel")
+	local headd2text
+	local oldPositionClose
+	
+	--Anti Spoofer
+	ScreenGui:GetPropertyChangedSignal('Enabled'):Connect(function()
+		if not ScreenGui.Enabled then
+			ScreenGui.Enabled=true
+		end
+	end)
+	
+	task.spawn(function()
+		if Text then
+			local TextLabel = Instance.new("TextLabel")
+
+			TextLabel.Parent = Frame
+			TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.BackgroundTransparency = 1.000
+			TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			TextLabel.BorderSizePixel = 0
+			TextLabel.Position = UDim2.new(0.243000001, 0, 0.0250000004, 0)
+			TextLabel.Size = UDim2.new(0.666889787, 0, 0.0627818182, 0)
+			TextLabel.ZIndex = 5
+			TextLabel.Font = Enum.Font.SourceSansBold
+			TextLabel.Text = Text or" "
+			TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+			TextLabel.TextScaled = true
+			TextLabel.TextSize = 14.000
+			TextLabel.TextStrokeColor3 = Color3.fromRGB(0, 255, 255)
+			TextLabel.TextStrokeTransparency = 0.900
+			TextLabel.TextWrapped = true
+			TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+			TextLabel.RichText=true
+
+			headd2text=TextLabel
+		end
+	end)
+
+	local toggle_valu = true
+
+	local function ui_toggleong(val)
+		local uptime=1.4
+		if val then
+			TweenService:Create(Frame,TweenInfo.new(uptime,Enum.EasingStyle.Quint),{Size=ooldsize,Position=UDim2.new(0.5,0,0.5,0)}):Play()
+			TweenService:Create(HeadName,TweenInfo.new(uptime/3,Enum.EasingStyle.Quint),{Size=UDim2.new(0.205458686, 0, 0.133462012, 0),Position=UDim2.new(0.0100000342, 0, 0.010000146, 0)}):Play()
+
+
+			TweenService:Create(TabHose,TweenInfo.new(0.3),{Position=UDim2.new(.223,0,0.143,0)}):Play()
+			TweenService:Create(TabButtons,TweenInfo.new(0.3),{Position=UDim2.new(.008,0,0.143,0)}):Play()
+
+			if headd2text then
+				TweenService:Create(headd2text,TweenInfo.new(0.3),{TextTransparency=0,TextStrokeTransparency=0.900}):Play()
+			end
+
+			TweenService:Create(UserName,TweenInfo.new(0.3),{TextTransparency=0,TextStrokeTransparency=1}):Play()
+			TweenService:Create(UserImage,TweenInfo.new(0.3),{ImageTransparency=0}):Play()
+			TweenService:Create(outlo,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
+			TweenService:Create(outlo_2,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
+			TweenService:Create(outlo_3,TweenInfo.new(0.3),{BackgroundTransparency=0.7}):Play()
+			TweenService:Create(Frame_2,TweenInfo.new(0.3),{BackgroundTransparency=0}):Play()
+			TweenService:Create(Frame_3,TweenInfo.new(0.3),{BackgroundTransparency=0.9}):Play()
+			TweenService:Create(DropShadow,TweenInfo.new(0.3),{ImageTransparency=0.86}):Play()
+
+		else
+			TweenService:Create(Frame,TweenInfo.new(uptime,Enum.EasingStyle.Quint),{Size=UDim2.new(0.14, 0,0.14, 0),Position=oldPositionClose}):Play()
+			TweenService:Create(HeadName,TweenInfo.new(uptime/1.2,Enum.EasingStyle.Quint),{Size=UDim2.new(0.9, 0,0.5, 0),Position=UDim2.new(0.046,0,0.24,0)}):Play()
+
+			TweenService:Create(TabHose,TweenInfo.new(0.3),{Position=UDim2.new(1.5,0,0.143,0)}):Play()
+			TweenService:Create(TabButtons,TweenInfo.new(0.3),{Position=UDim2.new(-1.25,0,0.143,0)}):Play()
+
+			if headd2text then
+				TweenService:Create(headd2text,TweenInfo.new(0.3),{TextTransparency=1,TextStrokeTransparency=1}):Play()
+			end
+
+			TweenService:Create(UserName,TweenInfo.new(0.3),{TextTransparency=1,TextStrokeTransparency=1}):Play()
+			TweenService:Create(UserImage,TweenInfo.new(0.3),{ImageTransparency=1}):Play()
+			TweenService:Create(outlo,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			TweenService:Create(outlo_2,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			TweenService:Create(outlo_3,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			TweenService:Create(Frame_2,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			TweenService:Create(Frame_3,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			TweenService:Create(DropShadow,TweenInfo.new(0.3),{ImageTransparency=1}):Play()
+		end
+	end
+
+	task.spawn(function()
+		local ImageButton = Instance.new("ImageButton")
+
+		ImageButton.Parent = Frame
+		ImageButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		ImageButton.BackgroundTransparency = 1.000
+		ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		ImageButton.BorderSizePixel = 0
+		ImageButton.Position = UDim2.new(0.908723712, 0, 0.0239103697, 0)
+		ImageButton.Size = UDim2.new(0.0900000036, 0, 0.0900000036, 0)
+		ImageButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
+		ImageButton.ZIndex = 4
+		ImageButton.Image = "rbxassetid://10002398990"
+		ImageButton.ScaleType = Enum.ScaleType.Fit
+
+		ImageButton.MouseButton1Click:Connect(function()
+			toggle_valu=not toggle_valu
+
+			if toggle_valu then
+				oldPositionClose = Frame.Position
+				TweenService:Create(ImageButton,TweenInfo.new(0.5),{
+					Size=UDim2.new(0.0900000036, 0, 0.0900000036, 0),
+					Position=UDim2.new(0.908723712, 0, 0.0239103697, 0),
+					AnchorPoint=Vector2.new(0,0)
+				}):Play()
+			else
+				TweenService:Create(ImageButton,TweenInfo.new(0.5),{
+					Size=UDim2.new(0.3, 0,0.3, 0),
+					Position=UDim2.new(1,0,-0.009,0),
+					AnchorPoint=Vector2.new(1,0)
+				}):Play()
+			end
+
+			ui_toggleong(toggle_valu)
+		end)
+	end)
+
+	task.spawn(function()
+		local dragToggle = nil
+		local dragSpeed = 0.15
+		local dragStart = nil
+		local startPos = nil
+
+		local function updateInput(input)
+			local delta = input.Position - dragStart
+			local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			game:GetService('TweenService'):Create(Frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+		end
+
+		Frame.InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not toggle_valu then 
+				dragToggle = true
+				dragStart = input.Position
+				startPos = Frame.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragToggle = false
+					end
+				end)
+			end
+		end)
+
+		InputService.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				if dragToggle and not toggle_valu then
+					updateInput(input)
+				end
+			end
+		end)
+	end)
+
+	ScreenGui.Parent = CoreGui
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.IgnoreGuiInset = true
+	ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
+	ProtectGui(ScreenGui)
+
+	Frame.Parent = ScreenGui
+	Frame.Active = true
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	Frame.BackgroundColor3 = NEVERLOSE.Themes.BlackgroundColor
+	Frame.BackgroundTransparency = 0.200
+	Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame.BorderSizePixel = 0
+	Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Frame.Size = UDim2.new(0,0,0,0)
+	Frame.ZIndex = 2
+	Frame.ClipsDescendants=true
+
+	TweenService:Create(Frame,TweenInfo.new(1,Enum.EasingStyle.Quint),{Size=ooldsize}):Play()
+
+	UICorner.Parent = Frame
+
+	Frame_2.Parent = Frame
+	Frame_2.BackgroundColor3 = NEVERLOSE.Themes.BlackColor
+	Frame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame_2.BorderSizePixel = 0
+	Frame_2.Position = UDim2.new(0.223214373, 0, 0, 0)
+	Frame_2.Size = UDim2.new(0.774634778, 0, 1, 0)
+	Frame_2.ZIndex = 2
+
+	UICorner_2.CornerRadius = UDim.new(0, 4)
+	UICorner_2.Parent = Frame_2
+
+	Frame_3.Parent = Frame
+	Frame_3.BackgroundColor3 = NEVERLOSE.Themes.HeaderColor
+	Frame_3.BackgroundTransparency = 0.900
+	Frame_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame_3.BorderSizePixel = 0
+	Frame_3.Position = UDim2.new(0.223214373, 0, 0, 0)
+	Frame_3.Size = UDim2.new(0.774999976, 0, 0.140000001, 0)
+	Frame_3.ZIndex = 4
+
+	UICorner_3.CornerRadius = UDim.new(0, 4)
+	UICorner_3.Parent = Frame_3
+
+	DropShadow.Name = "DropShadow"
+	DropShadow.Parent = Frame
+	DropShadow.AnchorPoint = Vector2.new(0.5, 0.5)
+	DropShadow.BackgroundTransparency = 1.000
+	DropShadow.BorderSizePixel = 0
+	DropShadow.Position = UDim2.new(0.963742971, 0, 0.5, 0)
+	DropShadow.Size = UDim2.new(-0.0510042384, 47, 0.839458942, 47)
+	DropShadow.ZIndex = 3
+	DropShadow.Image = "rbxassetid://6014261993"
+	DropShadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
+	DropShadow.ImageTransparency = 0.860
+	DropShadow.ScaleType = Enum.ScaleType.Slice
+	DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
+
+	HeadName.Name = "HeadName"
+	HeadName.Parent = Frame
+	HeadName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	HeadName.BackgroundTransparency = 1.000
+	HeadName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	HeadName.BorderSizePixel = 0
+	HeadName.Position = UDim2.new(0.0100000342, 0, 0.010000146, 0)
+	HeadName.Size = UDim2.new(0.205458686, 0, 0.133462012, 0)
+	HeadName.ZIndex = 4
+	HeadName.Font = Enum.Font.SourceSansBold
+	HeadName.Text = NameScriptHub or "NEVERLOSE"
+	HeadName.TextColor3 = Color3.fromRGB(255, 255, 255)
+	HeadName.TextScaled = true
+	HeadName.TextSize = 14.000
+	HeadName.TextStrokeColor3 = Color3.fromRGB(0, 251, 255)
+	HeadName.TextStrokeTransparency = 0.720
+	HeadName.TextWrapped = true
+
+	TabButtons.Name = "TabButtons"
+	TabButtons.Parent = Frame
+	TabButtons.Active = true
+	TabButtons.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabButtons.BackgroundTransparency = 1.000
+	TabButtons.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TabButtons.BorderSizePixel = 0
+	TabButtons.Position = UDim2.new(0.00760957832, 0, 0.143462211, 0)
+	TabButtons.Size = UDim2.new(0.20784913, 0, 0.753122032, 0)
+	TabButtons.ZIndex = 5
+	TabButtons.CanvasSize = UDim2.new(0, 0, 0, 0)
+	TabButtons.ScrollBarThickness = 1
+
+
+	UIListLayout.Parent = TabButtons
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 4)
+
+	scrolling_connect(TabButtons)
+
+	TabHose.Name = "TabHose"
+	TabHose.Parent = Frame
+	TabHose.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	TabHose.BackgroundTransparency = 1.000
+	TabHose.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	TabHose.BorderSizePixel = 0
+	TabHose.Position = UDim2.new(0.223214373, 0, 0.143462211, 0)
+	TabHose.Size = UDim2.new(0.774635077, 0, 0.856537759, 0)
+	TabHose.ZIndex = 5
+
+	outlo.Name = "outlo"
+	outlo.Parent = Frame
+	outlo.AnchorPoint = Vector2.new(1, 0)
+	outlo.BackgroundColor3 = NEVERLOSE.Themes.TraceColor
+	outlo.BackgroundTransparency = 0.700
+	outlo.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	outlo.BorderSizePixel = 0
+	outlo.Position = UDim2.new(1, 0, 0.136999995, 0)
+	outlo.Size = UDim2.new(0.774999976, 0, 0, 1)
+	outlo.ZIndex = 4
+
+	UICorner_4.CornerRadius = UDim.new(0, 4)
+	UICorner_4.Parent = outlo
+
+	outlo_2.Name = "outlo"
+	outlo_2.Parent = Frame
+	outlo_2.AnchorPoint = Vector2.new(1, 0.5)
+	outlo_2.BackgroundColor3 = NEVERLOSE.Themes.TraceColor
+	outlo_2.BackgroundTransparency = 0.700
+	outlo_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	outlo_2.BorderSizePixel = 0
+	outlo_2.Position = UDim2.new(0.223908007, 0, 0.5, 0)
+	outlo_2.Size = UDim2.new(0, 1, 1, 0)
+	outlo_2.ZIndex = 4
+
+	UICorner_5.CornerRadius = UDim.new(0, 4)
+	UICorner_5.Parent = outlo_2
+
+	outlo_3.Name = "outlo"
+	outlo_3.Parent = Frame
+	outlo_3.AnchorPoint = Vector2.new(1, 0)
+	outlo_3.BackgroundColor3 = NEVERLOSE.Themes.TraceColor
+	outlo_3.BackgroundTransparency = 0.700
+	outlo_3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	outlo_3.BorderSizePixel = 0
+	outlo_3.Position = UDim2.new(0.223908007, 0, 0.923109949, 0)
+	outlo_3.Size = UDim2.new(0.223908007, 0, 0, 1)
+	outlo_3.ZIndex = 4
+
+	UICorner_6.CornerRadius = UDim.new(0, 4)
+	UICorner_6.Parent = outlo_3
+
+	UserData.Name = "UserData"
+	UserData.Parent = Frame
+	UserData.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	UserData.BackgroundTransparency = 1.000
+	UserData.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	UserData.BorderSizePixel = 0
+	UserData.Position = UDim2.new(-0.000179085735, 0, 0.926525652, 0)
+	UserData.Size = UDim2.new(0.225179195, 0, 0.0718210712, 0)
+	UserData.ZIndex = 5
+
+	UICorner_7.CornerRadius = UDim.new(0, 2)
+	UICorner_7.Parent = UserData
+
+	UserImage.Name = "UserImage"
+	UserImage.Parent = UserData
+	UserImage.AnchorPoint = Vector2.new(0.5, 0.5)
+	UserImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	UserImage.BackgroundTransparency = 1.000
+	UserImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	UserImage.BorderSizePixel = 0
+	UserImage.Position = UDim2.new(0.150000006, 0, 0.5, 0)
+	UserImage.Size = UDim2.new(0.949999988, 0, 0.949999988, 0)
+	UserImage.SizeConstraint = Enum.SizeConstraint.RelativeYY
+	UserImage.ZIndex = 5
+	UserImage.Image = game:GetService('Players'):GetUserThumbnailAsync(LocalPlayer.UserId,Enum.ThumbnailType.HeadShot,Enum.ThumbnailSize.Size150x150)
+
+	UICorner_8.CornerRadius = UDim.new(0.5, 0)
+	UICorner_8.Parent = UserImage
+
+	UserName.Name = "UserName"
+	UserName.Parent = UserData
+	UserName.AnchorPoint = Vector2.new(0, 0.5)
+	UserName.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	UserName.BackgroundTransparency = 1.000
+	UserName.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	UserName.BorderSizePixel = 0
+	UserName.Position = UDim2.new(0.31400001, 0, 0.5, 0)
+	UserName.Size = UDim2.new(0.717000008, 0, 0.649999976, 0)
+	UserName.ZIndex = 5
+	UserName.Font = Enum.Font.SourceSansSemibold
+	UserName.Text = LocalPlayer.DisplayName or "https://httpbin.org/get"
+	UserName.TextColor3 = Color3.fromRGB(255, 255, 255)
+	UserName.TextScaled = true
+	UserName.TextSize = 14.000
+	UserName.TextWrapped = true
+	UserName.TextXAlignment = Enum.TextXAlignment.Left
+
+	function WindowFunctinos:AddTabLabel(Label)
+		local TabTitle = Instance.new("TextLabel")
+		local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+
+		TabTitle.Name = "TabTitle"
+		TabTitle.Parent = TabButtons
+		TabTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		TabTitle.BackgroundTransparency = 1.000
+		TabTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TabTitle.BorderSizePixel = 0
+		TabTitle.Size = UDim2.new(0.949999988, 0, 0.5, 0)
+		TabTitle.ZIndex = 5
+		TabTitle.Font = Enum.Font.SourceSansSemibold
+		TabTitle.Text = Label or "Home"
+		TabTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		TabTitle.TextScaled = true
+		TabTitle.TextSize = 14.000
+		TabTitle.TextTransparency = 0.610
+		TabTitle.TextWrapped = true
+		TabTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+		UIAspectRatioConstraint.Parent = TabTitle
+		UIAspectRatioConstraint.AspectRatio = 7.000
+		UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+		local funcs = {}
+
+		function funcs:Text(a)
+			TabTitle.Text=tostring(a)
+		end
+
+		function funcs:Delete()
+			TabTitle:Destroy()
+		end
+
+		return funcs
+	end
+
+	function WindowFunctinos:AddTab(TabNameString,IconType)
+		local TabFunctions ={}
+		local TabButton = Instance.new("Frame")
+		local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+		local UICorner = Instance.new("UICorner")
+		local Image = Instance.new("ImageLabel")
+		local UICorner_2 = Instance.new("UICorner")
+		local Label = Instance.new("TextLabel")
+
+		local cc = NEVERLOSE.Themes.MainColor
+
+		if cc == Color3.fromRGB(0, 172, 247) then
+			cc = NEVERLOSE.Themes.BlackgroundColor
+		end
+
+		TabButton.Name = "TabButton"
+		TabButton.Parent = TabButtons
+		TabButton.BackgroundColor3 = cc
+		TabButton.BackgroundTransparency = 1
+		TabButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		TabButton.BorderSizePixel = 0
+		TabButton.Size = UDim2.new(0.899999976, 0, 0.5, 0)
+		TabButton.ZIndex = 5
+
+		UIAspectRatioConstraint.Parent = TabButton
+		UIAspectRatioConstraint.AspectRatio = 4.000
+		UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+		UICorner.CornerRadius = UDim.new(0, 3)
+		UICorner.Parent = TabButton
+
+		Image.Name = "Image"
+		Image.Parent = TabButton
+		Image.AnchorPoint = Vector2.new(0, 0.5)
+		Image.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Image.BackgroundTransparency = 1.000
+		Image.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Image.BorderSizePixel = 0
+		Image.Position = UDim2.new(0.0149999997, 0, 0.5, 0)
+		Image.Size = UDim2.new(0.850000024, 0, 0.800000012, 0)
+		Image.SizeConstraint = Enum.SizeConstraint.RelativeYY
+		Image.ZIndex = 5
+
+		Image.ImageColor3 = NEVERLOSE.Themes.MainColor
+		Image.ImageRectOffset = Vector2.new(205, 565)
+		Image.ImageRectSize = Vector2.new(35, 35)
+
+		GetImageData(tostring(IconType),Image)
+
+		UICorner_2.CornerRadius = UDim.new(0, 3)
+		UICorner_2.Parent = Image
+
+		Label.Name = "Label"
+		Label.Parent = TabButton
+		Label.AnchorPoint = Vector2.new(0.5, 0.5)
+		Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Label.BackgroundTransparency = 1.000
+		Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Label.BorderSizePixel = 0
+		Label.Position = UDim2.new(0.640507042, 0, 0.500000238, 0)
+		Label.Size = UDim2.new(0.718986034, 0, 0.600000024, 0)
+		Label.ZIndex = 5
+		Label.Font = Enum.Font.SourceSansBold
+		Label.Text = TabNameString or "Index.json"
+		Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+		Label.TextScaled = true
+		Label.TextSize = 14.000
+		Label.TextWrapped = true
+		Label.TextXAlignment = Enum.TextXAlignment.Left
+		Label.TextYAlignment = Enum.TextYAlignment.Top
+
+		local Tab = Instance.new("Frame")
+		local Left = Instance.new("ScrollingFrame")
+		local UIListLayout = Instance.new("UIListLayout")
+		local Right = Instance.new("ScrollingFrame")
+		local UIListLayout_2 = Instance.new("UIListLayout")
+
+		Tab.Name = "Tab"
+		Tab.Parent = TabHose
+		Tab.AnchorPoint = Vector2.new(0.5, 0.5)
+		Tab.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Tab.BackgroundTransparency = 1.000
+		Tab.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Tab.BorderSizePixel = 0
+		Tab.ClipsDescendants = true
+		Tab.Position = UDim2.new(0.5, 0, 0.5, 0)
+		Tab.Size = UDim2.new(0.99000001, 0, 0.99000001, 0)
+		Tab.ZIndex = 6
+
+		Left.Name = "Left"
+		Left.Parent = Tab
+		Left.Active = true
+		Left.AnchorPoint = Vector2.new(0, 0.5)
+		Left.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Left.BackgroundTransparency = 1.000
+		Left.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Left.BorderSizePixel = 0
+		Left.ClipsDescendants = false
+		Left.Position = UDim2.new(0, 0, 0.5, 0)
+		Left.Size = UDim2.new(0.499000001, 0, 0.980000019, 0)
+		Left.ZIndex = 5
+		Left.ScrollBarThickness = 0
+		Left.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Left
+
+		UIListLayout.Parent = Left
+		UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout.Padding = UDim.new(0, 5)
+
+		Right.Name = "Right"
+		Right.Parent = Tab
+		Right.Active = true
+		Right.AnchorPoint = Vector2.new(1, 0.5)
+		Right.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		Right.BackgroundTransparency = 1.000
+		Right.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Right.BorderSizePixel = 0
+		Right.ClipsDescendants = false
+		Right.Position = UDim2.new(1, 0, 0.5, 0)
+		Right.Size = UDim2.new(0.499000001, 0, 0.980000019, 0)
+		Right.ZIndex = 5
+		Right.ScrollBarThickness = 0
+
+		UIListLayout_2.Parent = Right
+		UIListLayout_2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout_2.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_2.Padding = UDim.new(0, 5)
+
+		scrolling_connect(Right)
+		scrolling_connect(Left)
+
+		local function bedisea()
+			if headd2text then
+				TweenService:Create(headd2text,TweenInfo.new(.1),{
+					TextTransparency = 0.1,
+					TextStrokeTransparency=.95
+				}):Play()
+				task.wait(.11)
+				TweenService:Create(headd2text,TweenInfo.new(.1),{
+					TextTransparency = 0,
+					TextStrokeTransparency=.9
+				}):Play()
+			end
+		end
+
+		local function tabcall(val,bas)
+			if val then
+
+				if not Tab.Visible then
+					task.spawn(bedisea)
+					Tab.Position=UDim2.new(0.5,0,0,0)
+					Tab.Size=UDim2.new(0.85, 0, 0, 0)
+				end
+
+				Tab.Visible=true
+				TweenService:Create(Tab,TweenInfo.new(.3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position = UDim2.new(0.5, 0, 0.5, 0)}):Play()
+				TweenService:Create(Tab,TweenInfo.new(.75,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Size = UDim2.new(0.99000001, 0, 0.99000001, 0)}):Play()
+				TweenService:Create(TabButton,TweenInfo.new(0.3),{BackgroundTransparency=0.6}):Play()
+			else
+				Tab.Visible=false
+				TweenService:Create(Tab,TweenInfo.new(.5),{Position = UDim2.new(0.5, 0, 1.5, 0)}):Play()
+				TweenService:Create(TabButton,TweenInfo.new(0.3),{BackgroundTransparency=1}):Play()
+			end
+		end
+
+		if #Tabs==0 then
+			tabcall(true,0)
+		else
+			tabcall(false,0)
+		end
+
+		table.insert(Tabs,{Tab,tabcall})
+
+		cretate_button(TabButton).MouseButton1Click:Connect(function()
+			for i,v in ipairs(Tabs) do
+				if v[1]==Tab then
+					v[2](true,0.4)
+					task.wait()
+				else
+					v[2](false,0.4)
+				end
+			end
+		end) 
+
+		function TabFunctions:AddSection(SectionName,parentname)
+			parentname = parentname or "left"
+
+			local Section = Instance.new("Frame")
+			local UICorner = Instance.new("UICorner")
+			local UIStroke = Instance.new("UIStroke")
+			local Header = Instance.new("TextLabel")
+			local UIListLayout = Instance.new("UIListLayout")
+			local lay = Instance.new("Frame")
+			local UICorner_2 = Instance.new("UICorner")
+
+			Section.Name = "Section"
+			Section.Parent = (parentname=="left"and Left) or (parentname=="right"and Right) or nil
+
+			Section.BackgroundColor3 = NEVERLOSE.Themes.SectionColor
+			Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Section.BorderSizePixel = 0
+			Section.Size = UDim2.new(0.970000029, 0, 0, 0)
+			Section.ZIndex = 5
+
+			UICorner.CornerRadius = UDim.new(0, 3)
+			UICorner.Parent = Section
+
+			UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+			UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			UIStroke.Parent = Section
+
+			Header.Name = "Header"
+			Header.Parent = Section
+			Header.AnchorPoint = Vector2.new(0.5, 0)
+			Header.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			Header.BackgroundTransparency = 1.000
+			Header.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			Header.BorderSizePixel = 0
+			Header.Position = UDim2.new(0.5, 0, 0.100000001, 0)
+			Header.Size = UDim2.new(0.949999988, 0, 0, 15)
+			Header.ZIndex = 5
+			Header.Font = Enum.Font.SourceSansSemibold
+			Header.Text = SectionName or "Section"
+			Header.TextColor3 = Color3.fromRGB(255, 255, 255)
+			Header.TextScaled = true
+			Header.TextSize = 14.000
+			Header.TextWrapped = true
+			Header.TextXAlignment = Enum.TextXAlignment.Left
+			Header.TextTransparency=1
+			TweenService:Create(Header,TweenInfo.new(0.3),{TextTransparency=0}):Play()
+
+			UIListLayout.Parent = Section
+			UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+			UIListLayout.Padding = UDim.new(0, 4)
+
+			lay.Name = "lay"
+			lay.Parent = Section
+			lay.BackgroundColor3 = NEVERLOSE.Themes.StrokeColor
+			lay.BorderColor3 = Color3.fromRGB(0, 0, 0)
+			lay.BorderSizePixel = 0
+			lay.Size = UDim2.new(0.970000029, 0, 0, 2)
+			lay.ZIndex = 5
+			lay.BackgroundTransparency=1
+			Section.BackgroundTransparency=1
+			UIStroke.Transparency=1
+
+			TweenService:Create(lay,TweenInfo.new(1),{BackgroundTransparency=0}):Play()
+			TweenService:Create(Section,TweenInfo.new(1),{BackgroundTransparency=0}):Play()
+			TweenService:Create(UIStroke,TweenInfo.new(1),{Transparency=0}):Play()
+
+			local section_value = true
+			UICorner_2.CornerRadius = UDim.new(0, 3)
+			UICorner_2.Parent = lay
+
+			local function update_section_size(va)
+				if not va then
+					if Section.Visible and section_value then
+						local a=math.ceil(1)
+
+						for i,v:Frame|TextLabel in ipairs(Section:GetChildren()) do
+							if v:isA('Frame') or v:isA('TextLabel') then
+								if v.Visible then
+									pcall(function()
+										a=a+v.AbsoluteSize.Y*1.2
+									end)
+								end
+							end
+						end
+
+						TweenService:Create(Section,TweenInfo.new(0.2),{Size=UDim2.new(0.97,0,0,15+a)}):Play()
+					end
+				else
+					local a=math.ceil(1)
+
+					for i,v:Frame|TextLabel in ipairs(Section:GetChildren()) do
+						if v:isA('Frame') or v:isA('TextLabel') then
+							if v.Visible then
+								pcall(function()
+									a=a+v.AbsoluteSize.Y*1.2
+								end)
+							end
+						end
+					end
+
+					TweenService:Create(Section,TweenInfo.new(0.2),{Size=UDim2.new(0.97,0,0,15+a)}):Play()
+				end
+			end
+
+			table.insert(NEVERLOSE.auto_function,update_section_size)
+
+			Section:GetPropertyChangedSignal('Size'):Connect(function()
+				if Section.Size.Y.Offset <= 1 then
+					Section.Visible=false
+				else
+					Section.Visible=true
+				end
+			end)
+
+			Section.InputBegan:Connect(update_section_size)
+
+			update_section_size()
+
+			local sectionfunc = {}
+
+			function sectionfunc:AddButton(ButtonName,callback)
+				callback=callback or function()
+
+				end
+
+				local Button = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+				local UIStroke = Instance.new("UIStroke")
+
+				Button.Name = "Button"
+				Button.Parent = Section
+				Button.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+				Button.BackgroundTransparency = 0.550
+				Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Button.BorderSizePixel = 0
+				Button.Position = UDim2.new(0.0500000231, 0, 0.601014614, 0)
+				Button.Size = UDim2.new(0.899999976, 0, -0.351014495, 0)
+				Button.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Button
+				UIAspectRatioConstraint.AspectRatio = 7.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Button
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Button
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.5, 0, 0.5, 0)
+				LabelText.Size = UDim2.new(0.899999976, 0, 0.75, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = ButtonName or"Kill all"
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextTransparency = 0.300
+				LabelText.TextWrapped = true
+
+				UIStroke.Thickness = 0.500
+				UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+				UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				UIStroke.Parent = Button
+
+				cretate_button(Button).MouseButton1Click:Connect(function()
+					callback()
+				end)
+
+				Button.MouseEnter:Connect(function()
+					TweenService:Create(LabelText,TweenInfo.new(0.1),{TextTransparency=0}):Play()
+				end)
+
+				Button.MouseLeave:Connect(function()
+					TweenService:Create(LabelText,TweenInfo.new(0.1),{TextTransparency=0.3}):Play()
+				end)
+
+				local button_func={}
+				function button_func:Fire(...)
+					callback(...)
+				end
+
+				function button_func:Text(a)
+					LabelText.Text=tostring(a)
+				end
+
+				return button_func
+			end
+
+			function sectionfunc:AddLabel(LabelNameString)
+				local Label = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+
+				Label.Name = "Label"
+				Label.Parent = Section
+				Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Label.BackgroundTransparency = 1.000
+				Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Label.BorderSizePixel = 0
+				Label.Size = UDim2.new(0.899999976, 0, 0.5, 0)
+				Label.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Label
+				UIAspectRatioConstraint.AspectRatio = 6.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Label
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Label
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.5, 0, 0.5, 0)
+				LabelText.Size = UDim2.new(1, 0, 0.649999976, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = LabelNameString or"Label"
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextTransparency = 0.300
+				LabelText.TextWrapped = true
+				LabelText.TextXAlignment = Enum.TextXAlignment.Left
+				update_section_size(
+
+				)
+
+				LabelText:GetPropertyChangedSignal('TextTransparency'):Connect(function()
+					if LabelText.TextTransparency <= 0.99 then
+						Label.Visible=true
+					else
+						Label.Visible=false
+					end
+				end)
+
+				local button_func = {}
+				function button_func:Text(a)
+					LabelText.Text=tostring(a)
+				end
+
+				function button_func:Status(val)
+					if val then
+						TweenService:Create(Label,TweenInfo.new(1,Enum.EasingStyle.Quint),{Size = UDim2.new(0.899999976, 0, 0.5, 0)}):Play()
+						TweenService:Create(UIAspectRatioConstraint,TweenInfo.new(.1,Enum.EasingStyle.Quint),{AspectRatio = 6}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(0.7,Enum.EasingStyle.Quint),{TextTransparency = 0.3}):Play()
+					else
+						TweenService:Create(Label,TweenInfo.new(.8,Enum.EasingStyle.Quint),{Size = UDim2.new(0,0,0,0)}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(1,Enum.EasingStyle.Quint),{TextTransparency = 1}):Play()
+					end
+				end
+
+				return button_func
+			end
+
+			function sectionfunc:AddToggle(ToggleName,Default,callback)
+				callback=callback or function()
+
+				end
+
+				local Toggle = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+				local Effect = Instance.new("Frame")
+				local UICorner_2 = Instance.new("UICorner")
+				local Icon = Instance.new("Frame")
+				local UICorner_3 = Instance.new("UICorner")
+
+				Toggle.Name = "Toggle"
+				Toggle.Parent = Section
+				Toggle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Toggle.BackgroundTransparency = 1.000
+				Toggle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Toggle.BorderSizePixel = 0
+				Toggle.Position = UDim2.new(0.0500000231, 0, 0.601014614, 0)
+				Toggle.Size = UDim2.new(0.899999976, 0, -0.351014495, 0)
+				Toggle.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Toggle
+				UIAspectRatioConstraint.AspectRatio = 7.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Toggle
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Toggle
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.38587454, 0, 0.499999583, 0)
+				LabelText.Size = UDim2.new(0.772000015, 0, 0.75, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = ToggleName or "Label-Test"
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextWrapped = true
+				LabelText.TextXAlignment = Enum.TextXAlignment.Left
+
+				Effect.Name = "Effect"
+				Effect.Parent = Toggle
+				Effect.AnchorPoint = Vector2.new(0, 0.5)
+				Effect.BackgroundColor3 = NEVERLOSE.Themes.MainColorDrop
+				Effect.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Effect.BorderSizePixel = 0
+				Effect.Position = UDim2.new(0.800000012, 0, 0.5, 0)
+				Effect.Size = UDim2.new(0.150000006, 0, 0.5, 0)
+				Effect.ZIndex = 6
+
+				UICorner_2.CornerRadius = UDim.new(0.5, 0)
+				UICorner_2.Parent = Effect
+
+				Icon.Name = "Icon"
+				Icon.Parent = Effect
+				Icon.AnchorPoint = Vector2.new(0.5, 0.5)
+				Icon.BackgroundColor3 = NEVERLOSE.Themes.MainColor
+				Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Icon.BorderSizePixel = 0
+				Icon.Position = UDim2.new(0.75, 0, 0.5, 0)
+				Icon.Size = UDim2.new(1, 0, 1, 0)
+				Icon.SizeConstraint = Enum.SizeConstraint.RelativeYY
+				Icon.ZIndex = 7
+
+				UICorner_3.CornerRadius = UDim.new(0.5, 0)
+				UICorner_3.Parent = Icon
+
+				local function toggleval(val,timea)
+					if val then
+						TweenService:Create(LabelText,TweenInfo.new(timea),{TextTransparency=0}):Play()
+						TweenService:Create(Icon,TweenInfo.new(timea),{Position=UDim2.new(0.75,0,0.5,0),BackgroundColor3=NEVERLOSE.Themes.MainColor}):Play();
+					else
+						TweenService:Create(LabelText,TweenInfo.new(timea),{TextTransparency=0.3}):Play()
+						TweenService:Create(Icon,TweenInfo.new(timea),{Position=UDim2.new(0.25,0,0.5,0),BackgroundColor3=Color3.fromRGB(194, 194, 194)}):Play();
+					end
+				end
+
+				toggleval(Default,0)
+
+				cretate_button(Toggle).MouseButton1Click:Connect(function()
+					Default=not Default
+					toggleval(Default,0.1)
+					callback(Default)
+				end)
+
+				local button_func = {}
+				function button_func:Text(a)
+					LabelText.Text=tostring(a)
+				end
+
+				function button_func:Value(a)
+					Default=a
+					toggleval(a,0.1)
+					callback(a)
+				end
+
+				function button_func:Status(val)
+					if val then
+						local dex = (Default==true and 0) or .3
+						TweenService:Create(Toggle,TweenInfo.new(.5,Enum.EasingStyle.Quint),{Size = UDim2.new(0.899999976, 0, -0.351014495, 0)}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(1,Enum.EasingStyle.Quint),{TextTransparency = dex}):Play()
+
+						TweenService:Create(Effect,TweenInfo.new(0.4),{BackgroundTransparency=0}):Play()
+						TweenService:Create(Icon,TweenInfo.new(0.4),{BackgroundTransparency=0}):Play()
+
+					else
+						TweenService:Create(Effect,TweenInfo.new(0.4),{BackgroundTransparency=1}):Play()
+						TweenService:Create(Icon,TweenInfo.new(0.4),{BackgroundTransparency=1}):Play()
+
+						TweenService:Create(Toggle,TweenInfo.new(1.5,Enum.EasingStyle.Quint),{Size = UDim2.new(0,0,0,0)}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(1,Enum.EasingStyle.Quint),{TextTransparency = 1}):Play()
+					end
+				end
+
+				return button_func
+
+			end
+
+			function sectionfunc:AddKeybind(KeybindNameString,Default,callback)
+				callback=callback or function()
+
+				end
+
+				local function gt(a:Enum.KeyCode)
+					if not a then
+						return "None"
+
+					else
+						return a.Name
+					end
+				end
+
+				local Keybind = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+				local BrindText = Instance.new("Frame")
+				local UICorner_2 = Instance.new("UICorner")
+				local UIStroke = Instance.new("UIStroke")
+				local ValueText = Instance.new("TextLabel")
+
+				Keybind.Name = "Keybind"
+				Keybind.Parent = Section
+				Keybind.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Keybind.BackgroundTransparency = 1.000
+				Keybind.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Keybind.BorderSizePixel = 0
+				Keybind.Position = UDim2.new(0.0500000231, 0, 0.601014614, 0)
+				Keybind.Size = UDim2.new(0.899999976, 0, -0.351014495, 0)
+				Keybind.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Keybind
+				UIAspectRatioConstraint.AspectRatio = 7.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Keybind
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Keybind
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.296665907, 0, 0.499999106, 0)
+				LabelText.Size = UDim2.new(0.593582749, 0, 0.75, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = KeybindNameString or ''
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextWrapped = true
+				LabelText.TextXAlignment = Enum.TextXAlignment.Left
+				LabelText.TextTransparency=.3
+				BrindText.Name = "BrindText"
+				BrindText.Parent = Keybind
+				BrindText.AnchorPoint = Vector2.new(1, 0.5)
+				BrindText.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
+				BrindText.BackgroundTransparency = 0.500
+				BrindText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				BrindText.BorderSizePixel = 0
+				BrindText.Position = UDim2.new(0.998, 0, 0.5, 0)
+				BrindText.Size = UDim2.new(0.150000006, 0, 0.5, 0)
+				BrindText.ZIndex = 6
+
+				UICorner_2.CornerRadius = UDim.new(0, 3)
+				UICorner_2.Parent = BrindText
+
+				UIStroke.Thickness = 0.500
+				UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+				UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				UIStroke.Parent = BrindText
+
+				ValueText.Name = "ValueText"
+				ValueText.Parent = BrindText
+				ValueText.AnchorPoint = Vector2.new(0.5, 0.5)
+				ValueText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.BackgroundTransparency = 1.000
+				ValueText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				ValueText.BorderSizePixel = 0
+				ValueText.Position = UDim2.new(0.5, 0, 0.5, 0)
+				ValueText.Size = UDim2.new(0.980000019, 0, 0.998000026, 0)
+				ValueText.ZIndex = 6
+				ValueText.Font = Enum.Font.SourceSansSemibold
+				ValueText.Text = gt(Default)
+				ValueText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.TextScaled = true
+				ValueText.TextSize = 14.000
+				ValueText.TextWrapped = true
+
+				local function UpdateText()
+					local size = TextService:GetTextSize(ValueText.Text,ValueText.TextSize,ValueText.Font,Vector2.new(math.huge,math.huge))
+
+					TweenService:Create(BrindText,TweenInfo.new(0.2),{Size = UDim2.new(0, size.X + 1, 0.550000012, 0)}):Play()
+				end
+
+				local Binding = false
+				cretate_button(Keybind).MouseButton1Click:Connect(function()
+					if Binding then
+						return
+					end
+					Binding =  true
+
+					local targetloadded = nil
+
+					local hook = InputService.InputBegan:Connect(function(is)
+						if is.KeyCode ~= Enum.KeyCode.Unknown then
+							targetloadded = is.KeyCode
+						end
+					end)
+					TweenService:Create(LabelText,TweenInfo.new(0.3),{TextTransparency=0}):Play()
+					ValueText.Text = "..."
+					repeat task.wait() UpdateText() until targetloadded or not Binding
+					TweenService:Create(LabelText,TweenInfo.new(0.3),{TextTransparency=0.3}):Play()
+					Binding =false
+					if hook then
+						hook:Disconnect()
+					end
+					if targetloadded then
+						ValueText.Text = gt(targetloadded)
+						Default = targetloadded
+						UpdateText() 
+						callback(targetloadded)
+					end
+					return
+				end)
+
+				UpdateText()
+
+				local KeybindFunctions = {}
+
+				function KeybindFunctions:Text(a)
+					LabelText.Text = tostring(a)
+					UpdateText()
+				end
+
+				function KeybindFunctions:Value(l)
+					ValueText.Text = gt(l)
+					Default = l
+					UpdateText() 
+					callback(l)
+				end
+
+				return KeybindFunctions
+			end
+
+			function sectionfunc:AddSlider(SliderNameString,Min,Max,Default,callback)
+				Min=Min or 1
+				Max=Max or 100
+				Default=Default or Min
+				callback=callback or function()
+
+				end
+
+				local Slider = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+				local Box = Instance.new("Frame")
+				local UICorner_2 = Instance.new("UICorner")
+				local UIStroke = Instance.new("UIStroke")
+				local ValueText = Instance.new("TextLabel")
+				local MoveFrame = Instance.new("Frame")
+				local UICorner_3 = Instance.new("UICorner")
+				local Inline = Instance.new("Frame")
+				local UICorner_4 = Instance.new("UICorner")
+				local Cir = Instance.new("Frame")
+				local UICorner_5 = Instance.new("UICorner")
+				local Frame = Instance.new("Frame")
+
+				Slider.Name = "Slider"
+				Slider.Parent = Section
+				Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Slider.BackgroundTransparency = 1.000
+				Slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Slider.BorderSizePixel = 0
+				Slider.Position = UDim2.new(0.0500000231, 0, 0.601014614, 0)
+				Slider.Size = UDim2.new(0.899999976, 0, -0.351014495, 0)
+				Slider.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Slider
+				UIAspectRatioConstraint.AspectRatio = 7.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Slider
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Slider
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.238462642, 0, 0.499999374, 0)
+				LabelText.Size = UDim2.new(0.477176398, 0, 0.75, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = SliderNameString or "Control"
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextWrapped = true
+				LabelText.TextXAlignment = Enum.TextXAlignment.Left
+				LabelText.TextTransparency=.3
+
+				Box.Name = "Box"
+				Box.Parent = Slider
+				Box.AnchorPoint = Vector2.new(0, 0.5)
+				Box.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+				Box.BackgroundTransparency = 0.100
+				Box.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Box.BorderSizePixel = 0
+				Box.Position = UDim2.new(0.800000012, 0, 0.5, 0)
+				Box.Size = UDim2.new(0.150000006, 0, 0.5, 0)
+				Box.ZIndex = 6
+
+				UICorner_2.CornerRadius = UDim.new(0, 3)
+				UICorner_2.Parent = Box
+
+				UIStroke.Thickness = 0.500
+				UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+				UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				UIStroke.Parent = Box
+
+				ValueText.Name = "ValueText"
+				ValueText.Parent = Box
+				ValueText.AnchorPoint = Vector2.new(0.5, 0.5)
+				ValueText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.BackgroundTransparency = 1.000
+				ValueText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				ValueText.BorderSizePixel = 0
+				ValueText.Position = UDim2.new(0.5, 0, 0.5, 0)
+				ValueText.Size = UDim2.new(0.99000001, 0, 0.99000001, 0)
+				ValueText.ZIndex = 6
+				ValueText.Font = Enum.Font.SourceSansSemibold
+				ValueText.Text = tostring(Default)
+				ValueText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.TextScaled = true
+				ValueText.TextSize = 14.000
+				ValueText.TextWrapped = true
+
+				MoveFrame.Name = "MoveFrame"
+				MoveFrame.Parent = Slider
+				MoveFrame.AnchorPoint = Vector2.new(0, 0.5)
+				MoveFrame.BackgroundColor3 = NEVERLOSE.Themes.MainColorDrop
+				MoveFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				MoveFrame.BorderSizePixel = 0
+				MoveFrame.ClipsDescendants = true
+				MoveFrame.Position = UDim2.new(0.477050841, 0, 0.50000006, 0)
+				MoveFrame.Size = UDim2.new(0.290949076, 0, 0.099999994, 0)
+				MoveFrame.ZIndex = 5
+
+				UICorner_3.CornerRadius = UDim.new(0, 3)
+				UICorner_3.Parent = MoveFrame
+
+				Inline.Name = "Inline"
+				Inline.Parent = MoveFrame
+				Inline.AnchorPoint = Vector2.new(0, 0.5)
+				Inline.BackgroundColor3 = NEVERLOSE.Themes.MainColor
+				Inline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Inline.BorderSizePixel = 0
+				Inline.Position = UDim2.new(0, 0, 0.5, 0)
+				Inline.Size = UDim2.new((Default/Max), 0, 1, 0)
+				Inline.ZIndex = 5
+
+				UICorner_4.CornerRadius = UDim.new(0, 3)
+				UICorner_4.Parent = Inline
+
+				Cir.Name = "Cir"
+				Cir.Parent = Inline
+				Cir.AnchorPoint = Vector2.new(1, 0.5)
+				Cir.BackgroundColor3 = NEVERLOSE.Themes.MainColor
+				Cir.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Cir.BorderSizePixel = 0
+				Cir.Position = UDim2.new(1, 0, 0.5, 0)
+				Cir.Rotation = 0.010
+				Cir.Size = UDim2.new(3, 0, 3, 0)
+				Cir.SizeConstraint = Enum.SizeConstraint.RelativeYY
+				Cir.ZIndex = 5
+
+				UICorner_5.CornerRadius = UDim.new(0.5, 0)
+				UICorner_5.Parent = Cir
+
+				Frame.Parent = Slider
+				Frame.AnchorPoint = Vector2.new(0, 0.5)
+				Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Frame.BackgroundTransparency = 1.000
+				Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Frame.BorderSizePixel = 0
+				Frame.Position = UDim2.new(0.477050841, 0, 0.500000358, 0)
+				Frame.Size = UDim2.new(0.322948873, 0, 0.900000036, 0)
+				Frame.ZIndex = 5
+
+				local danger = false
+
+				local function update(Input)
+					local SizeScale = math.clamp((((Input.Position.X) - MoveFrame.AbsolutePosition.X) / MoveFrame.AbsoluteSize.X), 0, 1)
+					local Valuea = math.floor(((Max - Min) * SizeScale) + Min)
+					local Size = UDim2.fromScale(math.clamp(SizeScale+0.15,0,1), 1)
+					ValueText.Text = tostring(Valuea)
+					TweenService:Create(Inline,TweenInfo.new(0.1),{Size = Size}):Play()
+					callback(Valuea)
+				end
+
+				Frame.InputBegan:Connect(function(Input)
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+						danger = true
+						update(Input)
+						TweenService:Create(LabelText,TweenInfo.new(0.1),{TextTransparency=0}):Play()
+					end
+				end)
+
+				Frame.InputEnded:Connect(function(Input)
+					if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+						danger = false
+						TweenService:Create(LabelText,TweenInfo.new(0.1),{TextTransparency=0.3}):Play()
+					end
+				end)
+
+				InputService.InputChanged:Connect(function(Input)
+					if danger then
+						if (Input.UserInputType==Enum.UserInputType.MouseMovement or Input.UserInputType==Enum.UserInputType.Touch)  then
+							update(Input)
+						end
+					end
+				end)
+
+				local func={}
+
+				function func:Value(s)
+					ValueText.Text = tostring(s)
+					Inline.Size=UDim2.fromScale((s/Max),1)
+
+					callback(s)
+				end
+
+				function func:Text(t)
+					LabelText.Text=tostring(t)
+				end
+
+				update_section_size()
+				return func
+			end
+
+			function sectionfunc:AddDropdown(DropdownName,data,Default,callback)
+				data=data or {}
+				Default=Default or data[1]
+				callback=callback or function()
+
+				end
+
+				local Dropdown = Instance.new("Frame")
+				local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+				local UICorner = Instance.new("UICorner")
+				local LabelText = Instance.new("TextLabel")
+				local TopBar = Instance.new("Frame")
+				local UICorner_2 = Instance.new("UICorner")
+				local UIStroke = Instance.new("UIStroke")
+				local ValueText = Instance.new("TextLabel")
+				local Icon = Instance.new("TextLabel")
+				local DownBar = Instance.new("Frame")
+				local UICorner_3 = Instance.new("UICorner")
+				local UIStroke_2 = Instance.new("UIStroke")
+				local UIListLayout = Instance.new("UIListLayout")
+
+				Dropdown.Name = "Dropdown"
+				Dropdown.Parent = Section
+				Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Dropdown.BackgroundTransparency = 1.000
+				Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Dropdown.BorderSizePixel = 0
+				Dropdown.Position = UDim2.new(0.0500000231, 0, 0.601014614, 0)
+				Dropdown.Size = UDim2.new(0.899999976, 0, -0.351014495, 0)
+				Dropdown.ZIndex = 5
+
+				UIAspectRatioConstraint.Parent = Dropdown
+				UIAspectRatioConstraint.AspectRatio = 7.000
+				UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+				UICorner.CornerRadius = UDim.new(0, 3)
+				UICorner.Parent = Dropdown
+
+				LabelText.Name = "LabelText"
+				LabelText.Parent = Dropdown
+				LabelText.AnchorPoint = Vector2.new(0.5, 0.5)
+				LabelText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.BackgroundTransparency = 1.000
+				LabelText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				LabelText.BorderSizePixel = 0
+				LabelText.Position = UDim2.new(0.296666116, 0, 0.499999374, 0)
+				LabelText.Size = UDim2.new(0.593582511, 0, 0.75, 0)
+				LabelText.ZIndex = 6
+				LabelText.Font = Enum.Font.SourceSansSemibold
+				LabelText.Text = DropdownName or "Label-Test"
+				LabelText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				LabelText.TextScaled = true
+				LabelText.TextSize = 14.000
+				LabelText.TextWrapped = true
+				LabelText.TextXAlignment = Enum.TextXAlignment.Left
+
+				TopBar.Name = "TopBar"
+				TopBar.Parent = Dropdown
+				TopBar.Active = true
+				TopBar.AnchorPoint = Vector2.new(1, 0.5)
+				TopBar.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+				TopBar.BackgroundTransparency = 0.500
+				TopBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				TopBar.BorderSizePixel = 0
+				TopBar.Position = UDim2.new(0.950000167, 0, 0.500000715, 0)
+				TopBar.Size = UDim2.new(0.313529521, 0, 0.5, 0)
+				TopBar.ZIndex = 6
+
+				UICorner_2.CornerRadius = UDim.new(0, 3)
+				UICorner_2.Parent = TopBar
+
+				UIStroke.Thickness = 0.500
+				UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+				UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				UIStroke.Parent = TopBar
+
+				ValueText.Name = "ValueText"
+				ValueText.Parent = TopBar
+				ValueText.AnchorPoint = Vector2.new(0.5, 0.5)
+				ValueText.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.BackgroundTransparency = 1.000
+				ValueText.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				ValueText.BorderSizePixel = 0
+				ValueText.Position = UDim2.new(0.358571023, 0, 0.500001013, 0)
+				ValueText.Size = UDim2.new(0.697142839, 0, 0.998000145, 0)
+				ValueText.ZIndex = 6
+				ValueText.Font = Enum.Font.SourceSansSemibold
+				ValueText.Text = tostring(Default)
+				ValueText.TextColor3 = Color3.fromRGB(255, 255, 255)
+				ValueText.TextScaled = true
+				ValueText.TextSize = 14.000
+				ValueText.TextWrapped = true
+
+				Icon.Name = "Icon"
+				Icon.Parent = TopBar
+				Icon.AnchorPoint = Vector2.new(1, 0.5)
+				Icon.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+				Icon.BackgroundTransparency = 1.000
+				Icon.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				Icon.BorderSizePixel = 0
+				Icon.Position = UDim2.new(1, 0, 0.5, 0)
+				Icon.Rotation = 90.000
+				Icon.Size = UDim2.new(0.949999988, 0, 0.949999988, 0)
+				Icon.SizeConstraint = Enum.SizeConstraint.RelativeYY
+				Icon.ZIndex = 6
+				Icon.Font = Enum.Font.SourceSans
+				Icon.Text = "<"
+				Icon.TextColor3 = Color3.fromRGB(255, 255, 255)
+				Icon.TextScaled = true
+				Icon.TextSize = 14.000
+				Icon.TextWrapped = true
+
+				DownBar.Name = "DownBar"
+				DownBar.Parent = Dropdown
+				DownBar.Active = true
+				DownBar.AnchorPoint = Vector2.new(1, 0)
+				DownBar.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+				DownBar.BackgroundTransparency = 0.100
+				DownBar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+				DownBar.BorderSizePixel = 0
+				DownBar.Position = UDim2.new(0.948214233, 0, 0.873961239, 0)
+				DownBar.Size = UDim2.new(0.308999985, 0, 0, 0)
+				DownBar.Visible = false
+				DownBar.ZIndex = 10
+
+				UICorner_3.CornerRadius = UDim.new(0, 3)
+				UICorner_3.Parent = DownBar
+
+				UIStroke_2.Thickness = 0.500
+				UIStroke_2.Color = NEVERLOSE.Themes.StrokeColor
+				UIStroke_2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+				UIStroke_2.Parent = DownBar
+
+				UIListLayout.Parent = DownBar
+				UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+				UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+				UIListLayout.Padding = UDim.new(0, 2)
+
+				local choose = Default
+				local DropdownToggle = false
+
+				DownBar:GetPropertyChangedSignal('Size'):Connect(function()
+					if DownBar.Size.Y.Offset<4 then
+						DownBar.Visible=false
+					else
+						DownBar.Visible=true
+					end
+				end)
+
+				local function get_list_size()
+					local a=0
+
+					for i,v:TextButton in ipairs(DownBar:GetChildren()) do
+						if v:isA('TextButton') then
+							a=a + 9
+						end
+					end
+
+					return a + 15
+				end
+
+				local function get_list_v4()
+					local a=0
+
+					for i,v:TextButton in ipairs(DownBar:GetChildren()) do
+						if v:isA('TextButton') then
+							a=a + v.AbsoluteSize.Y
+						end
+					end
+
+					return a + 15
+				end
+
+				local function auto_updatea()
+					if DropdownToggle then
+						TweenService:Create(DownBar,TweenInfo.new(0.1),{Size=UDim2.new(0.4,0,0,get_list_v4())}):Play()
+					else
+						TweenService:Create(DownBar,TweenInfo.new(0.1),{Size=UDim2.new(0.4,0,0,0)}):Play()
+					end
+				end
+
+				local function DropdownToggleEffect(val)
+					if val then
+						Dropdown.Visible=true
+						TweenService:Create(Icon,TweenInfo.new(0.15),{Rotation=90}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(0.4),{TextTransparency=0}):Play()
+
+						TweenService:Create(DownBar,TweenInfo.new(0.1),{Size=UDim2.new(0.4,0,0,get_list_size())}):Play()
+
+						auto_updatea()
+
+						for i,v:TextButton in ipairs(DownBar:GetChildren()) do
+							if v:isA('TextButton') then
+								v.Size=UDim2.new(0,0,0,0)
+								v.TextTransparency=1
+								TweenService:Create(v,TweenInfo.new(0.01+(i/100)),{
+									Size  = UDim2.new(0.99000001, 0, 0.5, 0),
+									TextTransparency=0.3
+								}):Play()
+							end
+						end
+					else
+						for i,v:TextButton in ipairs(DownBar:GetChildren()) do
+							if v:isA('TextButton') then
+								v.TextTransparency=.3
+								TweenService:Create(v,TweenInfo.new(0.04),{
+									Size  = UDim2.new(0,0,0,0),
+									TextTransparency=1
+								}):Play()
+							end
+						end
+
+						TweenService:Create(Icon,TweenInfo.new(0.15),{Rotation=-90}):Play()
+						TweenService:Create(LabelText,TweenInfo.new(0.4),{TextTransparency=0.3}):Play()
+
+						TweenService:Create(DownBar,TweenInfo.new(0.1),{Size=UDim2.new(0.4,0,0,0)}):Play()
+					end
+				end
+
+				DropdownToggleEffect(DropdownToggle)
+
+				cretate_button(Dropdown).MouseButton1Click:Connect(function()
+					DropdownToggle=not DropdownToggle
+					DropdownToggleEffect(DropdownToggle)
+				end)
+
+				local function newbutton()
+					local Dropdown = Instance.new("TextButton")
+					local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+
+					Dropdown.Name = "Dropdown"
+					Dropdown.Parent = DownBar
+					Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+					Dropdown.BackgroundTransparency = 1.000
+					Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+					Dropdown.BorderSizePixel = 0
+					Dropdown.Size = UDim2.new(0.99000001, 0, 0.5, 0)
+					Dropdown.ZIndex = 1000
+					Dropdown.Font = Enum.Font.SourceSansSemibold
+					Dropdown.Text = "List"
+					Dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+					Dropdown.TextScaled = true
+					Dropdown.TextSize = 14.000
+					Dropdown.TextWrapped = true
+					TweenService:Create(Dropdown,TweenInfo.new(0.1),{TextTransparency=0.3}):Play()
+					Dropdown.ZIndex = 10000
+					UIAspectRatioConstraint.Parent = Dropdown
+					UIAspectRatioConstraint.AspectRatio = 4.5
+					UIAspectRatioConstraint.AspectType = Enum.AspectType.ScaleWithParentSize
+
+					Dropdown.MouseEnter:Connect(function()
+						TweenService:Create(Dropdown,TweenInfo.new(0.1),{TextTransparency=0}):Play()
+					end)
+
+					Dropdown.MouseLeave:Connect(function()
+						TweenService:Create(Dropdown,TweenInfo.new(0.1),{TextTransparency=0.3}):Play()
+					end)
+
+					return Dropdown
+				end
+
+				local function refresh()
+					for i,v:TextButton in ipairs(DownBar:GetChildren()) do
+						if v:isA('TextButton') then
+							v:Destroy()
+						end
+					end
+
+					for i,v in ipairs(data) do
+						local button=newbutton()
+						button.Text=tostring(v)
+						button.MouseButton1Click:Connect(function()
+							ValueText.Text=tostring(v)
+							choose=v
+							callback(v)
+						end)
+
+					end
+				end
+
+				table.insert(NEVERLOSE.auto_function,auto_updatea)
+				refresh()
+
+				local func={}
+
+				function func:Refresh(new)
+					data=new or data
+					refresh()
+				end
+
+				update_section_size()
+
+				function func:Text(a)
+					LabelText.Text=tostring(a)
+				end
+
+				function func:Get()
+					return choose
+				end
+				return func
+			end
+
+			function sectionfunc:Hide()
+				TweenService:Create(Section,TweenInfo.new(0.2),{Size=UDim2.new(0.97,0,0,1)}):Play()
+				section_value=false
+				TweenService:Create(lay,TweenInfo.new(1),{BackgroundTransparency=1}):Play()
+				TweenService:Create(Section,TweenInfo.new(1),{BackgroundTransparency=1}):Play()
+				TweenService:Create(UIStroke,TweenInfo.new(1),{Transparency=1}):Play()
+				TweenService:Create(Header,TweenInfo.new(0.3),{TextTransparency=1}):Play()
+			end
+
+			function sectionfunc:Show()
+				update_section_size(true)section_value=true
+				TweenService:Create(Header,TweenInfo.new(0.3),{TextTransparency=0}):Play()
+				TweenService:Create(lay,TweenInfo.new(1),{BackgroundTransparency=0}):Play()
+				TweenService:Create(Section,TweenInfo.new(1),{BackgroundTransparency=0}):Play()
+				TweenService:Create(UIStroke,TweenInfo.new(1),{Transparency=0}):Play()
+			end
+
+			return sectionfunc
+		end
+
+
+		return TabFunctions
+	end
+
+	function WindowFunctinos:Delete()
+		return ScreenGui:Destroy()
+	end
+
+	local dragToggle = nil
+	local dragSpeed = 0.1
+	local dragStart = nil
+	local startPos = nil
+
+	local function updateInput(input)
+		local delta = input.Position - dragStart
+		local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+			startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		game:GetService('TweenService'):Create(Frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+	end
+
+	Frame_3.InputBegan:Connect(function(input)
+		if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+			dragToggle = true
+			dragStart = input.Position
+			startPos = Frame.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragToggle = false
+				end
+			end)
+		end
+	end)
+
+	InputService.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			if dragToggle then
+				updateInput(input)
+			end
+		end
+	end)
+
+	return WindowFunctinos
 end
 
--- 安全检查函数（多层验证）
-function AdvancedUIFunctions.performSecurityCheck(checkType, ...)
-    local args = {...}
-    
-    if checkType == "injector" then
-        local executor = args[1] or SystemState.currentExecutor
-        local isAllowed = false
-        
-        for _, allowed in ipairs(SecurityConfig.injectorWhitelist) do
-            if string.lower(executor) == string.lower(allowed) then
-                isAllowed = true
-                break
-            end
-        end
-        
-        return isAllowed, executor
-    elseif checkType == "player" then
-        local playerName = args[1] or localPlayer.Name
-        local isBlacklisted = false
-        
-        for _, blacklisted in ipairs(SecurityConfig.playerBlacklist) do
-            if string.lower(playerName) == string.lower(blacklisted) then
-                isBlacklisted = true
-                break
-            end
-        end
-        
-        return not isBlacklisted, playerName
-    elseif checkType == "environment" then
-        -- 检查运行环境是否安全
-        local checks = {
-            gameLoaded = game:IsLoaded(),
-            playerValid = localPlayer and localPlayer.Parent,
-            guiExists = playerGui,
-            isClient = Services.RunService:IsClient()
-        }
-        
-        local allValid = true
-        for checkName, checkResult in pairs(checks) do
-            if not checkResult then
-                warn("[安全检查失败] " .. checkName .. ": " .. tostring(checkResult))
-                allValid = false
-            end
-        end
-        
-        return allValid, checks
-    end
-    
-    return false, "未知检查类型"
+function NEVERLOSE:KeySystem(TitleName,LinkKey,callback)
+	local Functions = {}
+
+	local ScreenGui = Instance.new("ScreenGui")
+	local Frame = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local Frame_2 = Instance.new("Frame")
+	local UICorner_2 = Instance.new("UICorner")
+	local Title = Instance.new("TextLabel")
+	local PasteKey = Instance.new("TextBox")
+	local UIStroke = Instance.new("UIStroke")
+	local UICorner_3 = Instance.new("UICorner")
+	local CopyKey = Instance.new("TextButton")
+	local UIStroke_2 = Instance.new("UIStroke")
+	local UICorner_4 = Instance.new("UICorner")
+	local Submit = Instance.new("TextButton")
+	local UIStroke_3 = Instance.new("UIStroke")
+	local UICorner_5 = Instance.new("UICorner")
+
+	ScreenGui.Parent = CoreGui
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.IgnoreGuiInset=true
+	ScreenGui.ZIndexBehavior=Enum.ZIndexBehavior.Global
+
+	Frame.Parent = ScreenGui
+	Frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	Frame.BackgroundColor3 = NEVERLOSE.Themes.BlackgroundColor
+	Frame.BackgroundTransparency = 0.100
+	Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame.BorderSizePixel = 0
+	Frame.Position = UDim2.new(0.5, 0, 0.5, 0)
+	Frame.Size = UDim2.new(0, 0, 0, 0)
+
+	UICorner.Parent = Frame
+
+	Frame_2.Parent = Frame
+	Frame_2.BackgroundColor3 = NEVERLOSE.Themes.BlackColor
+	Frame_2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Frame_2.BorderSizePixel = 0
+	Frame_2.Position = UDim2.new(-0.00109238492, 0, 0.081521742, 0)
+	Frame_2.Size = UDim2.new(1, 0, 0.913586974, 0)
+	Frame_2.ZIndex = 2
+
+	UICorner_2.CornerRadius = UDim.new(0, 2)
+	UICorner_2.Parent = Frame_2
+
+	Title.Name = "Title"
+	Title.Parent = Frame
+	Title.AnchorPoint = Vector2.new(0.5, 0)
+	Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	Title.BackgroundTransparency = 1.000
+	Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Title.BorderSizePixel = 0
+	Title.Position = UDim2.new(0.5, 0, 0.143000007, 0)
+	Title.Size = UDim2.new(0.899999976, 0, 0.150000006, 0)
+	Title.ZIndex = 4
+	Title.Font = Enum.Font.SourceSansBold
+	Title.Text = TitleName or "Key System"
+	Title.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Title.TextScaled = true
+	Title.TextSize = 14.000
+	Title.TextStrokeColor3 = Color3.fromRGB(0, 255, 255)
+	Title.TextStrokeTransparency = 0.860
+	Title.TextWrapped = true
+
+	PasteKey.Name = "PasteKey"
+	PasteKey.Parent = Frame
+	PasteKey.AnchorPoint = Vector2.new(0.5, 0)
+	PasteKey.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+	PasteKey.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	PasteKey.BorderSizePixel = 0
+	PasteKey.Position = UDim2.new(0.50000006, 0, 0.373641312, 0)
+	PasteKey.Size = UDim2.new(0.899999976, 0, 0.25, 0)
+	PasteKey.ZIndex = 4
+	PasteKey.ClearTextOnFocus = false
+	PasteKey.Font = Enum.Font.SourceSansSemibold
+	PasteKey.Text = ""
+	PasteKey.TextColor3 = Color3.fromRGB(255, 255, 255)
+	PasteKey.TextScaled = true
+	PasteKey.TextSize = 14.000
+	PasteKey.TextTransparency = 0.390
+	PasteKey.TextWrapped = true
+
+	UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+	UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke.Parent = PasteKey
+
+	UICorner_3.CornerRadius = UDim.new(0, 3)
+	UICorner_3.Parent = PasteKey
+
+	CopyKey.Name = "CopyKey"
+	CopyKey.Parent = Frame
+	CopyKey.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+	CopyKey.BackgroundTransparency = 0.200
+	CopyKey.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	CopyKey.BorderSizePixel = 0
+	CopyKey.Position = UDim2.new(0.0489396416, 0, 0.754076123, 0)
+	CopyKey.Size = UDim2.new(0.42039147, 0, 0.182608709, 0)
+	CopyKey.ZIndex = 5
+	CopyKey.Font = Enum.Font.SourceSansBold
+	CopyKey.Text = "Get Key"
+	CopyKey.TextColor3 = Color3.fromRGB(255, 255, 255)
+	CopyKey.TextScaled = true
+	CopyKey.TextSize = 14.000
+	CopyKey.TextStrokeColor3 = Color3.fromRGB(0, 255, 247)
+	CopyKey.TextStrokeTransparency = 0.760
+	CopyKey.TextWrapped = true
+
+	UIStroke_2.Color = NEVERLOSE.Themes.StrokeColor
+	UIStroke_2.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke_2.Parent = CopyKey
+
+	UICorner_4.CornerRadius = UDim.new(0, 3)
+	UICorner_4.Parent = CopyKey
+
+	Submit.Name = "Submit"
+	Submit.Parent = Frame
+	Submit.BackgroundColor3 = NEVERLOSE.Themes.ButtonBlackgroundColor
+	Submit.BackgroundTransparency = 0.200
+	Submit.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	Submit.BorderSizePixel = 0
+	Submit.Position = UDim2.new(0.517944396, 0, 0.754076123, 0)
+	Submit.Size = UDim2.new(0.428548098, 0, 0.182608709, 0)
+	Submit.ZIndex = 5
+	Submit.Font = Enum.Font.SourceSansBold
+	Submit.Text = "Submit"
+	Submit.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Submit.TextScaled = true
+	Submit.TextSize = 14.000
+	Submit.TextStrokeColor3 = Color3.fromRGB(0, 255, 247)
+	Submit.TextStrokeTransparency = 0.760
+	Submit.TextWrapped = true
+
+	UIStroke_3.Color = NEVERLOSE.Themes.StrokeColor
+	UIStroke_3.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	UIStroke_3.Parent = Submit
+
+	UICorner_5.CornerRadius = UDim.new(0, 3)
+	UICorner_5.Parent = Submit
+
+	TweenService:Create(Frame,TweenInfo.new(0.4,Enum.EasingStyle.Quint),{Size=UDim2.new(0.25, 0, 0.25, 0)}):Play()
+
+	CopyKey.MouseButton1Click:Connect(function()
+		pcall(function()
+			setclipboard(tostring(LinkKey))
+		end)
+
+		pcall(function()
+			toclipboard(tostring(LinkKey))
+		end)
+	end)
+
+	local asd=false
+
+	local function_call
+
+	Submit.MouseButton1Click:Connect(function()
+		if asd then
+			return
+		end
+
+		asd=true
+		if callback(PasteKey.Text) then
+			TweenService:Create(Frame,TweenInfo.new(0.4,Enum.EasingStyle.Quint,Enum.EasingDirection.InOut),{Size=UDim2.new(0,0,0,0)}):Play()
+			function_call=function_call or function()
+
+			end
+
+			task.spawn(function()
+				task.wait(.45)
+				ScreenGui:Destroy()
+			end)
+
+			function_call(PasteKey.Text)
+
+			return
+
+		else
+			PasteKey.Text=''
+
+		end
+
+		asd=false
+	end)
+
+	task.spawn(function()
+		local dragToggle = nil
+		local dragSpeed = 0.2
+		local dragStart = nil
+		local startPos = nil
+
+		local function updateInput(input)
+			local delta = input.Position - dragStart
+			local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+				startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			game:GetService('TweenService'):Create(Frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+		end
+
+		Frame.InputBegan:Connect(function(input)
+			if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) and not toggle_valu then 
+				dragToggle = true
+				dragStart = input.Position
+				startPos = Frame.Position
+				input.Changed:Connect(function()
+					if input.UserInputState == Enum.UserInputState.End then
+						dragToggle = false
+					end
+				end)
+			end
+		end)
+
+		InputService.InputChanged:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+				if dragToggle then
+					updateInput(input)
+				end
+			end
+		end)
+	end)
+
+	function Functions:Callback(func)
+		function_call=func
+	end
+
+	return Functions
 end
 
--- 粒子效果生成器
-function AdvancedUIFunctions.createParticleEffect(position, effectType)
-    local effectGui = Instance.new("ScreenGui")
-    effectGui.Name = "ParticleEffect_" .. HttpService:GenerateGUID(false)
-    effectGui.ResetOnSpawn = false
-    effectGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
-    if effectType == "sparkle" then
-        for i = 1, 15 do
-            local particle = Instance.new("Frame")
-            particle.Name = "Sparkle_" .. i
-            particle.Size = UDim2.new(0, math.random(4, 8), 0, math.random(4, 8))
-            particle.Position = UDim2.new(
-                position.X.Scale, position.X.Offset,
-                position.Y.Scale, position.Y.Offset
-            )
-            particle.BackgroundColor3 = AdvancedUIFunctions.generateColor("rainbow", 2)
-            particle.BorderSizePixel = 0
-            
-            local corner = Instance.new("UICorner")
-            corner.CornerRadius = UDim.new(1, 0)
-            corner.Parent = particle
-            
-            local tween = AdvancedUIFunctions.createAdvancedAnimation(particle, {
-                Position = UDim2.new(
-                    position.X.Scale + (math.random(-100, 100) / 1000),
-                    position.X.Offset,
-                    position.Y.Scale + (math.random(-100, 100) / 1000),
-                    position.Y.Offset
-                ),
-                BackgroundTransparency = 1,
-                Rotation = math.random(0, 360)
-            }, {
-                duration = 0.8,
-                easingStyle = Enum.EasingStyle.Quad
-            })
-            
-            particle.Parent = effectGui
-            tween:Play()
-            
-            task.delay(0.8, function()
-                if particle.Parent then
-                    particle:Destroy()
-                end
-            end)
-        end
-    end
-    
-    effectGui.Parent = playerGui
-    task.delay(1, function()
-        if effectGui.Parent then
-            effectGui:Destroy()
-        end
-    end)
-    
-    return effectGui
+function NEVERLOSE:Notification()
+	local Notification_ = {
+		MaxNotifications = 5
+	}
+
+	local Notification = Instance.new("ScreenGui")
+	local MainFrame = Instance.new("Frame")
+	local UIListLayout = Instance.new("UIListLayout")
+
+	Notification.Name = "Notification"
+	Notification.Parent = CoreGui
+	Notification.ResetOnSpawn = false
+	Notification.ZIndexBehavior=Enum.ZIndexBehavior.Global
+	Notification.IgnoreGuiInset=true
+	ProtectGui(Notification)
+
+	MainFrame.Name = "MainFrame"
+	MainFrame.Parent = Notification
+	MainFrame.AnchorPoint = Vector2.new(1, 1)
+	MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	MainFrame.BackgroundTransparency = 1.000
+	MainFrame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	MainFrame.BorderSizePixel = 0
+	MainFrame.Position = UDim2.new(0.99000001, 0, 0.99000001, 0)
+	MainFrame.Size = UDim2.new(0.35, 0, 0.100000001, 0)
+
+	UIListLayout.Parent = MainFrame
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+	UIListLayout.Padding = UDim.new(0, 4)
+	function Notification_:Notify(Type,Head,Body,countdown)
+		if (#MainFrame:GetChildren()) > Notification_.MaxNotifications then
+			return false
+		end
+
+		local typeicon = {
+			['error'] = "9072920609",
+			['success'] = "9073052584",
+			['warning'] = "9072448788",
+			['info'] = "9072944922"
+		}
+
+		local iconId = typeicon[tostring(Type or "error"):lower()]
+
+		local Notify = Instance.new("Frame")
+		local UICorner = Instance.new("UICorner")
+		local UIStroke = Instance.new("UIStroke")
+		local IconImage = Instance.new("ImageLabel")
+		local HeadTitle = Instance.new("TextLabel")
+		local BodyTitle = Instance.new("TextLabel")
+		local Countdown = Instance.new("Frame")
+		local CloseButton = Instance.new("ImageButton")
+
+		Notify.Name = "Notify"
+		Notify.Parent = MainFrame
+		Notify.BackgroundColor3 = NEVERLOSE.Themes.SectionColor
+		Notify.BackgroundTransparency = 0.100
+		Notify.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Notify.BorderSizePixel = 0
+		Notify.ClipsDescendants = true
+		Notify.Size = UDim2.new(0.75,0,0,0)
+
+		UICorner.CornerRadius = UDim.new(0, 3)
+		UICorner.Parent = Notify
+
+		UIStroke.Color = NEVERLOSE.Themes.StrokeColor
+		UIStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		UIStroke.Parent = Notify
+
+		IconImage.Name = "IconImage"
+		IconImage.Parent = Notify
+		IconImage.AnchorPoint = Vector2.new(0.5, 0.5)
+		IconImage.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		IconImage.BackgroundTransparency = 1.000
+		IconImage.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		IconImage.BorderSizePixel = 0
+		IconImage.Position = UDim2.new(0.0549999997, 0, 0.5, 0)
+		IconImage.Size = UDim2.new(0.850000024, 0, 0.850000024, 0)
+		IconImage.SizeConstraint = Enum.SizeConstraint.RelativeYY
+		IconImage.ZIndex = 5
+		IconImage.Image = "rbxassetid://"..tostring(iconId)
+		IconImage.ImageTransparency=1
+		IconImage.ImageColor3=NEVERLOSE.Themes.MainColor
+
+		HeadTitle.Name = "HeadTitle"
+		HeadTitle.Parent = Notify
+		HeadTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		HeadTitle.BackgroundTransparency = 1.000
+		HeadTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		HeadTitle.BorderSizePixel = 0
+		HeadTitle.Position = UDim2.new(0.130612239, 0, 0.0750002638, 0)
+		HeadTitle.Size = UDim2.new(0.738775492, 0, 0.369384199, 0)
+		HeadTitle.ZIndex = 7
+		HeadTitle.Font = Enum.Font.SourceSansSemibold
+		HeadTitle.Text = Head or "Head"
+		HeadTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		HeadTitle.TextScaled = true
+		HeadTitle.TextSize = 14.000
+		HeadTitle.TextWrapped = true
+		HeadTitle.TextXAlignment = Enum.TextXAlignment.Left
+		HeadTitle.TextTransparency=1
+		BodyTitle.Name = "BodyTitle"
+		BodyTitle.Parent = Notify
+		BodyTitle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		BodyTitle.BackgroundTransparency = 1.000
+		BodyTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		BodyTitle.BorderSizePixel = 0
+		BodyTitle.Position = UDim2.new(0.130612239, 0, 0.444384605, 0)
+		BodyTitle.Size = UDim2.new(0.738775492, 0, 0.47554332, 0)
+		BodyTitle.ZIndex = 7
+		BodyTitle.Font = Enum.Font.SourceSansSemibold
+		BodyTitle.Text = Body or "Body"
+		BodyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+		BodyTitle.TextScaled = true
+		BodyTitle.TextSize = 14.000
+		BodyTitle.TextTransparency = 1
+		BodyTitle.TextWrapped = true
+		BodyTitle.TextXAlignment = Enum.TextXAlignment.Left
+
+		Countdown.Name = "Countdown"
+		Countdown.Parent = Notify
+		Countdown.AnchorPoint = Vector2.new(0, 1)
+		Countdown.BackgroundColor3 = NEVERLOSE.Themes.MainColor
+		Countdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		Countdown.BorderSizePixel = 0
+		Countdown.Position = UDim2.new(0, 0, 1.07500005, 0)
+		Countdown.Size = UDim2.new(0, 0, 0.100000001, 0)
+		Countdown.ZIndex = 6
+		Countdown.BackgroundTransparency=1
+
+		CloseButton.Name = "CloseButton"
+		CloseButton.Parent = Notify
+		CloseButton.AnchorPoint = Vector2.new(0.5, 0.5)
+		CloseButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		CloseButton.BackgroundTransparency = 1.000
+		CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+		CloseButton.BorderSizePixel = 0
+		CloseButton.Position = UDim2.new(0.939999998, 0, 0.5, 0)
+		CloseButton.Size = UDim2.new(0.550000012, 0, 0.550000012, 0)
+		CloseButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
+		CloseButton.ZIndex = 5
+		CloseButton.Image = "rbxassetid://9127564477"
+		CloseButton.ScaleType = Enum.ScaleType.Fit
+		CloseButton.ImageTransparency=1
+		
+		local currenttime = 0.3
+		local function start_vu()
+			TweenService:Create(Notify,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quint),{Size=UDim2.new(0.99,0,0.75,0)}):Play()
+			TweenService:Create(UIStroke,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{Transparency=0}):Play()
+			TweenService:Create(HeadTitle,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{TextTransparency=0}):Play()
+			TweenService:Create(BodyTitle,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{TextTransparency=0.3}):Play()
+			TweenService:Create(Countdown,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{BackgroundTransparency=0}):Play()
+			TweenService:Create(IconImage,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{ImageTransparency=0}):Play()
+			TweenService:Create(CloseButton,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{ImageTransparency=0}):Play()
+		end
+
+
+		local function end_vu()
+			local trantween = TweenService:Create(Notify,TweenInfo.new(currenttime,Enum.EasingStyle.Quint,Enum.EasingDirection.In),{Size=UDim2.new(0.75,0,0,0)})
+			TweenService:Create(UIStroke,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{Transparency=1}):Play()
+			TweenService:Create(HeadTitle,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{TextTransparency=1}):Play()
+			TweenService:Create(BodyTitle,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{TextTransparency=1}):Play()
+			TweenService:Create(Countdown,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{BackgroundTransparency=1}):Play()
+			TweenService:Create(IconImage,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{ImageTransparency=1}):Play()
+			TweenService:Create(CloseButton,TweenInfo.new(currenttime/2,Enum.EasingStyle.Quad),{ImageTransparency=1}):Play()
+			trantween:Play()
+
+			trantween.Completed:Connect(function()
+				Notify:Destroy()
+			end)
+		end
+
+		start_vu()
+
+		task.spawn(function()
+			CloseButton.MouseButton1Click:Connect(end_vu)
+
+			if countdown then
+
+				pcall(function()
+					task.wait(1.3)
+					local tween = TweenService:Create(Countdown,TweenInfo.new(tonumber(countdown) or 3,Enum.EasingStyle.Linear),{Size=UDim2.new(1,0,0.1,0)
+					})
+
+					tween:Play()
+
+					tween.Completed:Wait()
+					task.wait(0.5)
+					end_vu()
+				end)
+			end
+		end)
+	end
+
+	return Notification_
 end
 
--- ========== 第三部分：增强型欢迎消息系统 ==========
-local EnhancedWelcomeSystem = {}
-
-function EnhancedWelcomeSystem.createWelcomeMessage()
-    -- 创建主欢迎界面
-    local welcomeGui = Instance.new("ScreenGui")
-    welcomeGui.Name = "EnhancedWelcomeSystem"
-    welcomeGui.ResetOnSpawn = false
-    welcomeGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    
-    -- 背景遮罩
-    local background = Instance.new("Frame")
-    background.Name = "WelcomeBackground"
-    background.Size = UDim2.new(1, 0, 1, 0)
-    background.BackgroundColor3 = Color3.new(0, 0, 0)
-    background.BackgroundTransparency = 0.7
-    background.BorderSizePixel = 0
-    
-    -- 主欢迎框
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Name = "WelcomeMainFrame"
-    mainFrame.Size = UDim2.new(0, 400, 0, 250)
-    mainFrame.Position = UDim2.new(0.5, -200, 0.5, -125)
-    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    mainFrame.BackgroundColor3 = ThemeSystem.themes[ThemeSystem.current].background
-    mainFrame.BackgroundTransparency = 0.1
-    mainFrame.BorderSizePixel = 0
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 15)
-    corner.Parent = mainFrame
-    
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 3
-    stroke.Color = ThemeSystem.themes[ThemeSystem.current].accent
-    stroke.Parent = mainFrame
-    
-    -- 标题
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Name = "WelcomeTitle"
-    titleLabel.Size = UDim2.new(1, -40, 0, 60)
-    titleLabel.Position = UDim2.new(0, 20, 0, 20)
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Text = "欢迎使用 Vlop UI 系统"
-    titleLabel.TextColor3 = ThemeSystem.themes[ThemeSystem.current].primary
-    titleLabel.TextSize = 24
-    titleLabel.Font = Enum.Font.GothamBold
-    titleLabel.TextStrokeTransparency = 0.5
-    titleLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    
-    -- 玩家信息
-    local playerLabel = Instance.new("TextLabel")
-    playerLabel.Name = "PlayerInfo"
-    playerLabel.Size = UDim2.new(1, -40, 0, 40)
-    playerLabel.Position = UDim2.new(0, 20, 0, 90)
-    playerLabel.BackgroundTransparency = 1
-    playerLabel.Text = "玩家: " .. localPlayer.Name
-    playerLabel.TextColor3 = ThemeSystem.themes[ThemeSystem.current].text
-    playerLabel.TextSize = 18
-    playerLabel.Font = Enum.Font.Gotham
-    
-    -- 系统信息
-    local systemLabel = Instance.new("TextLabel")
-    systemLabel.Name = "SystemInfo"
-    systemLabel.Size = UDim2.new(1, -40, 0, 40)
-    systemLabel.Position = UDim2.new(0, 20, 0, 140)
-    systemLabel.BackgroundTransparency = 1
-    systemLabel.Text = "注入器: " .. SystemState.currentExecutor .. " | 版本: 3.0"
-    systemLabel.TextColor3 = ThemeSystem.themes[ThemeSystem.current].text
-    systemLabel.TextSize = 16
-    systemLabel.Font = Enum.Font.Gotham
-    
-    -- 关闭按钮
-    local closeButton = Instance.new("TextButton")
-    closeButton.Name = "CloseWelcome"
-    closeButton.Size = UDim2.new(0, 120, 0, 40)
-    closeButton.Position = UDim2.new(0.5, -60, 1, -60)
-    closeButton.AnchorPoint = Vector2.new(0.5, 1)
-    closeButton.BackgroundColor3 = ThemeSystem.themes[ThemeSystem.current].primary
-    closeButton.Text = "开始使用"
-    closeButton.TextColor3 = Color3.new(1, 1, 1)
-    closeButton.TextSize = 18
-    closeButton.Font = Enum.Font.GothamBold
-    
-    local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 8)
-    buttonCorner.Parent = closeButton
-    
-    -- 组装
-    titleLabel.Parent = mainFrame
-    playerLabel.Parent = mainFrame
-    systemLabel.Parent = mainFrame
-    closeButton.Parent = mainFrame
-    mainFrame.Parent = background
-    background.Parent = welcomeGui
-    welcomeGui.Parent = playerGui
-    
-    -- 动画效果
-    mainFrame.Position = UDim2.new(0.5, -200, 0, -300)
-    mainFrame.BackgroundTransparency = 1
-    titleLabel.TextTransparency = 1
-    playerLabel.TextTransparency = 1
-    systemLabel.TextTransparency = 1
-    closeButton.BackgroundTransparency = 1
-    closeButton.TextTransparency = 1
-    
-    local slideIn = AdvancedUIFunctions.createAdvancedAnimation(mainFrame, {
-        Position = UDim2.new(0.5, -200, 0.5, -125),
-        BackgroundTransparency = 0.1
-    }, {
-        duration = 1,
-        easingStyle = Enum.EasingStyle.Back
-    })
-    
-    local fadeIn = AdvancedUIFunctions.createAdvancedAnimation(titleLabel, {
-        TextTransparency = 0
-    }, {
-        duration = 0.5,
-        delayTime = 0.3
-    })
-    
-    slideIn:Play()
-    task.wait(0.3)
-    fadeIn:Play()
-    AdvancedUIFunctions.createAdvancedAnimation(playerLabel, {TextTransparency = 0}, {duration = 0.5, delayTime = 0.4}):Play()
-    AdvancedUIFunctions.createAdvancedAnimation(systemLabel, {TextTransparency = 0}, {duration = 0.5, delayTime = 0.5}):Play()
-    AdvancedUIFunctions.createAdvancedAnimation(closeButton, {
-        BackgroundTransparency = 0,
-        TextTransparency = 0
-    }, {
-        duration = 0.5,
-        delayTime = 0.6
-    }):Play()
-    
-    -- 按钮事件
-    closeButton.MouseButton1Click:Connect(function()
-        local fadeOut = AdvancedUIFunctions.createAdvancedAnimation(mainFrame, {
-            Position = UDim2.new(0.5, -200, 0, -300),
-            BackgroundTransparency = 1
-        }, {
-            duration = 0.5,
-            easingStyle = Enum.EasingStyle.Back,
-            easingDirection = Enum.EasingDirection.In
-        })
-        
-        fadeOut:Play()
-        fadeOut.Completed:Wait()
-        
-        if welcomeGui.Parent then
-            welcomeGui:Destroy()
-        end
-    end)
-    
-    return welcomeGui
-end
-
--- ========== 第四部分：增强型提示窗系统 ==========
-local EnhancedToastSystem = {}
-
-function EnhancedToastSystem.show(message, options)
-    options = options or {}
-    local toastType = options.type or "info"
-    local duration = options.duration or 3
-    local position = options.position or "top"
-    
-    -- 颜色定义
-    local colors = {
-        info = {Color3.fromRGB(0, 150, 255), Color3.fromRGB(0, 100, 200)},
-        success = {Color3.fromRGB(0, 200, 100), Color3.fromRGB(0, 150, 75)},
-        warning = {Color3.fromRGB(255, 180, 0), Color3.fromRGB(200, 140, 0)},
-        error = {Color3.fromRGB(255, 50, 50), Color3.fromRGB(200, 40, 40)},
-        custom = {options.color or Color3.fromRGB(100, 100, 200), Color3.fromRGB(80, 80, 160)}
-    }
-    
-    local colorSet = colors[toastType] or colors.info
-    
-    -- 创建提示窗
-    local toastGui = Instance.new("ScreenGui")
-    toastGui.Name = "EnhancedToast_" .. HttpService:GenerateGUID(false)
-    toastGui.ResetOnSpawn = false
-    toastGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    toastGui.DisplayOrder = 9999
-    
-    local toastFrame = Instance.new("Frame")
-    toastFrame.Name = "ToastFrame"
-    toastFrame.Size = UDim2.new(0, 350, 0, 80)
-    toastFrame.BackgroundColor3 = colorSet[1]
-    toastFrame.BackgroundTransparency = 0.1
-    toastFrame.BorderSizePixel = 0
-    toastFrame.ClipsDescendants = true
-    
-    -- 根据位置设置初始位置
-    if position == "top" then
-        toastFrame.Position = UDim2.new(0.5, -175, 0, -100)
-        toastFrame.AnchorPoint = Vector2.new(0.5, 0)
-    else
-        toastFrame.Position = UDim2.new(1, 350, 0.8, 0)
-        toastFrame.AnchorPoint = Vector2.new(1, 0.5)
-    end
-    
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = toastFrame
-    
-    -- 高级描边效果
-    local stroke = Instance.new("UIStroke")
-    stroke.Thickness = 3
-    stroke.Color = colorSet[2]
-    stroke.Transparency = 0.3
-    stroke.Parent = toastFrame
-    
-    -- 图标
-    local icon = Instance.new("ImageLabel")
-    icon.Name = "ToastIcon"
-    icon.Size = UDim2.new(0, 40, 0, 40)
-    icon.Position = UDim2.new(0, 15, 0.5, -20)
-    icon.BackgroundTransparency = 1
-    icon.Image = "rbxassetid://3926305904"
-    
-    -- 图标映射
-    local iconMap = {
-        info = Vector2.new(964, 204),
-        success = Vector2.new(964, 444),
-        warning = Vector2.new(964, 324),
-        error = Vector2.new(1004, 44)
-    }
-    
-    icon.ImageRectOffset = iconMap[toastType] or iconMap.info
-    icon.ImageRectSize = Vector2.new(36, 36)
-    icon.ImageColor3 = colorSet[2]
-    
-    -- 消息文本
-    local messageLabel = Instance.new("TextLabel")
-    messageLabel.Name = "ToastMessage"
-    messageLabel.Size = UDim2.new(1, -70, 1, -20)
-    messageLabel.Position = UDim2.new(0, 60, 0, 10)
-    messageLabel.BackgroundTransparency = 1
-    messageLabel.Text = message
-    messageLabel.TextColor3 = Color3.new(1, 1, 1)
-    messageLabel.TextSize = 16
-    messageLabel.Font = Enum.Font.Gotham
-    messageLabel.TextWrapped = true
-    messageLabel.TextXAlignment = Enum.TextXAlignment.Left
-    
-    -- 进度条
-    local progressBar = Instance.new("Frame")
-    progressBar.Name = "ProgressBar"
-    progressBar.Size = UDim2.new(1, 0, 0, 4)
-    progressBar.Position = UDim2.new(0, 0, 1, -4)
-    progressBar.BackgroundColor3 = colorSet[2]
-    progressBar.BorderSizePixel = 0
-    progressBar.AnchorPoint = Vector2.new(0, 1)
-    
-    local progressCorner = Instance.new("UICorner")
-    progressCorner.CornerRadius = UDim.new(0, 2)
-    progressCorner.Parent = progressBar
-    
-    -- 关闭按钮
-    local closeButton = Instance.new("ImageButton")
-    closeButton.Name = "CloseToast"
-    closeButton.Size = UDim2.new(0, 24, 0, 24)
-    closeButton.Position = UDim2.new(1, -30, 0, 10)
-    closeButton.BackgroundTransparency = 1
-    closeButton.Image = "rbxassetid://3926305904"
-    closeButton.ImageRectOffset = Vector2.new(284, 284)
-    closeButton.ImageRectSize = Vector2.new(36, 36)
-    closeButton.ImageColor3 = Color3.new(1, 1, 1)
-    
-    -- 组装
-    icon.Parent = toastFrame
-    messageLabel.Parent = toastFrame
-    progressBar.Parent = toastFrame
-    closeButton.Parent = toastFrame
-    toastFrame.Parent = toastGui
-    toastGui.Parent = playerGui
-    
-    -- 动画序列
-    local startPos, endPos
-    if position == "top" then
-        startPos = UDim2.new(0.5, -175, 0, -100)
-        endPos = UDim2.new(0.5, -175, 0, 20)
-    else
-        startPos = UDim2.new(1, 350, 0.8, 0)
-        endPos = UDim2.new(1, -20, 0.8, 0)
-    end
-    
-    local slideIn = AdvancedUIFunctions.createAdvancedAnimation(toastFrame, {
-        Position = endPos
-    }, {
-        duration = 0.5,
-        easingStyle = Enum.EasingStyle.Back,
-        easingDirection = Enum.EasingDirection.Out
-    })
-    
-    local progressTween = AdvancedUIFunctions.createAdvancedAnimation(progressBar, {
-        Size = UDim2.new(0, 0, 0, 4)
-    }, {
-        duration = duration,
-        easingStyle = Enum.EasingStyle.Linear
-    })
-    
-    local slideOut = AdvancedUIFunctions.createAdvancedAnimation(toastFrame, {
-        Position = startPos,
-        BackgroundTransparency = 1
-    }, {
-        duration = 0.3,
-        easingStyle = Enum.EasingStyle.Quad,
-        easingDirection = Enum.EasingDirection.In
-    })
-    
-    -- 执行动画
-    slideIn:Play()
-    progressTween:Play()
-    
-    -- 自动关闭
-    local autoClose = task.delay(duration, function()
-        slideOut:Play()
-        slideOut.Completed:Wait()
-        if toastGui.Parent then
-            toastGui:Destroy()
-        end
-    end)
-    
-    -- 点击关闭
-    closeButton.MouseButton1Click:Connect(function()
-        task.cancel(autoClose)
-        slideOut:Play()
-        slideOut.Completed:Wait()
-        if toastGui.Parent then
-            toastGui:Destroy()
-        end
-    end)
-    
-    -- 悬停效果
-    closeButton.MouseEnter:Connect(function()
-        AdvancedUIFunctions.createAdvancedAnimation(closeButton, {
-            ImageColor3 = Color3.fromRGB(255, 100, 100)
-        }, {duration = 0.2}):Play()
-    end)
-    
-    closeButton.MouseLeave:Connect(function()
-        AdvancedUIFunctions.createAdvancedAnimation(closeButton, {
-            ImageColor3 = Color3.new(1, 1, 1)
-        }, {duration = 0.2}):Play()
-    end)
-    
-    return toastGui
-end
-
--- ========== 第五部分：增强型点击动画系统 ==========
-local EnhancedClickAnimation = {}
-
-function EnhancedClickAnimation.createDigitalBallEffect(position, options)
-    options = options or {}
-    local effectId = HttpService:GenerateGUID(false)
-    
-    -- 数字序列
-    local digits = {"1", "0", "1", "0", "1", "0", "1", "1", "1"}
-    local effectType = options.type or "standard"
-    
-    -- 创建效果容器
-    local effectGui = Instance.new("ScreenGui")
-    effectGui.Name = "EnhancedDigitalBall_" .. effectId
-    effectGui.ResetOnSpawn = false
-    effectGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    effectGui.DisplayOrder = 10000
-    
-    -- 数字帧存储
-    local digitFrames = {}
-    
-    -- 创建每个数字（增强版）
-    for i, digit in ipairs(digits) do
-        local digitFrame = Instance.new("TextLabel")
-        digitFrame.Name = "EnhancedDigit_" .. i
-        digitFrame.Size = UDim2.new(0, 35, 0, 35)
-        digitFrame.Position = UDim2.new(
-            position.X.Scale, position.X.Offset - 17,
-            position.Y.Scale, position.Y.Offset - 17
-        )
-        digitFrame.BackgroundColor3 = AdvancedUIFunctions.generateColor("rainbow", 2)
-        digitFrame.BackgroundTransparency = 0.3
-        digitFrame.Text = digit
-        digitFrame.TextColor3 = Color3.new(1, 1, 1)
-        digitFrame.TextSize = 20
-        digitFrame.Font = Enum.Font.GothamBold
-        digitFrame.TextStrokeTransparency = 0
-        digitFrame.TextStrokeColor3 = Color3.new(0, 0, 0)
-        
-        -- 高级圆形效果
-        local corner = Instance.new("UICorner")
-        corner.CornerRadius = UDim.new(1, 0)
-        corner.Parent = digitFrame
-        
-        -- 高级描边
-        local stroke = Instance.new("UIStroke")
-        stroke.Thickness = 3
-        stroke.Color = AdvancedUIFunctions.generateColor("rainbow", 3)
-        stroke.Parent = digitFrame
-        
-        -- 阴影效果
-        local shadow = Instance.new("ImageLabel")
-        shadow.Name = "DigitShadow"
-        shadow.Size = UDim2.new(1, 10, 1, 10)
-        shadow.Position = UDim2.new(0, -5, 0, -5)
-        shadow.BackgroundTransparency = 1
-        shadow.Image = "rbxassetid://5554236805"
-        shadow.ImageColor3 = Color3.new(0, 0, 0)
-        shadow.ImageTransparency = 0.7
-        shadow.Parent = digitFrame
-        
-        digitFrame.Parent = effectGui
-        table.insert(digitFrames, digitFrame)
-    end
-    
-    effectGui.Parent = playerGui
-    
-    -- 第一阶段：聚合成球（带旋转效果）
-    local radius = 60
-    local angleStep = (2 * math.pi) / #digits
-    
-    for i, frame in ipairs(digitFrames) do
-        local angle = angleStep * (i - 1)
-        local targetX = position.X.Scale + (radius * math.cos(angle)) / 1000
-        local targetY = position.Y.Scale + (radius * math.sin(angle)) / 1000
-        
-        local tween = AdvancedUIFunctions.createAdvancedAnimation(frame, {
-            Position = UDim2.new(targetX, -17, targetY, -17),
-            BackgroundTransparency = 0,
-            TextColor3 = Color3.new(1, 1, 1),
-            Rotation = i * 40
-        }, {
-            duration = 0.6,
-            easingStyle = Enum.EasingStyle.Quad,
-            easingDirection = Enum.EasingDirection.Out
-        })
-        
-        tween:Play()
-    end
-    
-    task.wait(0.6)
-    
-    -- 第二阶段：向四周散开（带随机物理效果）
-    for i, frame in ipairs(digitFrames) do
-        local angle = angleStep * (i - 1)
-        local spreadRadius = options.spreadRadius or 250
-        
-        local targetX = position.X.Scale + (spreadRadius * math.cos(angle)) / 1000
-        local targetY = position.Y.Scale + (spreadRadius * math.sin(angle)) / 1000
-        
-        local randomOffsetX = math.random(-40, 40)
-        local randomOffsetY = math.random(-40, 40)
-        local randomRotation = math.random(-180, 180)
-        local randomSize = math.random(15, 25)
-        
-        local tween = AdvancedUIFunctions.createAdvancedAnimation(frame, {
-            Position = UDim2.new(targetX, -17 + randomOffsetX, 
-                                targetY, -17 + randomOffsetY),
-            BackgroundTransparency = 1,
-            TextTransparency = 1,
-            Size = UDim2.new(0, randomSize, 0, randomSize),
-            Rotation = randomRotation
-        }, {
-            duration = 0.8 + math.random() * 0.4,
-            easingStyle = Enum.EasingStyle.Quad,
-            easingDirection = Enum.EasingDirection.Out
-        })
-        
-        tween:Play()
-    end
-    
-    -- 第三阶段：清理和粒子效果
-    task.delay(0.8, function()
-        -- 创建爆炸粒子效果
-        AdvancedUIFunctions.createParticleEffect(position, "sparkle")
-        
-        -- 延迟清理
-        task.delay(0.5, function()
-            if effectGui.Parent then
-                effectGui:Destroy()
-            end
-        end)
-    end)
-    
-    return effectGui
-end
-
--- ========== 第六部分：增强型安全检测系统 ==========
-local EnhancedSecuritySystem = {}
-
-function EnhancedSecuritySystem.performFullSecurityScan()
-    print("[安全系统] 开始全面安全扫描...")
-    
-    local scanResults = {
-        injectorCheck = false,
-        playerCheck = false,
-        environmentCheck = false,
-        integrityCheck = false,
-        blacklistCheck = false
-    }
-    
-    -- 1. 注入器检查
-    local injectorOk, injectorName = AdvancedUIFunctions.performSecurityCheck("injector")
-    scanResults.injectorCheck = injectorOk
-    
-    if injectorOk then
-        print("[安全系统] 注入器检查通过: " .. injectorName)
-    else
-        warn("[安全系统] 注入器检查失败: " .. injectorName)
-        EnhancedToastSystem.show("注入器不被允许: " .. injectorName, {
-            type = "error",
-            duration = 5
-        })
-    end
-    
-    -- 2. 玩家检查
-    local playerOk, playerName = AdvancedUIFunctions.performSecurityCheck("player")
-    scanResults.playerCheck = playerOk
-    
-    if playerOk then
-        print("[安全系统] 玩家检查通过: " .. playerName)
-    else
-        warn("[安全系统] 玩家检查失败: " .. playerName)
-        
-        if SecurityConfig.enableAutoKick then
-            EnhancedToastSystem.show("检测到黑名单玩家，5秒后踢出", {
-                type = "warning",
-                duration = 5
-            })
-            
-            task.delay(5, function()
-                localPlayer:Kick("你已被列入黑名单!\n\n安全代码: Vlop-SEC-001")
-            end)
-        end
-    end
-    
-    -- 3. 环境检查
-    local envOk, envDetails = AdvancedUIFunctions.performSecurityCheck("environment")
-    scanResults.environmentCheck = envOk
-    
-    if envOk then
-        print("[安全系统] 环境检查通过")
-    else
-        warn("[安全系统] 环境检查失败")
-    end
-    
-    -- 4. 完整性检查（检查关键文件）
-    local integrityOk = true
-    local requiredFiles = {
-        "workspace",
-        "Players",
-        "Lighting",
-        "ReplicatedStorage"
-    }
-    
-    for _, file in ipairs(requiredFiles) do
-        if not game:FindService(file) then
-            integrityOk = false
-            warn("[安全系统] 完整性检查失败: 缺少 " .. file)
-            break
-        end
-    end
-    
-    scanResults.integrityCheck = integrityOk
-    
-    if integrityOk then
-        print("[安全系统] 完整性检查通过")
-    end
-    
-    -- 5. 黑名单同步检查
-    if SecurityConfig.remoteBlacklistUrl then
-        task.spawn(function()
-            local success, response = pcall(function()
-                return game:HttpGetAsync(SecurityConfig.remoteBlacklistUrl)
-            end)
-            
-            if success then
-                local remoteList = HttpService:JSONDecode(response)
-                if type(remoteList) == "table" then
-                    for _, name in ipairs(remoteList) do
-                        if not table.find(SecurityConfig.playerBlacklist, name) then
-                            table.insert(SecurityConfig.playerBlacklist, name)
-                        end
-                    end
-                    print("[安全系统] 远程黑名单同步完成")
-                end
-            else
-                warn("[安全系统] 远程黑名单同步失败")
-            end
-        end)
-    end
-    
-    scanResults.blacklistCheck = true
-    
-    -- 总结扫描结果
-    local allPassed = true
-    for checkName, checkResult in pairs(scanResults) do
-        if not checkResult then
-            allPassed = false
-            break
-        end
-    end
-    
-    if allPassed then
-        print("[安全系统] 全面安全扫描通过")
-        EnhancedToastSystem.show("安全扫描完成，所有检查通过", {
-            type = "success",
-            duration = 3
-        })
-    else
-        warn("[安全系统] 安全扫描失败，部分检查未通过")
-        EnhancedToastSystem.show("安全扫描失败，请检查系统", {
-            type = "error",
-            duration = 5
-        })
-    end
-    
-    return scanResults
-end
-
--- ========== 第七部分：主UI系统创建 ==========
--- 创建主窗口（增强版）
-local mainWindow = library:new("隐藏UI - 增强版", "基于第三方UI库的高级界面系统 v3.0")
-
--- 创建主标签页
-local MainTab = mainWindow:Tab("主设置", "rbxassetid://84830962019412")
-
--- 搜索选项分区
-local SearchSection = MainTab:section("搜索选项区", true)
-
-SearchSection:Textbox("搜索选项", "enhanced_search", "输入关键词搜索选项...", function(searchText)
-    print("[搜索系统] 搜索关键词:", searchText)
-    EnhancedToastSystem.show("搜索: " .. searchText, {
-        type = "info",
-        duration = 2
-    })
-end)
-
-SearchSection:Button("高级搜索", function()
-    EnhancedToastSystem.show("高级搜索功能开发中", {
-        type = "info",
-        duration = 3
-    })
-end)
-
--- 关于分区（增强版）
-local AboutSection = MainTab:section("关于 - 增强版", true)
-
-AboutSection:Label("系统名称: Vlop UI 增强版")
-AboutSection:Label("版本号: 3.0 Premium")
-AboutSection:Label("编译日期: " .. os.date("%Y-%m-%d"))
-AboutSection:Label("玩家名称: " .. localPlayer.Name)
-AboutSection:Label("注入器: " .. SystemState.currentExecutor)
-AboutSection:Label("用户ID: " .. localPlayer.UserId)
-AboutSection:Label("账号天数: " .. localPlayer.AccountAge)
-AboutSection:Label("游戏ID: " .. game.GameId)
-
-AboutSection:Button("显示详细系统信息", function()
-    local gameInfo = Services.MarketplaceService:GetProductInfo(game.PlaceId)
-    EnhancedToastSystem.show("游戏名称: " .. gameInfo.Name, {
-        type = "info",
-        duration = 5
-    })
-end)
-
-AboutSection:Button("复制系统信息", function()
-    local info = "系统信息:\n"
-    info = info .. "玩家: " .. localPlayer.Name .. "\n"
-    info = info .. "ID: " .. localPlayer.UserId .. "\n"
-    info = info .. "注入器: " .. SystemState.currentExecutor .. "\n"
-    info = info .. "版本: 3.0 Premium"
-    
-    setclipboard(info)
-    EnhancedToastSystem.show("系统信息已复制到剪贴板", {
-        type = "success",
-        duration = 3
-    })
-end)
-
--- 通用设置分区（增强版）
-local GeneralSection = MainTab:section("通用 - 增强设置", true)
-
-GeneralSection:Toggle("启用高级动画", "enable_advanced_anim", true, function(state)
-    SystemState.enableAdvancedAnim = state
-    EnhancedToastSystem.show("高级动画: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "warning",
-        duration = 2
-    })
-end)
-
-GeneralSection:Toggle("启用粒子效果", "enable_particles", true, function(state)
-    SystemState.enableParticles = state
-    EnhancedToastSystem.show("粒子效果: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "warning",
-        duration = 2
-    })
-end)
-
-GeneralSection:Toggle("启用音效", "enable_sounds", false, function(state)
-    SystemState.enableSounds = state
-    EnhancedToastSystem.show("系统音效: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "warning",
-        duration = 2
-    })
-end)
-
-GeneralSection:Slider("UI透明度", "ui_transparency", 10, 0, 100, true, function(value)
-    local transparency = value / 100
-    EnhancedToastSystem.show("UI透明度设置为: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-GeneralSection:Slider("动画速度", "anim_speed", 100, 50, 200, true, function(value)
-    local speed = value / 100
-    EnhancedToastSystem.show("动画速度: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
--- 文本设置分区
-local TextSection = MainTab:section("文本 - 高级设置", true)
-
-TextSection:Textbox("自定义欢迎文本", "custom_welcome", "输入欢迎文本", function(text)
-    if text and text ~= "" then
-        SystemState.customWelcomeText = text
-        EnhancedToastSystem.show("欢迎文本已更新", {
-            type = "success",
-            duration = 2
-        })
-    end
-end)
-
-TextSection:Dropdown("文本字体", "text_font", {
-    "Gotham",
-    "SourceSans",
-    "Arial",
-    "Ubuntu",
-    "Fredoka"
-}, function(selected)
-    SystemState.selectedFont = selected
-    EnhancedToastSystem.show("字体已更改为: " .. selected, {
-        type = "info",
-        duration = 2
-    })
-end)
-
-TextSection:Slider("文本大小", "text_size", 16, 8, 32, true, function(value)
-    SystemState.textSize = value
-    EnhancedToastSystem.show("文本大小: " .. value, {
-        type = "info",
-        duration = 2
-    })
-end)
-
--- 开关控制分区（核心功能 - 增强版）
-local ToggleSection = MainTab:section("开关 - 核心控制", true)
-
-local uiVisibilityState = true
-ToggleSection:Toggle("显示/隐藏UI", "enhanced_ui_toggle", true, function(state)
-    -- 积木编程逻辑实现（增强版）:
-    -- 如果开关=关 → 设置开关为开 → 1秒设置功能框透明度[100]
-    -- 否则 → 设置开关为关 → 1秒设置功能框透明度[0]
-    
-    uiVisibilityState = state
-    
-    if state then
-        -- 开关=关 → 开，显示UI
-        print("[开关系统] UI状态: 开 - 完全显示")
-        
-        EnhancedToastSystem.show("UI已完全显示", {
-            type = "success",
-            duration = 2
-        })
-        
-        -- 创建增强显示动画
-        local animations = {}
-        
-        -- 查找所有UI库生成的元素
-        for _, gui in ipairs(playerGui:GetChildren()) do
-            if gui.Name:find("library") or gui.Name:find("Window") then
-                table.insert(animations, AdvancedUIFunctions.createAdvancedAnimation(gui, {
-                    BackgroundTransparency = 0
-                }, {
-                    duration = 1,
-                    easingStyle = Enum.EasingStyle.Quad,
-                    easingDirection = Enum.EasingDirection.Out
-                }))
-            end
-        end
-        
-        -- 执行所有动画
-        for _, anim in ipairs(animations) do
-            anim:Play()
-        end
-        
-        -- 触发粒子效果
-        if SystemState.enableParticles then
-            task.wait(0.5)
-            local mouse = Services.UserInputService:GetMouseLocation()
-            local position = UDim2.new(0, mouse.X, 0, mouse.Y)
-            AdvancedUIFunctions.createParticleEffect(position, "sparkle")
-        end
-        
-    else
-        -- 否则 → 关，隐藏UI
-        print("[开关系统] UI状态: 关 - 完全隐藏")
-        
-        EnhancedToastSystem.show("UI已隐藏", {
-            type = "warning",
-            duration = 2
-        })
-        
-        -- 创建增强隐藏动画
-        local animations = []
-        
-        for _, gui in ipairs(playerGui:GetChildren()) do
-            if gui.Name:find("library") or gui.Name:find("Window") then
-                table.insert(animations, AdvancedUIFunctions.createAdvancedAnimation(gui, {
-                    BackgroundTransparency = 1
-                }, {
-                    duration = 1,
-                    easingStyle = Enum.EasingStyle.Quad,
-                    easingDirection = Enum.EasingDirection.In
-                }))
-            end
-        end
-        
-        for _, anim in ipairs(animations) do
-            anim:Play()
-        end
-    end
-end)
-
-ToggleSection:Button("测试开关动画", function()
-    local mouse = Services.UserInputService:GetMouseLocation()
-    local position = UDim2.new(0, mouse.X, 0, mouse.Y)
-    EnhancedClickAnimation.createDigitalBallEffect(position, {
-        type = "enhanced",
-        spreadRadius = 300
-    })
-end)
-
-ToggleSection:Button("切换UI状态", function()
-    uiVisibilityState = not uiVisibilityState
-    -- 模拟触发开关
-    EnhancedToastSystem.show("切换UI状态: " .. (uiVisibilityState and "显示" or "隐藏"), {
-        type = "info",
-        duration = 2
-    })
-end)
-
--- 滑块设置分区（增强版）
-local SliderSection = MainTab:section("滑块 - 精确控制", true)
-
-SliderSection:Slider("主音量控制", "master_volume", 70, 0, 100, true, function(value)
-    EnhancedToastSystem.show("主音量: " .. value .. "%", {
-        type = "info",
-        duration = 1
-    })
-end)
-
-SliderSection:Slider("音效音量", "sfx_volume", 80, 0, 100, true, function(value)
-    EnhancedToastSystem.show("音效音量: " .. value .. "%", {
-        type = "info",
-        duration = 1
-    })
-end)
-
-SliderSection:Slider("背景音乐", "bgm_volume", 60, 0, 100, true, function(value)
-    EnhancedToastSystem.show("背景音乐: " .. value .. "%", {
-        type = "info",
-        duration = 1
-    })
-end)
-
-SliderSection:Slider("鼠标灵敏度", "mouse_sensitivity", 50, 10, 200, true, function(value)
-    EnhancedToastSystem.show("鼠标灵敏度: " .. value .. "%", {
-        type = "info",
-        duration = 1
-    })
-end)
-
-SliderSection:Slider("视野范围", "fov_slider", 70, 50, 120, true, function(value)
-    EnhancedToastSystem.show("视野范围: " .. value .. "°", {
-        type = "info",
-        duration = 1
-    })
-end)
-
--- 输入设置分区（增强版）
-local InputSection = MainTab:section("输入 - 数据管理", true)
-
-InputSection:Textbox("用户名/昵称", "username_input", "请输入用户名", function(text)
-    if text and text ~= "" then
-        SystemState.username = text
-        EnhancedToastSystem.show("用户名已保存: " .. text, {
-            type = "success",
-            duration = 2
-        })
-    end
-end)
-
-InputSection:Textbox("个性化签名", "user_signature", "输入个性签名", function(text)
-    if text and text ~= "" then
-        SystemState.signature = text
-        EnhancedToastSystem.show("签名已保存", {
-            type = "success",
-            duration = 2
-        })
-    end
-end)
-
-InputSection:Textbox("配置保存名称", "config_name", "输入配置名称", function(text)
-    if text and text ~= "" then
-        SystemState.configName = text
-        EnhancedToastSystem.show("配置名称: " .. text, {
-            type = "info",
-            duration = 2
-        })
-    end
-end)
-
-InputSection:Button("保存当前配置", function()
-    EnhancedToastSystem.show("配置保存功能开发中", {
-        type = "info",
-        duration = 3
-    })
-end)
-
-InputSection:Button("加载配置", function()
-    EnhancedToastSystem.show("配置加载功能开发中", {
-        type = "info",
-        duration = 3
-    })
-end)
-
--- 输出设置分区（增强版）
-local OutputSection = MainTab:section("输出 - 系统信息", true)
-
-OutputSection:Label("系统状态: 运行中")
-OutputSection:Label("FPS: 计算中...")
-OutputSection:Label("内存使用: 监控中...")
-OutputSection:Label("运行时间: 0秒")
-
-OutputSection:Button("刷新系统信息", function()
-    EnhancedToastSystem.show("系统信息已刷新", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-OutputSection:Button("导出系统日志", function()
-    EnhancedToastSystem.show("日志导出功能开发中", {
-        type = "info",
-        duration = 3
-    })
-end)
-
-OutputSection:Button("清理系统缓存", function()
-    EnhancedToastSystem.show("缓存清理完成", {
-        type = "success",
-        duration = 2
-    })
-end)
-
--- 下拉式设置分区（增强版）
-local DropdownSection = MainTab:section("下拉式 - 高级选项", true)
-
-DropdownSection:Dropdown("主题选择", "theme_selector", {
-    "默认主题",
-    "深色主题",
-    "霓虹主题",
-    "自然主题",
-    "日落主题",
-    "自定义主题"
-}, function(selected)
-    local themeMap = {
-        ["默认主题"] = "Default",
-        ["深色主题"] = "Dark",
-        ["霓虹主题"] = "Neon",
-        ["自然主题"] = "Nature",
-        ["日落主题"] = "Sunset"
-    }
-    
-    if themeMap[selected] then
-        ThemeSystem.current = themeMap[selected]
-        EnhancedToastSystem.show("已切换至: " .. selected, {
-            type = "success",
-            duration = 3
-        })
-    elseif selected == "自定义主题" then
-        EnhancedToastSystem.show("自定义主题编辑器开发中", {
-            type = "info",
-            duration = 3
-        })
-    end
-end)
-
-DropdownSection:Dropdown("语言选择", "language_selector", {
-    "简体中文",
-    "English",
-    "Español",
-    "Français",
-    "日本語",
-    "한국어"
-}, function(selected)
-    EnhancedToastSystem.show("语言切换至: " .. selected, {
-        type = "info",
-        duration = 3
-    })
-end)
-
-DropdownSection:Dropdown("性能模式", "performance_mode", {
-    "高质量",
-    "平衡模式",
-    "性能优先",
-    "极限性能"
-}, function(selected)
-    EnhancedToastSystem.show("性能模式: " .. selected, {
-        type = "info",
-        duration = 3
-    })
-end)
-
--- ========== 第八部分：动画与效果标签页 ==========
-local AnimationTab = mainWindow:Tab("动画效果", "rbxassetid://108446823535062")
-
--- 点击动画分区（增强版）
-local ClickAnimationSection = AnimationTab:section("点击动画效果 - 增强版", true)
-
-ClickAnimationSection:Toggle("启用点击动画", "enable_click_effects", true, function(state)
-    SystemState.enableClickEffects = state
-    EnhancedToastSystem.show("点击动画: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "warning",
-        duration = 2
-    })
-end)
-
-ClickAnimationSection:Dropdown("动画类型", "animation_type", {
-    "数字球（标准）",
-    "数字球（增强）",
-    "粒子爆炸",
-    "彩虹波纹",
-    "全息投影"
-}, function(selected)
-    SystemState.selectedAnimationType = selected
-    EnhancedToastSystem.show("动画类型: " .. selected, {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ClickAnimationSection:Slider("动画大小", "anim_size", 100, 50, 200, true, function(value)
-    SystemState.animationScale = value / 100
-    EnhancedToastSystem.show("动画大小: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ClickAnimationSection:Slider("动画持续时间", "anim_duration", 100, 50, 300, true, function(value)
-    SystemState.animationDuration = value / 100
-    EnhancedToastSystem.show("动画持续时间: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ClickAnimationSection:Button("测试当前动画", function()
-    local mouse = Services.UserInputService:GetMouseLocation()
-    local position = UDim2.new(0, mouse.X, 0, mouse.Y)
-    
-    if SystemState.selectedAnimationType == "数字球（增强）" then
-        EnhancedClickAnimation.createDigitalBallEffect(position, {
-            type = "enhanced",
-            spreadRadius = 300 * SystemState.animationScale
-        })
-    else
-        EnhancedClickAnimation.createDigitalBallEffect(position, {
-            type = "standard",
-            spreadRadius = 200 * SystemState.animationScale
-        })
-    end
-    
-    EnhancedToastSystem.show("测试动画已触发", {
-        type = "success",
-        duration = 2
-    })
-end)
-
-ClickAnimationSection:Button("批量测试动画", function()
-    for i = 1, 3 do
-        task.wait(0.3)
-        local mouse = Services.UserInputService:GetMouseLocation()
-        local offsetX = math.random(-50, 50)
-        local offsetY = math.random(-50, 50)
-        local position = UDim2.new(0, mouse.X + offsetX, 0, mouse.Y + offsetY)
-        
-        EnhancedClickAnimation.createDigitalBallEffect(position, {
-            type = i % 2 == 0 and "enhanced" or "standard",
-            spreadRadius = 250 * SystemState.animationScale
-        })
-    end
-    
-    EnhancedToastSystem.show("批量测试完成", {
-        type = "success",
-        duration = 2
-    })
-end)
-
--- 提示窗测试分区（增强版）
-local ToastTestSection = AnimationTab:section("提示窗测试 - 增强版", true)
-
-ToastTestSection:Button("信息提示窗", function()
-    EnhancedToastSystem.show("这是一个信息提示窗示例\n可以显示多行文本内容", {
-        type = "info",
-        duration = 4,
-        position = "top"
-    })
-end)
-
-ToastTestSection:Button("成功提示窗", function()
-    EnhancedToastSystem.show("操作成功完成！\n所有设置已保存", {
-        type = "success",
-        duration = 4
-    })
-end)
-
-ToastTestSection:Button("警告提示窗", function()
-    EnhancedToastSystem.show("警告：系统资源不足\n建议关闭其他程序", {
-        type = "warning",
-        duration = 5
-    })
-end)
-
-ToastTestSection:Button("错误提示窗", function()
-    EnhancedToastSystem.show("错误：无法连接到服务器\n请检查网络连接", {
-        type = "error",
-        duration = 5
-    })
-end)
-
-ToastTestSection:Button("自定义提示窗", function()
-    EnhancedToastSystem.show("这是一个自定义提示窗\n带有特殊颜色和效果", {
-        type = "custom",
-        color = Color3.fromRGB(150, 50, 200),
-        duration = 4,
-        position = "top"
-    })
-end)
-
-ToastTestSection:Dropdown("提示窗位置", "toast_position", {
-    "顶部居中",
-    "右侧中部",
-    "底部居中",
-    "左侧中部"
-}, function(selected)
-    local positionMap = {
-        ["顶部居中"] = "top",
-        ["右侧中部"] = "right",
-        ["底部居中"] = "bottom",
-        ["左侧中部"] = "left"
-    }
-    SystemState.toastPosition = positionMap[selected] or "top"
-    EnhancedToastSystem.show("提示窗位置: " .. selected, {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ToastTestSection:Slider("提示窗持续时间", "toast_duration", 3, 1, 10, true, function(value)
-    SystemState.toastDuration = value
-    EnhancedToastSystem.show("持续时间: " .. value .. "秒", {
-        type = "info",
-        duration = 2
-    })
-end)
-
--- 粒子效果分区
-local ParticleSection = AnimationTab:section("粒子效果系统", true)
-
-ParticleSection:Toggle("启用粒子系统", "enable_particle_sys", true, function(state)
-    SystemState.enableParticleSystem = state
-    EnhancedToastSystem.show("粒子系统: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "warning",
-        duration = 2
-    })
-end)
-
-ParticleSection:Slider("粒子密度", "particle_density", 50, 10, 100, true, function(value)
-    SystemState.particleDensity = value
-    EnhancedToastSystem.show("粒子密度: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ParticleSection:Slider("粒子大小", "particle_size", 100, 50, 200, true, function(value)
-    SystemState.particleSize = value / 100
-    EnhancedToastSystem.show("粒子大小: " .. value .. "%", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ParticleSection:Button("测试粒子效果", function()
-    local mouse = Services.UserInputService:GetMouseLocation()
-    local position = UDim2.new(0, mouse.X, 0, mouse.Y)
-    AdvancedUIFunctions.createParticleEffect(position, "sparkle")
-    
-    EnhancedToastSystem.show("粒子效果测试", {
-        type = "info",
-        duration = 2
-    })
-end)
-
-ParticleSection:Button("烟花表演", function()
-    for i = 1, 5 do
-        task.wait(0.5)
-        local x = math.random(100, 800)
-        local y = math.random(100, 500)
-        local position = UDim2.new(0, x, 0, y)
-        AdvancedUIFunctions.createParticleEffect(position, "sparkle")
-    end
-    
-    EnhancedToastSystem.show("烟花表演完成", {
-        type = "success",
-        duration = 3
-    })
-end)
-
--- ========== 第九部分：安全设置标签页 ==========
-local SecurityTab = mainWindow:Tab("安全设置", "rbxassetid://132419977785712")
-
--- 注入器检查分区（增强版）
-local InjectorSection = SecurityTab:section("注入器检查 - 增强版", true)
-
-InjectorSection:Label("当前注入器: " .. SystemState.currentExecutor)
-InjectorSection:Label("允许的注入器:")
-for _, injector in ipairs(SecurityConfig.injectorWhitelist) do
-    InjectorSection:Label("  • " .. injector)
-end
-
-InjectorSection:Toggle("严格模式", "strict_mode", false, function(state)
-    SecurityConfig.securityLevel = state and "Extreme" or "High"
-    EnhancedToastSystem.show("严格模式: " .. (state and "启用" or "禁用"), {
-        type = state and "warning" or "info",
-        duration = 3
-    })
-end)
-
-InjectorSection:Toggle("自动踢出", "auto_kick", true, function(state)
-    SecurityConfig.enableAutoKick = state
-    EnhancedToastSystem.show("自动踢出: " .. (state and "启用" or "禁用"), {
-        type = state and "warning" or "info",
-        duration = 3
-    })
-end)
-
-InjectorSection:Toggle("安全日志", "security_logs", true, function(state)
-    SecurityConfig.enableLogging = state
-    EnhancedToastSystem.show("安全日志: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "info",
-        duration = 3
-    })
-end)
-
-InjectorSection:Button("立即检查注入器", function()
-    local isAllowed, injectorName = AdvancedUIFunctions.performSecurityCheck("injector")
-    
-    if isAllowed then
-        EnhancedToastSystem.show("注入器验证通过: " .. injectorName, {
-            type = "success",
-            duration = 4
-        })
-    else
-        EnhancedToastSystem.show("注入器不被允许: " .. injectorName, {
-            type = "error",
-            duration = 5
-        })
-    end
-end)
-
--- 黑名单管理分区（增强版）
-local BlacklistSection = SecurityTab:section("黑名单管理 - 增强版", true)
-
-BlacklistSection:Label("当前黑名单玩家 (" .. #SecurityConfig.playerBlacklist .. "人):")
-for _, player in ipairs(SecurityConfig.playerBlacklist) do
-    BlacklistSection:Label("  • " .. player)
-end
-
-BlacklistSection:Textbox("添加黑名单玩家", "add_blacklist_player", "输入玩家名称", function(playerName)
-    if playerName and playerName ~= "" then
-        if not table.find(SecurityConfig.playerBlacklist, playerName) then
-            table.insert(SecurityConfig.playerBlacklist, playerName)
-            EnhancedToastSystem.show("已添加黑名单玩家: " .. playerName, {
-                type = "warning",
-                duration = 3
-            })
-        else
-            EnhancedToastSystem.show("玩家已在黑名单中", {
-                type = "info",
-                duration = 2
-            })
-        end
-    end
-end)
-
-BlacklistSection:Textbox("移除黑名单玩家", "remove_blacklist_player", "输入玩家名称", function(playerName)
-    if playerName and playerName ~= "" then
-        for i, name in ipairs(SecurityConfig.playerBlacklist) do
-            if name == playerName then
-                table.remove(SecurityConfig.playerBlacklist, i)
-                EnhancedToastSystem.show("已移除黑名单玩家: " .. playerName, {
-                    type = "success",
-                    duration = 3
-                })
-                return
-            end
-        end
-        EnhancedToastSystem.show("未找到该玩家", {
-            type = "error",
-            duration = 2
-        })
-    end
-end)
-
-BlacklistSection:Button("同步远程黑名单", function()
-    EnhancedToastSystem.show("正在同步远程黑名单...", {
-        type = "info",
-        duration = 2
-    })
-    
-    task.spawn(function()
-        local success, response = pcall(function()
-            return game:HttpGetAsync(SecurityConfig.remoteBlacklistUrl)
-        end)
-        
-        if success then
-            local remoteList = HttpService:JSONDecode(response)
-            if type(remoteList) == "table" then
-                local added = 0
-                for _, name in ipairs(remoteList) do
-                    if not table.find(SecurityConfig.playerBlacklist, name) then
-                        table.insert(SecurityConfig.playerBlacklist, name)
-                        added = added + 1
-                    end
-                end
-                EnhancedToastSystem.show("远程黑名单同步完成\n新增 " .. added .. " 个玩家", {
-                    type = "success",
-                    duration = 4
-                })
-            end
-        else
-            EnhancedToastSystem.show("远程黑名单同步失败", {
-                type = "error",
-                duration = 3
-            })
-        end
-    end)
-end)
-
-BlacklistSection:Button("导出黑名单", function()
-    local blacklistText = "Vlop 黑名单列表:\n"
-    for _, player in ipairs(SecurityConfig.playerBlacklist) do
-        blacklistText = blacklistText .. player .. "\n"
-    end
-    
-    setclipboard(blacklistText)
-    EnhancedToastSystem.show("黑名单已复制到剪贴板", {
-        type = "success",
-        duration = 3
-    })
-end)
-
-BlacklistSection:Button("检查自己状态", function()
-    local isSafe, playerName = AdvancedUIFunctions.performSecurityCheck("player")
-    
-    if isSafe then
-        EnhancedToastSystem.show("安全检查通过\n您不在黑名单中", {
-            type = "success",
-            duration = 4
-        })
-    else
-        EnhancedToastSystem.show("警告：您在黑名单中\n" .. playerName, {
-            type = "error",
-            duration = 5
-        })
-    end
-end)
-
--- 安全扫描分区
-local SecurityScanSection = SecurityTab:section("全面安全扫描", true)
-
-SecurityScanSection:Button("执行全面扫描", function()
-    EnhancedToastSystem.show("开始全面安全扫描...", {
-        type = "info",
-        duration = 2
-    })
-    
-    local results = EnhancedSecuritySystem.performFullSecurityScan()
-    
-    -- 显示扫描结果
-    task.wait(1)
-    local resultText = "安全扫描结果:\n"
-    resultText = resultText .. "注入器检查: " .. (results.injectorCheck and "通过" or "失败") .. "\n"
-    resultText = resultText .. "玩家检查: " .. (results.playerCheck and "通过" or "失败") .. "\n"
-    resultText = resultText .. "环境检查: " .. (results.environmentCheck and "通过" or "失败") .. "\n"
-    resultText = resultText .. "完整性检查: " .. (results.integrityCheck and "通过" or "失败") .. "\n"
-    resultText = resultText .. "黑名单检查: " .. (results.blacklistCheck and "通过" or "失败")
-    
-    EnhancedToastSystem.show(resultText, {
-        type = results.injectorCheck and results.playerCheck and "success" or "warning",
-        duration = 6
-    })
-end)
-
-SecurityScanSection:Slider("扫描深度", "scan_depth", 2, 1, 3, true, function(value)
-    local depthNames = {[1] = "基础", [2] = "标准", [3] = "深度"}
-    SecurityConfig.scanDepth = value
-    EnhancedToastSystem.show("扫描深度: " .. depthNames[value], {
-        type = "info",
-        duration = 2
-    })
-end)
-
-SecurityScanSection:Toggle("自动扫描", "auto_scan", false, function(state)
-    SystemState.autoSecurityScan = state
-    EnhancedToastSystem.show("自动安全扫描: " .. (state and "启用" or "禁用"), {
-        type = state and "success" or "info",
-        duration = 3
-    })
-end)
-
--- ========== 第十部分：系统初始化与启动 ==========
-local function initializeEnhancedSystem()
-    print("[系统初始化] 开始初始化增强型系统...")
-    SystemState.isInitialized = false
-    
-    -- 检查基本环境
-    local envOk, envDetails = AdvancedUIFunctions.performSecurityCheck("environment")
-    if not envOk then
-        warn("[系统初始化] 环境检查失败")
-        EnhancedToastSystem.show("系统环境检查失败，无法启动", {
-            type = "error",
-            duration = 5
-        })
-        return false
-    end
-    
-    -- 执行安全扫描
-    EnhancedSecuritySystem.performFullSecurityScan()
-    
-    -- 显示欢迎界面
-    task.wait(2)
-    EnhancedWelcomeSystem.createWelcomeMessage()
-    
-    -- 设置全局点击事件
-    local clickConnection = Services.UserInputService.InputBegan:Connect(function(input, gameProcessed)
-        if not gameProcessed and input.UserInputType == Enum.UserInputType.MouseButton1 then
-            if SystemState.enableClickEffects then
-                local mouse = Services.UserInputService:GetMouseLocation()
-                local position = UDim2.new(0, mouse.X, 0, mouse.Y)
-                
-                if SystemState.selectedAnimationType == "数字球（增强）" then
-                    EnhancedClickAnimation.createDigitalBallEffect(position, {
-                        type = "enhanced",
-                        spreadRadius = 300 * (SystemState.animationScale or 1)
-                    })
-                else
-                    EnhancedClickAnimation.createDigitalBallEffect(position, {
-                        type = "standard",
-                        spreadRadius = 200 * (SystemState.animationScale or 1)
-                    })
-                end
-            end
-        end
-    end)
-    
-    table.insert(UIReferences.connections, clickConnection)
-    
-    -- 设置性能监控
-    local frameCount = 0
-    local lastUpdate = tick()
-    
-    local performanceConnection = Services.RunService.Heartbeat:Connect(function()
-        frameCount = frameCount + 1
-        
-        if tick() - lastUpdate >= 1 then
-            SystemState.performanceStats.fps = frameCount
-            frameCount = 0
-            lastUpdate = tick()
-            SystemState.performanceStats.updateCount = SystemState.performanceStats.updateCount + 1
-        end
-    end)
-    
-    table.insert(UIReferences.connections, performanceConnection)
-    
-    -- 显示启动完成提示
-    task.wait(3)
-    EnhancedToastSystem.show("Vlop UI 增强版 3.0\n初始化完成，欢迎使用！", {
-        type = "success",
-        duration = 5
-    })
-    
-    SystemState.isInitialized = true
-    print("[系统初始化] 增强型系统初始化完成")
-    print("[系统信息] 玩家: " .. localPlayer.Name)
-    print("[系统信息] 注入器: " .. SystemState.currentExecutor)
-    print("[系统信息] 会话ID: " .. SystemState.sessionId)
-    print("[系统信息] 启动时间: " .. os.date("%Y-%m-%d %H:%M:%S"))
-    
-    return true
-end
-
--- 延迟启动系统
 task.spawn(function()
-    local success, err = pcall(function()
-        return initializeEnhancedSystem()
-    end)
-    
-    if not success then
-        warn("[系统错误] 初始化失败: " .. tostring(err))
-        EnhancedToastSystem.show("系统初始化失败: " .. tostring(err), {
-            type = "error",
-            duration = 6
-        })
-        SystemState.isSafeMode = true
-    end
+	_G.index_neverlose=true
+	while _G.index_neverlose do task.wait(0)
+		pcall(function()
+			for i,v in ipairs(NEVERLOSE.auto_function) do task.wait()
+				pcall(function()
+					task.spawn(v)
+				end)
+			end
+		end)
+	end
 end)
 
--- ========== 第十一部分：全局API接口 ==========
-_G.VlopUISystemEnhanced = {
-    -- 版本信息
-    version = "3.0 Premium",
-    author = "Vlop开发团队",
-    
-    -- UI控制
-    toggleUI = function(state)
-        if state == nil then
-            state = not SystemState.isUIVisible
-        end
-        SystemState.isUIVisible = state
-        
-        EnhancedToastSystem.show("UI状态: " .. (state and "显示" or "隐藏"), {
-            type = state and "success" or "warning",
-            duration = 2
-        })
-        
-        return state
-    end,
-    
-    -- 提示窗系统
-    showToast = function(message, options)
-        return EnhancedToastSystem.show(message, options)
-    end,
-    
-    -- 动画系统
-    createAnimation = function(position, options)
-        return EnhancedClickAnimation.createDigitalBallEffect(position, options)
-    end,
-    
-    -- 安全系统
-    checkSecurity = function()
-        return EnhancedSecuritySystem.performFullSecurityScan()
-    end,
-    
-    -- 主题系统
-    setTheme = function(themeName)
-        if ThemeSystem.themes[themeName] then
-            ThemeSystem.current = themeName
-            return true
-        end
-        return false
-    end,
-    
-    -- 获取系统信息
-    getSystemInfo = function()
-        return {
-            player = localPlayer.Name,
-            userId = localPlayer.UserId,
-            executor = SystemState.currentExecutor,
-            version = "3.0 Premium",
-            sessionId = SystemState.sessionId,
-            fps = SystemState.performanceStats.fps,
-            uptime = math.floor(tick() - SystemState.systemStartTime),
-            theme = ThemeSystem.current
-        }
-    end,
-    
-    -- 添加黑名单
-    addToBlacklist = function(playerName)
-        return EnhancedSecuritySystem.addToBlacklist(playerName)
-    end,
-    
-    -- 导出配置
-    exportConfig = function()
-        local config = {
-            system = SystemState,
-            security = SecurityConfig,
-            theme = ThemeSystem
-        }
-        
-        return HttpService:JSONEncode(config)
-    end
-}
-
--- ========== 第十二部分：系统信息输出 ==========
-print("=" .. string.rep("=", 60))
-print("Vlop UI 增强版 3.0 Premium")
-print("=" .. string.rep("=", 60))
-print("玩家信息:")
-print("  • 名称: " .. localPlayer.Name)
-print("  • ID: " .. localPlayer.UserId)
-print("  • 账号天数: " .. localPlayer.AccountAge)
-print("系统信息:")
-print("  • 注入器: " .. SystemState.currentExecutor)
-print("  • 游戏: " .. Services.MarketplaceService:GetProductInfo(game.PlaceId).Name)
-print("  • 游戏ID: " .. game.GameId)
-print("  • 会话ID: " .. SystemState.sessionId)
-print("  • 启动时间: " .. os.date("%Y-%m-%d %H:%M:%S"))
-print("功能模块:")
-print("  • 主UI系统: 已加载")
-print("  • 动画系统: 已加载")
-print("  • 安全系统: 已加载")
-print("  • 主题系统: 已加载 (" .. ThemeSystem.current .. ")")
-print("  • 粒子系统: 已加载")
-print("=" .. string.rep("=", 60))
-print("初始化完成，系统就绪")
-print("API接口: _G.VlopUISystemEnhanced")
-print("=" .. string.rep("=", 60))
-
--- 最终启动提示
-task.wait(1)
-EnhancedToastSystem.show("Vlop UI 增强版 3.0\n系统启动完成，享受使用！", {
-    type = "success",
-    duration = 5
-})
-
--- ========== 第十三部分：使用说明注释 ==========
---[[
-    Vlop UI 增强版 3.0 - 使用说明
-    
-    1. 系统特性:
-       - 基于第三方UI库的高级界面系统
-       - 超过1500行代码的完整实现
-       - 模块化设计，易于维护和扩展
-       - 完整的错误处理和恢复机制
-    
-    2. 主要功能:
-       a) 主UI系统
-          - 与设计图完全一致的界面布局
-          - 响应式设计和自适应布局
-          - 主题系统支持多种配色方案
-       
-       b) 动画系统
-          - 高级点击动画效果
-          - 数字球散开特效
-          - 粒子效果系统
-          - 提示窗动画
-       
-       c) 安全系统
-          - 多层安全检测机制
-          - 注入器验证
-          - 玩家黑名单管理
-          - 远程黑名单同步
-       
-       d) 配置系统
-          - 主题配置
-          - 动画参数调整
-          - 系统设置保存/加载
-    
-    3. API接口:
-       -- 控制UI显示/隐藏
-       _G.VlopUISystemEnhanced.toggleUI(true)
-       
-       -- 显示提示窗
-       _G.VlopUISystemEnhanced.showToast("消息内容", {
-           type = "success",
-           duration = 3,
-           position = "top"
-       })
-       
-       -- 创建动画效果
-       _G.VlopUISystemEnhanced.createAnimation(UDim2.new(0, 100, 0, 100), {
-           type = "enhanced",
-           spreadRadius = 300
-       })
-       
-       -- 执行安全扫描
-       _G.VlopUISystemEnhanced.checkSecurity()
-       
-       -- 切换主题
-       _G.VlopUISystemEnhanced.setTheme("Dark")
-       
-       -- 获取系统信息
-       local info = _G.VlopUISystemEnhanced.getSystemInfo()
-       print("FPS:", info.fps)
-    
-    4. 开发说明:
-       - 所有模块都有完整的错误处理
-       - 使用pcall包装可能失败的操作
-       - 内存管理优化，避免泄露
-       - 性能监控内置
-       - 详细的日志记录
-    
-    5. 安全说明:
-       - 仅允许特定注入器运行
-       - 黑名单系统防止滥用
-       - 运行时完整性检查
-       - 配置加密存储
-       - 安全日志记录
-    
-    6. 扩展性:
-       - 模块化设计便于功能扩展
-       - 主题系统支持自定义主题
-       - API接口便于第三方集成
-       - 配置文件格式标准化
-    
-    代码统计:
-       - 总行数: 1500+
-       - 函数数量: 50+
-       - 模块数量: 12
-       - 注释行数: 200+
-    
-    最后更新: 2024年1月
-    作者: Vlop开发团队
-    许可证: MIT
-]]
+return NEVERLOSE
