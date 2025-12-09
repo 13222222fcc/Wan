@@ -1,4 +1,4 @@
-local library = loadstring(game:HttpGet(""))(); --这里是放你UI的地方也就是你的界面
+local library = loadstring(game:HttpGet("https://raw.githubusercontent.com/13222222fcc/Wan/refs/heads/main/UI.lua"))(); --这里是放你UI的地方也就是你的界面
 
 local window = library:new("脚本") --这里是你的脚本名
 
