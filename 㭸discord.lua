@@ -1,4 +1,4 @@
-<local success, library = pcall(function()
+local success, library = pcall(function()
     return loadstring(game:HttpGet("https://raw.githubusercontent.com/13222222fcc/123/refs/heads/main/UI.lua"))()
 end)
 
